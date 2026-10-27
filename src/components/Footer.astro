@@ -1,0 +1,152 @@
+---
+import { nav, site } from '../config/site';
+import { url } from '../lib/utils';
+import Arrow from './Arrow.astro';
+
+const year = new Date().getFullYear();
+const social = [
+  { href: site.social.linkedin, label: 'LinkedIn' },
+  { href: site.social.instagram, label: 'Instagram' },
+  { href: site.social.facebook, label: 'Facebook' },
+];
+---
+<footer class="footer bg-canvas p-2 sm:p-3">
+  <h2 class="sr-only">Site footer</h2>
+  <div class="board">
+    <div class="tile field-surface statement">
+      <p class="t-title max-w-[26ch]">
+        Students of {site.university} learning how energy is made, converted and put to work.
+      </p>
+      <p class="t-small mt-8 text-ink-muted">
+        © {year} {site.name}, {site.studentBranch}. IEEE and the society names are trademarks of IEEE.
+        <a href={url('/credits/')} class="link-inherit">Image credits</a>
+      </p>
+    </div>
+
+    <nav class="tile field-surface navtile" aria-label="Footer">
+      <ul role="list" class="flex flex-col gap-1">
+        {[{ href: '/', label: 'Home' }, ...nav, { href: '/join/', label: 'Join' }].map((item) => (
+          <li><a href={url(item.href)} class="footer-link">{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="tile field-surface place">
+      <p class="t-title">{site.city}, {site.country}</p>
+      <p class="t-small mt-2 text-ink-muted">
+        Local time <time data-local-time class="tabular-nums">–</time>
+      </p>
+    </div>
+
+    <div class="tile field-surface contact">
+      <p class="t-small text-ink-muted">Write to us</p>
+      <a href={`mailto:${site.email}`} class="t-title footer-link mt-1 break-all">{site.email}</a>
+      <ul role="list" class="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-6">
+        {social.map((s) => (
+          <li><a href={s.href} class="footer-link" rel="me noopener">{s.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="tile field-ink wordmark-tile" aria-hidden="true">
+      <span class="wordmark-big">IES · IAS · PES</span>
+    </div>
+
+    <a href={url('/join/')} class="tile invite">
+      <span class="t-headline max-w-[10ch]">Join the chapter</span>
+      <Arrow size={56} class="invite-arrow" />
+    </a>
+  </div>
+</footer>
+
+<style>
+  .board {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .tile {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    min-height: 220px;
+  }
+  .statement { grid-column: span 4; justify-content: space-between; }
+  .navtile { grid-column: span 3; }
+  .place { grid-column: span 2; }
+  .contact { grid-column: span 3; }
+  .wordmark-tile {
+    grid-column: span 8;
+    min-height: 320px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .wordmark-big {
+    font-size: clamp(40px, 6.6vw, 104px);
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .invite {
+    grid-column: span 4;
+    min-height: 320px;
+    justify-content: space-between;
+    background: var(--primary);
+    color: var(--on-primary);
+    text-decoration: none;
+    transition: background-color 160ms ease;
+  }
+  .invite:hover { background: var(--primary-hover); }
+  .invite:active { background: var(--primary-pressed); }
+  .invite :global(.invite-arrow) {
+    align-self: flex-end;
+    transition: transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .invite:hover :global(.invite-arrow) { transform: translateX(8px); }
+
+  .footer-link {
+    display: inline-flex;
+    min-height: 32px;
+    align-items: center;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 160ms ease;
+  }
+  .footer-link:hover { text-decoration-color: currentColor; }
+
+  @media (max-width: 1099px) {
+    .statement { grid-column: span 6; }
+    .navtile { grid-column: span 6; }
+    .place { grid-column: span 6; }
+    .contact { grid-column: span 6; }
+    .wordmark-tile { grid-column: span 12; min-height: 220px; }
+    .invite { grid-column: span 12; min-height: 220px; }
+  }
+
+  @media (max-width: 640px) {
+    .board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .tile { padding: 20px; min-height: 0; }
+    .wordmark-tile { grid-column: span 2; order: -2; min-height: 160px; }
+    .invite { grid-column: span 2; order: -1; min-height: 180px; }
+    .navtile { grid-column: span 1; }
+    .contact { grid-column: span 1; }
+    .place { grid-column: span 2; }
+    .statement { grid-column: span 2; }
+    .wordmark-big { font-size: 11vw; }
+  }
+</style>
+
+<script>
+  import { site } from '../config/site';
+  const el = document.querySelector<HTMLTimeElement>('[data-local-time]');
+  if (el) {
+    const fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: site.timeZone });
+    const tick = () => (el.textContent = fmt.format(new Date()));
+    tick();
+    setInterval(tick, 30_000);
+  }
+</script>
