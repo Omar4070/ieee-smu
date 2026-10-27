@@ -1,0 +1,212 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SocietyMark from '../components/SocietyMark.astro';
+import CtaInverted from '../components/CtaInverted.astro';
+import Arrow from '../components/Arrow.astro';
+import { site } from '../config/site';
+import { societies } from '../config/societies';
+import tower from '../assets/found/pes-transmission-tower.jpg';
+import igbt from '../assets/found/ies-igbt-module.jpg';
+import motor from '../assets/found/ias-motor-cutaway.jpg';
+import bench from '../assets/found/ies-oscilloscope-bench.jpg';
+
+const pictures = {
+  PES: { src: tower, alt: 'A high-voltage transmission tower carrying power lines across a valley' },
+  IES: { src: igbt, alt: 'An IGBT power module, the switching heart of inverters and drives' },
+  IAS: { src: motor, alt: 'A cutaway electric motor showing its rotor and stator windings' },
+};
+
+// TODO: replace with the chapter's real milestones.
+const history = [
+  { year: site.founded, text: 'Students from the three societies found the joint chapter within the student branch.' },
+  { year: site.founded + 2, text: 'First industrial visit, to a regional power plant, with forty members.' },
+  { year: site.founded + 4, text: 'The first Robotics & Automation Challenge brings eight teams to campus.' },
+  { year: site.founded + 7, text: 'Fourteen events in one year, and recognition from our IEEE region.' },
+];
+---
+<BaseLayout
+  title="About"
+  description={`History, mission and vision of the IEEE IES/IAS/PES joint student chapter at ${site.university}, and what each society covers.`}
+>
+  <PageHeader
+    field="blue"
+    title="About the chapter"
+    lead={`One chapter for three IEEE societies, run by students of ${site.university} since ${site.founded}.`}
+  />
+
+  <section class="section bg-canvas" aria-labelledby="history-title">
+    <div class="wrap grid gap-12 lg:grid-cols-12 lg:gap-6">
+      <div class="lg:col-span-4">
+        <h2 id="history-title" class="t-headline" data-reveal>Our history</h2>
+        <p class="mt-6 max-w-[38ch]" data-reveal style="--i: 1">
+          The chapter started as a handful of students who wanted to see the machines and grids their courses described.
+          Joining the three societies into one chapter let a small team run a full programme.
+        </p>
+      </div>
+      <ol class="history lg:col-span-7 lg:col-start-6" role="list">
+        {
+          history.map((h, i) => (
+            <li class="history-item" data-reveal style={`--i: ${i}`}>
+              <span class="history-year tabular-nums">{h.year}</span>
+              <span class="history-text">{h.text}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="field field-navy" aria-labelledby="mission-title">
+    <div class="wrap section grid gap-16 md:grid-cols-2 md:gap-6">
+      <div>
+        <h2 id="mission-title" class="t-headline" data-reveal>Our mission</h2>
+        <p class="t-statement mt-8 max-w-[26ch]" data-reveal style="--i: 1">
+          Give every engineering student hands-on contact with power, electronics and industry.
+        </p>
+      </div>
+      <div>
+        <h2 class="t-headline" data-reveal style="--i: 2">Our vision</h2>
+        <p class="t-statement mt-8 max-w-[26ch]" data-reveal style="--i: 3">
+          Graduates who have built, measured and seen the systems they will one day design.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="societies-title" class="bg-canvas pt-[var(--section)]">
+    <div class="wrap">
+      <h2 id="societies-title" class="t-headline" data-reveal>Three societies</h2>
+      <p class="mt-6 max-w-[52ch]" data-reveal style="--i: 1">
+        Each society covers one link of the power chain. As a joint chapter, every event is open to members of all three.
+      </p>
+    </div>
+
+    {
+      societies.map((s, i) => (
+        <article id={s.id.toLowerCase()} class:list={['society', { flip: i % 2 === 1 }]} aria-labelledby={`${s.id}-name`}>
+          <div class={`society-field field-${s.field}`}>
+            <Image
+              src={pictures[s.id].src}
+              alt={pictures[s.id].alt}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 900px) 40vw, 86vw"
+              class="society-img"
+            />
+          </div>
+          <div class="society-body">
+            <h3 id={`${s.id}-name`} class="t-headline">
+              {s.name}
+            </h3>
+            <p class="t-title mt-4 flex items-center gap-3">
+              <SocietyMark society={s} size={32} />
+              {s.role}
+            </p>
+            <p class="mt-6 max-w-[52ch]">{s.summary}</p>
+            <h4 class="mt-8 font-semibold">Focus areas</h4>
+            <ul class="focus" role="list">
+              {s.focus.map((f) => (
+                <li>{f}</li>
+              ))}
+            </ul>
+            <a href={s.url} class="link mt-8 inline-flex items-center gap-2" rel="noopener">
+              Visit the {s.id} website <Arrow size={18} direction="up-right" />
+            </a>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="section field-surface mt-[var(--section)]" aria-labelledby="branch-title">
+    <div class="wrap grid gap-10 lg:grid-cols-12 lg:gap-6">
+      <div class="lg:col-span-5">
+        <h2 id="branch-title" class="t-headline" data-reveal>Our student branch</h2>
+        <Image
+          src={bench}
+          alt="An oscilloscope and bench instruments wired to a circuit under test"
+          widths={[400, 640, 900]}
+          sizes="(min-width: 1024px) 36vw, 92vw"
+          class="mt-10 aspect-[4/3] w-full object-cover"
+          data-reveal
+          style="--i: 1"
+        />
+      </div>
+      <div class="lg:col-span-6 lg:col-start-7" data-reveal style="--i: 1">
+        <p>
+          The chapter belongs to the {site.studentBranch}, part of IEEE, the world’s largest technical professional
+          organisation. The branch handles membership and shared resources; the chapter runs the programme for power,
+          electronics and industry.
+        </p>
+        <p class="mt-4">
+          {/* TODO: name your IEEE Section and Region, e.g. "IEEE France Section, Region 8". */}
+          We work alongside the other chapters of the branch and report to our IEEE Section and Region.
+        </p>
+        <a href="https://www.ieee.org/about/" class="link mt-6 inline-flex items-center gap-2" rel="noopener">
+          About IEEE <Arrow size={18} direction="up-right" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaInverted />
+</BaseLayout>
+
+<style>
+  .history { display: flex; flex-direction: column; gap: 32px; }
+  .history-item {
+    display: grid;
+    grid-template-columns: minmax(96px, 9rem) 1fr;
+    gap: 24px;
+    align-items: baseline;
+  }
+  .history-year {
+    font-size: clamp(32px, 3.6vw, 52px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .history-text { font-size: 20px; line-height: 1.4; }
+
+  .society {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    margin-top: var(--section);
+    scroll-margin-top: var(--header-h);
+  }
+  .society-field {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 5 / 4;
+    padding: 10%;
+  }
+  .society :global(.society-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .society-body {
+    padding: 48px max(var(--gutter), 6%);
+  }
+  .flip .society-field { order: 2; }
+  .focus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .focus li {
+    padding: 6px 12px;
+    background: var(--surface-1);
+    font-size: 15px;
+  }
+
+  @media (max-width: 899px) {
+    .society { grid-template-columns: 1fr; }
+    .flip .society-field { order: 0; }
+    .society-body { padding: 32px var(--gutter) 0; }
+    .history-text { font-size: 17px; }
+  }
+</style>
