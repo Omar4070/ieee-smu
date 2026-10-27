@@ -78,6 +78,11 @@ const ogImage = new URL(image ?? url('/og-default.png'), Astro.site);
     <script>
       // Section parts enter once as they scroll into view. Without JS, or with
       // reduced motion, everything is simply visible.
+      // Long-form content (Markdown) enters paragraph by paragraph.
+      document.querySelectorAll('[data-reveal-children] > *').forEach((el, i) => {
+        el.setAttribute('data-reveal', '');
+        (el as HTMLElement).style.setProperty('--i', String(Math.min(i, 3)));
+      });
       const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
       const reveal = (el: HTMLElement) => {
         el.dataset.reveal = 'in';

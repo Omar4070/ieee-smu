@@ -16,15 +16,20 @@ export function isCurrent(href: string, pathname: string): boolean {
 }
 
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-const shortFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const dayMonthFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const dayFmt = new Intl.DateTimeFormat('en-GB', { day: 'numeric', timeZone: 'UTC' });
 
 export function formatDate(date: Date): string {
   return dateFmt.format(date);
 }
 
+/** "18–19 April 2026", "30 April – 2 May 2026" or "30 December 2025 – 2 January 2026". */
 export function formatRange(start: Date, end?: Date): string {
   if (!end || end.getTime() === start.getTime()) return formatDate(start);
-  return `${shortFmt.format(start)} – ${formatDate(end)}`;
+  const sameYear = start.getUTCFullYear() === end.getUTCFullYear();
+  if (sameYear && start.getUTCMonth() === end.getUTCMonth()) return `${dayFmt.format(start)}–${formatDate(end)}`;
+  if (sameYear) return `${dayMonthFmt.format(start)} – ${formatDate(end)}`;
+  return `${formatDate(start)} – ${formatDate(end)}`;
 }
 
 /** ISO date (YYYY-MM-DD) for <time datetime>. */

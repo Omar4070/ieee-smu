@@ -1,0 +1,177 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Arrow from '../../components/Arrow.astro';
+import { fieldFor, formatRange, getEvents, isoDate, url, type EventEntry } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const { all } = await getEvents();
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: EventEntry;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const { upcoming } = await getEvents();
+const isUpcoming = upcoming.some((e) => e.id === entry.id);
+const field = fieldFor(data.societies[0]).replace('field-', '') as 'pes' | 'ies' | 'ias' | 'blue';
+
+const ogImage = await getImage({ src: data.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const gallery = await Promise.all(
+  data.gallery.map(async (g) => ({ ...g, full: await getImage({ src: g.src, width: 1600, format: 'webp' }) })),
+);
+---
+<BaseLayout title={data.title} description={data.summary} image={ogImage.src} type="article">
+  <PageHeader field={field} size="md" title={data.title} lead={data.summary} />
+
+  <section class="bg-canvas" aria-label="Event details">
+    <figure class="cover wrap" data-reveal>
+      <Image
+        src={data.cover}
+        alt={data.coverAlt}
+        widths={[640, 960, 1440, 1920]}
+        sizes="(min-width: 1440px) 1376px, 96vw"
+        loading="eager"
+        fetchpriority="high"
+        class="cover-img"
+      />
+    </figure>
+
+    <div class="wrap detail">
+      <div class="prose" data-reveal-children>
+        <Content />
+      </div>
+
+      <aside class="facts" aria-labelledby="facts-title" data-reveal style="--i: 1">
+        <h2 id="facts-title" class="sr-only">Practical information</h2>
+        <dl class="facts-list">
+          <div>
+            <dt>Date</dt>
+            <dd>
+              <time datetime={isoDate(data.date)}>{formatRange(data.date, data.endDate)}</time>
+            </dd>
+          </div>
+          {
+            data.time && (
+              <div>
+                <dt>Time</dt>
+                <dd>{data.time}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>Where</dt>
+            <dd>{data.location}</dd>
+          </div>
+          <div>
+            <dt>Type</dt>
+            <dd>{data.type}</dd>
+          </div>
+          <div>
+            <dt>Societies</dt>
+            <dd>{data.societies.join(', ')}</dd>
+          </div>
+        </dl>
+        <div class="mt-8 flex flex-col gap-3">
+          {
+            isUpcoming && data.registrationUrl && (
+              <a href={data.registrationUrl} class="btn" rel="noopener">
+                Register for this event <Arrow size={18} />
+              </a>
+            )
+          }
+          {
+            isUpcoming && (
+              <a href={url(`/events/${entry.id}.ics`)} class="btn btn-inverse" download>
+                Add to calendar
+              </a>
+            )
+          }
+        </div>
+      </aside>
+    </div>
+
+  </section>
+
+  {
+    gallery.length > 0 && (
+      <section class="section bg-canvas" aria-labelledby="photos-title">
+        <div class="wrap">
+          <h2 id="photos-title" class="t-headline" data-reveal>
+            Photos
+          </h2>
+          <ul class="gallery" role="list">
+            {gallery.map((g, i) => (
+              <li data-reveal style={`--i: ${i % 3}`}>
+                <a href={g.full.src} class="gallery-link">
+                  <Image src={g.src} alt={g.alt} widths={[400, 640, 900]} sizes="(min-width: 900px) 32vw, 92vw" class="gallery-img" />
+                  <span class="sr-only"> (open full size)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <nav class="section bg-canvas pt-0!" aria-label="Events">
+    <div class="wrap">
+      <a href={url('/events/')} class="link inline-flex items-center gap-2 text-[20px]">
+        <Arrow size={20} class="rotate-180" /> All events
+      </a>
+    </div>
+  </nav>
+</BaseLayout>
+
+<style>
+  .detail {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 48px 24px;
+  }
+  .detail .prose { grid-column: 1 / span 7; }
+  .facts { grid-column: 9 / span 4; align-self: start; }
+  .facts-list { display: flex; flex-direction: column; gap: 4px; }
+  .facts-list > div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 16px;
+    padding: 14px 16px;
+    background: var(--surface-1);
+  }
+  .facts-list dt { font-size: 15px; color: var(--ink-muted); padding-top: 2px; }
+  .facts-list dd { margin: 0; font-weight: 500; }
+
+  .cover { padding-top: clamp(24px, 4vw, 48px); }
+  .detail { padding-top: clamp(56px, 8vw, 112px); }
+  .cover :global(.cover-img) { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; }
+
+  /* Columns keep any number of photos tidy, in their own proportions. */
+  .gallery {
+    columns: 3;
+    column-gap: 10px;
+    margin-top: 48px;
+  }
+  .gallery li { break-inside: avoid; margin-bottom: 10px; }
+  .gallery-link { display: block; overflow: hidden; }
+  .gallery-link :global(.gallery-img) {
+    display: block;
+    width: 100%;
+    transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .gallery-link:hover :global(.gallery-img) { transform: scale(1.03); }
+
+  @media (max-width: 899px) {
+    .detail { display: flex; flex-direction: column; }
+    .cover :global(.cover-img) { aspect-ratio: 4 / 3; }
+    .gallery { columns: 2; }
+    .facts { width: 100%; }
+  }
+</style>
