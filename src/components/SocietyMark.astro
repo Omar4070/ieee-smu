@@ -1,0 +1,25 @@
+---
+/**
+ * A society's logo (decorative: always shown next to the society's name)
+ * when one is configured in src/config/societies.ts,
+ * otherwise its acronym on the society colour.
+ */
+import type { Society } from '../config/societies';
+import { url } from '../lib/utils';
+
+interface Props {
+  society: Society;
+  /** Height in px of the logo or tag. */
+  size?: number;
+}
+const { society, size = 28 } = Astro.props;
+---
+{
+  society.logo ? (
+    <img src={url(society.logo)} alt="" height={size} style={`height:${size}px;width:auto`} />
+  ) : (
+    <span class={`tag field-${society.field}`} style={`min-height:${size}px`} aria-hidden="true">
+      {society.id}
+    </span>
+  )
+}

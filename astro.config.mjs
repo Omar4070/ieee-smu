@@ -14,6 +14,7 @@ export default defineConfig({
   base,
   trailingSlash: 'ignore',
   integrations: [sitemap()],
+  devToolbar: { enabled: false },
   vite: {
     plugins: [tailwindcss()],
   },

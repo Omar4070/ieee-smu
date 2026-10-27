@@ -1,0 +1,108 @@
+---
+/**
+ * Upcoming events as a horizontal deck of text cards in three tones of IEEE
+ * blue. Scrolls sideways when there are more cards than fit.
+ */
+import { formatRange, getEvents, isoDate, url } from '../../lib/utils';
+import Arrow from '../Arrow.astro';
+
+const { upcoming: all, past } = await getEvents();
+const upcoming = all.slice(0, 3);
+const tones = ['field-navy', 'field-blue', 'tone-3'];
+---
+<section class="section field-surface" aria-labelledby="upcoming-title">
+  <div class="wrap">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <h2 id="upcoming-title" class="t-headline" data-reveal>Coming up</h2>
+      <a href={url('/events/')} class="link" data-reveal style="--i: 1">All events and past highlights</a>
+    </div>
+
+    {
+      upcoming.length > 0 ? (
+        <ul class="deck" role="list">
+          {upcoming.map((e, i) => (
+            <li class={`card field ${tones[i % tones.length]}`} data-reveal style={`--i: ${i}`}>
+              <h3 class="card-title">
+                <a href={url(`/events/${e.id}/`)} class="card-link">
+                  {e.data.title}
+                </a>
+              </h3>
+              <p class="card-summary">{e.data.summary}</p>
+              <p class="card-foot">
+                <span>
+                  <time datetime={isoDate(e.data.date)}>{formatRange(e.data.date, e.data.endDate)}</time>
+                  <span class="card-meta">{e.data.type} · {e.data.societies.join(', ')}</span>
+                </span>
+                <span class="card-cta" aria-hidden="true">
+                  Details <Arrow size={18} />
+                </span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="t-statement mt-12 max-w-[30ch]">
+          The next events are being planned. Follow us on social media or see what we did recently.
+        </p>
+      )
+    }
+
+    <p class="mt-10 t-small">
+      {all.length} upcoming {all.length === 1 ? 'event' : 'events'} · {past.length} in the archive
+    </p>
+  </div>
+</section>
+
+<style>
+  .deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
+    gap: 12px;
+    margin-top: 48px;
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+    padding: 32px;
+    transition: transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .card:has(.card-link:hover) { transform: translateY(-6px); }
+  .tone-3 { background: #004f7d; color: #fff; }
+  .card-meta { display: block; font-size: 15px; font-weight: 400; }
+  .card-title {
+    font-size: clamp(22px, 2.1vw, 30px);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+  .card-link { text-decoration: none; }
+  /* The whole card is clickable through the title link. */
+  .card-link::after { content: ''; position: absolute; inset: 0; }
+  .card-link:focus-visible { outline: none; }
+  .card:has(.card-link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .card-summary {
+    margin-top: 16px;
+    font-size: 17px;
+    max-width: 48ch;
+  }
+  .card-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 32px;
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .card-cta { display: inline-flex; align-items: center; gap: 8px; }
+  .card-cta :global(svg) { transition: transform 200ms ease; }
+  .card:has(.card-link:hover) .card-cta :global(svg) { transform: translateX(6px); }
+
+  @media (max-width: 639px) {
+    .deck { margin-top: 32px; }
+    .card { min-height: 0; padding: 24px; }
+    .card-foot { padding-top: 24px; }
+  }
+</style>

@@ -18,7 +18,7 @@ const social = [
         Students of {site.university} learning how energy is made, converted and put to work.
       </p>
       <p class="t-small mt-8 text-ink-muted">
-        © {year} {site.name}, {site.studentBranch}. IEEE and the society names are trademarks of IEEE.
+        © {year} {site.name}, {site.studentBranch}. IEEE and the society names are trademarks of IEEE.{' '}
         <a href={url('/credits/')} class="link-inherit">Image credits</a>
       </p>
     </div>
@@ -48,7 +48,7 @@ const social = [
       </ul>
     </div>
 
-    <div class="tile field-ink wordmark-tile" aria-hidden="true">
+    <div class="tile field-ink wordmark-tile" aria-hidden="true" translate="no">
       <span class="wordmark-big">IES · IAS · PES</span>
     </div>
 
@@ -83,7 +83,7 @@ const social = [
     overflow: hidden;
   }
   .wordmark-big {
-    font-size: clamp(40px, 6.6vw, 104px);
+    font-size: clamp(40px, 10vw, 144px);
     font-weight: 300;
     letter-spacing: -0.04em;
     line-height: 1;
@@ -130,12 +130,12 @@ const social = [
   @media (max-width: 640px) {
     .board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
     .tile { padding: 20px; min-height: 0; }
-    .wordmark-tile { grid-column: span 2; order: -2; min-height: 160px; }
-    .invite { grid-column: span 2; order: -1; min-height: 180px; }
-    .navtile { grid-column: span 1; }
-    .contact { grid-column: span 1; }
-    .place { grid-column: span 2; }
     .statement { grid-column: span 2; }
+    .navtile { grid-column: span 1; }
+    .place { grid-column: span 1; }
+    .contact { grid-column: span 2; }
+    .wordmark-tile { grid-column: span 2; min-height: 160px; }
+    .invite { grid-column: span 2; min-height: 180px; }
     .wordmark-big { font-size: 11vw; }
   }
 </style>

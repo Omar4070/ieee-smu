@@ -1,6 +1,38 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import Societies from '../components/home/Societies.astro';
+import EventDeck from '../components/home/EventDeck.astro';
+import Stats from '../components/home/Stats.astro';
+import CtaInverted from '../components/CtaInverted.astro';
+import { site } from '../config/site';
+import { url } from '../lib/utils';
 ---
 <BaseLayout>
-  <section class="wrap section"><h1 class="t-display-lg">Scaffold</h1></section>
+  <Hero />
+
+  <!-- About, short: the front folder opens into this section. -->
+  <section class="bg-canvas pt-12 md:pt-20" aria-labelledby="about-title">
+    <div class="wrap grid gap-10 md:grid-cols-12 md:gap-6">
+      <div class="md:col-span-8">
+        <h2 id="about-title" class="sr-only">About the chapter</h2>
+        <p class="t-statement max-w-[34ch]" data-reveal>
+          Since {site.founded}, students at {site.university} have met here to build converters, tour power plants and
+          factories, and compete.
+        </p>
+      </div>
+      <div class="md:col-span-4 md:pt-2" data-reveal style="--i: 1">
+        <p>
+          We are a joint chapter of the {site.studentBranch}: one team of volunteers running a single programme for
+          members of all three societies, open to every engineering student.
+        </p>
+        <a href={url('/about/')} class="link mt-6 inline-block">Our history, mission and vision</a>
+      </div>
+    </div>
+  </section>
+
+  <Societies />
+  <EventDeck />
+  <Stats />
+  <CtaInverted />
 </BaseLayout>

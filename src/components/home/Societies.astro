@@ -1,0 +1,120 @@
+---
+/**
+ * "Specimens on colour tiles": each society shown through the things it works
+ * on, each picture on its society's colour, captions outside the tiles.
+ */
+import { Image } from 'astro:assets';
+import { societyById } from '../../config/societies';
+import { url } from '../../lib/utils';
+import SocietyMark from '../SocietyMark.astro';
+import windTurbines from '../../assets/found/pes-wind-turbines.jpg';
+import tower from '../../assets/found/pes-transmission-tower.jpg';
+import igbt from '../../assets/found/ies-igbt-module.jpg';
+import scope from '../../assets/found/ies-oscilloscope-bench.jpg';
+import motor from '../../assets/found/ias-motor-cutaway.jpg';
+import robots from '../../assets/found/ias-robot-line.jpg';
+import cobot from '../../assets/found/ias-cobot-arm.jpg';
+
+const tiles = [
+  { society: 'PES', img: tower, alt: 'A high-voltage transmission tower carrying power lines', title: 'Transmission', fact: 'Moving power across hundreds of kilometres with minimal loss.' },
+  { society: 'PES', img: windTurbines, alt: 'Offshore wind turbines standing in calm water', title: 'Power & Energy Society', fact: 'Generation, grids and renewables.', wide: true, lead: true },
+  { society: 'IES', img: igbt, alt: 'An IGBT power module with screw terminals', title: 'Industrial Electronics Society', fact: 'Converters, drives and control.', lead: true },
+  { society: 'IES', img: scope, alt: 'An oscilloscope measuring a circuit on a lab bench', title: 'Measurement', fact: 'Seeing every switching edge on the scope.' },
+  { society: 'IAS', img: motor, alt: 'A cutaway electric motor showing rotor and windings', title: 'Industry Applications Society', fact: 'Machines and power systems of industry.', lead: true },
+  { society: 'IAS', img: cobot, alt: 'A collaborative robot arm on a steel work table', title: 'Automation', fact: 'Robots that work alongside people.' },
+  { society: 'IAS', img: robots, alt: 'Industrial robots stacking crates on a production line', title: 'Production lines', fact: 'Hundreds of drives running in step.' },
+] as const;
+---
+<section class="section bg-canvas" aria-labelledby="societies-title" id="societies">
+  <div class="wrap societies">
+    <div class="intro">
+      <h2 id="societies-title" class="t-headline" data-reveal>One power chain</h2>
+      <p class="mt-6 max-w-[30ch]" data-reveal style="--i: 1">
+        Three IEEE societies, one chapter: PES makes and moves energy, IES converts and controls it, IAS puts it to
+        work in industry.
+      </p>
+      <a href={url('/about/')} class="link mt-6 inline-block" data-reveal style="--i: 2">How the societies fit together</a>
+    </div>
+
+    <ul class="tiles" role="list">
+      {
+        tiles.map((t, i) => {
+          const s = societyById[t.society];
+          return (
+            <li class:list={['tile-item', { wide: 'wide' in t && t.wide }]} data-reveal style={`--i: ${i % 4}`}>
+              <div class={`tile field-${s.field}`}>
+                <Image
+                  src={t.img}
+                  alt={t.alt}
+                  widths={[320, 480, 720, 960]}
+                  sizes="(min-width: 1100px) 26vw, (min-width: 640px) 45vw, 90vw"
+                  class="tile-img"
+                />
+              </div>
+              <h3 class="tile-title">
+                {'lead' in t && t.lead && <SocietyMark society={s} />}
+                {t.title}
+              </h3>
+              <p class="tile-fact">{t.fact}</p>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .societies {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 48px 24px;
+  }
+  .intro { grid-column: 1 / span 3; align-self: start; position: sticky; top: calc(var(--header-h) + 32px); }
+  .tiles {
+    grid-column: 4 / span 9;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px 10px;
+  }
+  .tile-item.wide { grid-column: span 2; }
+  .tile {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    padding: 14%;
+  }
+  .wide .tile { aspect-ratio: 8 / 5; padding: 7% 10%; }
+  .tile :global(.tile-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .tile-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .tile-fact {
+    margin-top: 4px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 1099px) {
+    .intro { grid-column: 1 / -1; position: static; }
+    .tiles { grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tile-item.wide { grid-column: span 3; order: -1; }
+  }
+  @media (max-width: 639px) {
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 8px; }
+    .tile-item.wide { grid-column: span 2; }
+    .tile-title { font-size: 17px; }
+  }
+</style>

@@ -71,6 +71,14 @@
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: calc(var(--header-h) + 16px);
   }
+  @media (pointer: fine) {
+    html { overscroll-behavior-y: none; }
+  }
+
+  a, button, summary, [role='button'] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgb(0 181 226 / 0.25);
+  }
 
   body {
     margin: 0;
@@ -128,16 +136,15 @@
     letter-spacing: -0.02em;
   }
   .t-statement {
-    font-size: clamp(22px, 2.6vw, 36px);
+    font-size: clamp(22px, 2.1vw, 30px);
     font-weight: 400;
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
   .t-title {
-    font-size: clamp(20px, 1.6vw, 24px);
+    font-size: 20px;
     font-weight: 500;
-    line-height: 1.25;
-    letter-spacing: -0.005em;
+    line-height: 1.3;
   }
   .t-small {
     font-size: 15px;
@@ -149,7 +156,7 @@
     width: 100%;
     max-width: 1440px;
     margin-inline: auto;
-    padding-inline: var(--gutter);
+    padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
   }
 
   .section { padding-block: var(--section); }
@@ -251,18 +258,18 @@
 }
 
 /* ---------- Motion: entrances that never hide content without JS ---------- */
+/* data-reveal goes "" (waiting) → "in" (animating) → "done"; once done, these
+   rules stop applying so components keep their own hover transitions. */
 @media (prefers-reduced-motion: no-preference) {
-  html.js [data-reveal] {
+  html.js [data-reveal=''] {
     opacity: 0;
     transform: translateY(24px);
+  }
+  html.js [data-reveal='in'] {
     transition:
       opacity 640ms cubic-bezier(0.2, 0.7, 0.2, 1),
       transform 640ms cubic-bezier(0.2, 0.7, 0.2, 1);
     transition-delay: calc(var(--i, 0) * 80ms);
-  }
-  html.js [data-reveal].is-in {
-    opacity: 1;
-    transform: none;
   }
 }
 

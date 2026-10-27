@@ -9,7 +9,7 @@ const path = Astro.url.pathname;
   <div class="wrap flex h-16 items-center justify-between gap-6">
     <a href={url('/')} class="wordmark flex items-center gap-3 no-underline" aria-label={`${site.name}, home`}>
       <ChapterMark size={28} />
-      <span class="text-[17px] leading-none font-semibold tracking-tight whitespace-nowrap">
+      <span class="text-[17px] leading-none font-semibold tracking-tight whitespace-nowrap" translate="no">
         IEEE <span class="font-normal">{site.shortName}</span>
       </span>
     </a>
@@ -47,7 +47,7 @@ const path = Astro.url.pathname;
       </a>
       <button
         type="button"
-        class="icon-btn min-[900px]:hidden"
+        class="icon-btn menu-btn"
         data-menu-toggle
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -131,6 +131,10 @@ const path = Astro.url.pathname;
   .theme-moon { display: none; }
   :global([data-theme='dark']) .theme-sun { display: none; }
   :global([data-theme='dark']) .theme-moon { display: block; }
+
+  @media (min-width: 900px) {
+    .menu-btn { display: none; }
+  }
 
   .menu-close { display: none; }
   [aria-expanded='true'] .menu-open { display: none; }

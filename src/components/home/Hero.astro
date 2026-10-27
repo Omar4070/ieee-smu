@@ -1,0 +1,256 @@
+---
+/**
+ * Home hero: a stack of file folders on the navy field. Each back folder is a
+ * society (in power-chain order) or the events archive; the front folder is
+ * the chapter itself and opens into the rest of the page.
+ */
+import { site } from '../../config/site';
+import { societies } from '../../config/societies';
+import { formatDate, getEvents, url } from '../../lib/utils';
+import Arrow from '../Arrow.astro';
+
+const { upcoming } = await getEvents();
+const next = upcoming[0];
+
+const folders = [
+  ...societies.map((s) => ({
+    key: s.field,
+    tab: s.id,
+    href: url(`/about/#${s.id.toLowerCase()}`),
+    title: s.name,
+    detail: s.role,
+  })),
+  {
+    key: 'blue',
+    tab: 'Events',
+    href: next ? url(`/events/${next.id}/`) : url('/events/'),
+    title: next ? `Next: ${next.data.title}` : 'Events',
+    detail: next ? formatDate(next.data.date) : 'See past events',
+  },
+];
+---
+<section class="hero field-navy field" aria-labelledby="hero-title">
+  <div class="wrap hero-head">
+    <h1 id="hero-title" class="hero-title" translate="no" data-reveal>
+      IES<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only">, </span>IAS<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only"> and </span>PES
+    </h1>
+    <p class="hero-sub" data-reveal style="--i: 1">
+      The IEEE joint student chapter of the Industrial Electronics, Industry Applications and Power &amp; Energy
+      societies at {site.university}.
+    </p>
+  </div>
+
+  <nav class="folders" aria-label="Explore the chapter">
+    {
+      folders.map((f, i) => (
+        <a href={f.href} class={`folder field-${f.key}`} style={`--n: ${i}`}>
+          <span class="tab tab-shape" aria-hidden="true">{f.tab}</span>
+          <span class="strip">
+            <span class="strip-text">
+              <span class="strip-title">{f.title}</span>
+              <span class="strip-detail">{f.detail}</span>
+            </span>
+            <Arrow size={22} class="strip-arrow" />
+          </span>
+        </a>
+      ))
+    }
+    <div class="folder front" style="--n: 4">
+      <span class="tab tab-shape front-tab" aria-hidden="true">The chapter</span>
+      <div class="front-body">
+        <a href={url('/join/')} class="btn">
+          Join the chapter <Arrow size={20} />
+        </a>
+        <p class="front-note">Open to every IEEE student member at {site.university}.</p>
+      </div>
+    </div>
+  </nav>
+</section>
+
+<style>
+  .hero {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--header-h));
+    overflow: hidden;
+  }
+  .hero-head {
+    padding-top: clamp(48px, 9svh, 96px);
+    padding-bottom: clamp(48px, 7svh, 80px);
+    text-align: center;
+  }
+  .hero-title {
+    font-size: clamp(44px, 10vw, 144px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+  }
+  .hero-sub {
+    max-width: 46ch;
+    margin: clamp(24px, 4svh, 40px) auto 0;
+    font-size: 20px;
+    line-height: 1.5;
+  }
+
+  .folders {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: min(86%, 1320px);
+    margin-inline: auto;
+    padding-top: 40px; /* room for the first tab */
+  }
+  .folder {
+    position: relative;
+    z-index: calc(var(--n) + 1);
+    display: block;
+    text-decoration: none;
+    transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    animation: folder-rise 720ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: calc(200ms + var(--n) * 90ms);
+  }
+  @keyframes folder-rise {
+    from { transform: translateY(48px); }
+  }
+  a.folder:hover,
+  a.folder:focus-visible {
+    transform: translateY(-10px);
+  }
+  a.folder:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .tab {
+    position: absolute;
+    bottom: 100%;
+    left: var(--tab-x);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 168px;
+    height: 40px;
+    padding: 0 28px;
+    background: inherit;
+    font-size: 17px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .strip {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    min-height: 64px;
+    padding: 0 24px;
+  }
+  .strip-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 16px;
+    min-width: 0;
+  }
+  .strip-title {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .strip-detail {
+    font-size: 17px;
+  }
+  .folder :global(.strip-arrow) {
+    flex: none;
+    transition: transform 240ms ease;
+  }
+  a.folder:hover :global(.strip-arrow) {
+    transform: translateX(6px);
+  }
+
+  .front {
+    flex: 1;
+    min-height: 136px;
+    background: var(--canvas);
+    color: var(--ink);
+  }
+  /* Each tab sits beside, not over, the text on the strip in front of it. */
+  .folder:nth-of-type(1) { --tab-x: 0%; }
+  .folder:nth-of-type(2) { --tab-x: 44%; }
+  .folder:nth-of-type(3) { --tab-x: 58%; }
+  .folder:nth-of-type(4) { --tab-x: 72%; }
+  .front-tab {
+    left: auto;
+    right: 0;
+  }
+  .front-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 32px;
+    padding: 32px;
+  }
+  .front-note {
+    font-size: 17px;
+  }
+
+  @media (max-width: 767px) {
+    .hero-head {
+      padding-top: 56px;
+      padding-bottom: 40px;
+    }
+    .hero-title {
+      font-size: min(13vw, 64px);
+    }
+    .hero-sub {
+      font-size: 17px;
+    }
+    .folders {
+      width: 100%;
+    }
+    .front-body {
+      padding: 24px var(--gutter) 32px;
+    }
+    .front-body .btn {
+      width: 100%;
+    }
+  }
+
+  /* Below desktop the next tab would cover the strip's text: stagger the tabs
+     left, centre, right and keep a clear band at the bottom of each strip. */
+  @media (max-width: 1099px) {
+    .folders {
+      width: 100%;
+      padding-top: 32px;
+    }
+    .tab {
+      height: 32px;
+      min-width: 112px;
+      padding: 0 20px;
+      font-size: 15px;
+    }
+    .folder:nth-of-type(3n + 1) .tab { left: 0; }
+    .folder:nth-of-type(3n + 2) .tab { left: calc(50% - 56px); }
+    .folder:nth-of-type(3n + 3) .tab { left: auto; right: 0; }
+    /* On a phone the next tab covers the bottom of the strip: keep that band clear. */
+    .strip {
+      align-items: flex-start;
+      min-height: 0;
+      padding: 10px var(--gutter) 42px;
+    }
+    .strip-text {
+      flex-direction: column;
+      row-gap: 0;
+    }
+    .strip-title {
+      font-size: 16px;
+      line-height: 1.3;
+    }
+    .strip-detail {
+      font-size: 15px;
+      line-height: 1.3;
+    }
+    .front-tab {
+      right: 0;
+      left: auto !important;
+    }
+  }
+</style>
