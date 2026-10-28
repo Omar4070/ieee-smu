@@ -15,6 +15,16 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   devToolbar: { enabled: false },
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      // Busy photos (factories, lab benches) get large at the default quality.
+      config: {
+        webp: { quality: 72, effort: 6 },
+        jpeg: { quality: 75, mozjpeg: true },
+      },
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

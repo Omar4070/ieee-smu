@@ -74,8 +74,8 @@ const [latest, ...rest] = await getNews();
           </h2>
           <ul class="news-list" role="list">
             {rest.map((n) => (
-              <li class="news-row" data-reveal>
-                <div class="min-w-0">
+              <li class="news-row">
+                <div class="min-w-0" data-reveal>
                   <h3 class="news-title">
                     <a href={url(`/news/${n.id}/`)} class="title-link">
                       {n.data.title}
@@ -88,7 +88,7 @@ const [latest, ...rest] = await getNews();
                   <p class="mt-3 max-w-[60ch]">{n.data.summary}</p>
                 </div>
                 {n.data.cover && (
-                  <Image src={n.data.cover} alt="" widths={[240, 480]} sizes="240px" class="news-thumb" />
+                  <Image src={n.data.cover} alt="" widths={[240, 480]} sizes="240px" class="news-thumb" data-reveal style="--i: 1" />
                 )}
               </li>
             ))}

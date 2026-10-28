@@ -48,7 +48,17 @@ const { title, lead, field = 'navy', size = 'lg', image, imageAlt = '' } = Astro
   .has-image .text { grid-column: 1 / span 7; }
   .picture { grid-column: 8 / span 5; }
   .with-image { padding-top: clamp(48px, 6vw, 96px); }
-  .picture :global(.picture-img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .picture { overflow: hidden; }
+  .picture :global(.picture-img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    animation: header-drift 24s ease-in-out infinite alternate;
+  }
+  @keyframes header-drift {
+    from { transform: scale(1.02); }
+    to { transform: scale(1.08) translateX(-1.5%); }
+  }
   @media (max-width: 899px) {
     .has-image { display: flex; flex-direction: column; align-items: stretch; }
     .picture :global(.picture-img) { aspect-ratio: 16 / 10; }

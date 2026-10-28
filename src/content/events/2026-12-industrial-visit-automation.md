@@ -6,7 +6,7 @@ time: "08:30–15:00"
 type: Industrial visit
 societies: [IAS, IES]
 location: "[Partner company], [Industrial zone, City]"
-summary: "Visit a working factory floor: robot cells, variable-speed drives, the plant's substation and the control room that runs it all."
+summary: "Visit a working factory floor: robot cells, variable-speed drives, the plant’s substation and the control room that runs it all."
 cover: ../../assets/found/ias-robot-line.jpg
 coverAlt: "Orange industrial robots stacking crates along an automated production line"
 registrationUrl: "https://forms.gle/TODO"
@@ -20,7 +20,7 @@ Textbook motors and drives look different when there are two hundred of them run
 - **10:00** Safety briefing and plant overview by the maintenance team
 - **10:45** Robot cells and conveyors: motors, drives and PLCs
 - **12:30** Lunch
-- **13:30** The plant's medium-voltage substation and power-quality monitoring
+- **13:30** The plant’s medium-voltage substation and power-quality monitoring
 - **15:00** Return to campus
 
 ## Practical details
