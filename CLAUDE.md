@@ -1,0 +1,55 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+Static website (Astro 7 + Tailwind CSS 4, no backend) for an IEEE IES/IAS/PES joint student chapter, deployed to GitHub Pages. Content is edited by non-developer chapter officers, so content files and `README.md` recipes must keep working.
+
+## Commands
+
+```bash
+npm run dev            # dev server, http://localhost:4321
+npm run build          # astro check (types + content schemas) then astro build → dist/
+npm run preview        # serve dist/
+npm run check:links    # after a build: every internal href/src/srcset/#anchor in dist/ must exist
+                       # (set BASE_PATH=/repo when the build used a base path)
+node .claude/skills/design-taste-frontend/scripts/lint.mjs src          # banned design patterns in source
+node .claude/skills/design-taste-frontend/scripts/inspect.mjs <url>     # real-browser design gate, 1440/768/390
+bash scripts/screenshots.sh http://127.0.0.1:4321 /path/ [/path2/ …]   # full-page shots, 3 widths × light/dark → screenshots/
+node scripts/slice-screenshots.mjs screenshots/<file>.png               # cut long shots into readable sheets
+bash scripts/console-check.sh http://127.0.0.1:4321 /path/              # browser console errors
+playwright-cli open <url> && playwright-cli run-code --filename=scripts/test-mobile-nav.js   # nav/keyboard/theme/overflow
+playwright-cli open <url> && playwright-cli run-code --filename=scripts/test-a11y.js         # axe-core, both themes (loads axe from cdnjs)
+```
+
+There is no unit-test suite; the tests are the playwright-cli scripts above (run one by opening a browser on the page, then `run-code` with that file). Run the final design/a11y gates against `npm run preview` (production build), not the dev server.
+
+On Windows Git Bash, prefix commands that pass a path-like env var with `MSYS_NO_PATHCONV=1` (e.g. `BASE_PATH=/repo npx astro build`), otherwise Bash rewrites it to `C:/Program Files/Git/repo`.
+
+## Architecture
+
+- **Content collections** (`src/content.config.ts`, Zod from `astro/zod`, Zod 4 so `z.url()` not `z.string().url()`): `events/*.md`, `news/*.md`, `team/*.json` (one file per committee year; the file sorting last by id is the "current" committee). Images in frontmatter use the `image()` helper with paths relative to the content file (`../../assets/...`). Schema enums (event `type`, `societies`, news `category`) are documented in README, so update both together.
+- **`src/lib/utils.ts`** is the shared data layer: `getEvents()` splits upcoming/past using *build time* "today" (the deploy workflow rebuilds nightly so events roll into the archive), `getNews()`, `getTeams()`, date formatting via `Intl` in UTC, `fieldFor(society)` → colour class.
+- **Base path:** the site may be served from `https://user.github.io/<repo>/`. `astro.config.mjs` reads `SITE_URL`/`BASE_PATH` (set by the workflow from `actions/configure-pages`). Every internal link in `.astro` files must go through `url('/path/')` from `utils.ts`; never write a bare `href="/..."`. Links inside Markdown content must be relative (`../../team/`).
+- **Config, not code, for chapter facts:** `src/config/site.ts` (names, email, socials, stats, map, `formspreeId`, logo) and `src/config/societies.ts` (societies in power-chain order PES → IES → IAS, texts, logo paths). Placeholders are marked `// TODO:` and render as `[Bracketed]` text.
+- **Layout:** `BaseLayout.astro` (SEO/OG meta, pre-paint theme script setting `html[data-theme]`, font preload, reveal script) → `Header` / page / `Footer`. Inner pages start with `PageHeader` (props `field`, `size: 'lg'|'md'`, optional `image`). Home sections live in `src/components/home/`.
+- **Event extras:** `src/pages/events/[slug].ics.ts` generates an all-day calendar file per event; the past-events "index with preview" on `events/index.astro` is CSS-only (`:has()`), no JS.
+- **Contact form:** posts to Formspree; the inline script progressively enhances it and shows a fallback message while `formspreeId` still starts with `TODO`.
+- **Found photos** in `src/assets/found/` are open-licence Wikimedia Commons images; their credits are in `src/data/image-credits.json` and rendered on `/credits/`. Adding or removing a found photo means updating that JSON.
+
+## Styling gotchas
+
+- Design tokens are CSS variables in `src/styles/global.css` (`:root` and `:root[data-theme='dark']`), exposed to Tailwind via `@theme inline` (`bg-canvas`, `text-ink`, `text-ink-muted`…). Field classes `.field-navy/.field-blue/.field-pes/.field-ies/.field-ias/.field-ink/.field-surface` set background and their own text colour; they are identical in both themes. Add the class `field` too when focus rings should follow the field's text colour.
+- **Astro scoped `<style>` is unlayered, Tailwind utilities are layered, so scoped CSS always wins.** Don't combine a responsive Tailwind display utility (`hidden`, `md:…`) with a scoped rule that sets the same property on the same element; put the breakpoint in the scoped CSS instead.
+- **Tailwind's dev scanner can miss classes in newly created files** (e.g. `md:col-span-6` silently absent). If a new page's layout looks wrong in `npm run dev`, restart the dev server before debugging; `npm run build` is unaffected.
+- **Entrance motion:** add `data-reveal` (optional `style="--i: n"` for stagger). The attribute goes `""` → `"in"` → `"done"`, and the CSS only applies while not `done`, so components can keep their own `transform` hover effects. Containers with `data-reveal-children` (Markdown bodies) get each child tagged at runtime. Hero folders use a CSS keyframe with `animation-fill-mode: backwards` instead, for the same reason. Everything is visible without JS and under `prefers-reduced-motion`.
+
+## Design rules (enforced by the taste-skill lint/inspector)
+
+Read `DESIGN.md` before visual work; `docs/design-critique.md` records the art direction ("colour chapters": each society is a colour field, always in power-chain order). Rules the inspector fails on and that are easy to break:
+
+- One typeface (IBM Plex Sans Variable, self-hosted), one accent (`--primary` IEEE blue) for buttons/links. Keep to the existing type steps (`t-display-lg`, `t-headline`, `t-statement`, `t-title`, body, `t-small`), about five sizes per page.
+- No eyebrows/small labels directly above a heading (put category/date/society tags *after* the title), no gradients, no shadows on resting elements, no hairline dividers or 1px outlined boxes (form fields excepted), no rounded corners except avatars, no monospace, no icon-topped rows of identical cards.
+- Every heading ≤ 2 lines at 1440/768/390 px; statements set large stay ≤ 30px.
+- Sentence case for headings and buttons (deliberate deviation from the web-design-guidelines' Title Case rule).
+- Don't place PES green and IES cyan as adjacent full-width sections (too close in lightness).
+- Found photos show the societies' world and must never be presented as the chapter's own people or events.
