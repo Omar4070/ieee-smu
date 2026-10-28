@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import credits from '../data/image-credits.json';
+
+// Thumbnails for each credited file in src/assets/found/.
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/found/*.{jpg,jpeg,png,webp}', { eager: true });
+const thumb = (file: string) => files[`../assets/found/${file}`]?.default;
+---
+<BaseLayout title="Image credits" description="Sources and licences of the photographs used on this website.">
+  <PageHeader
+    field="navy"
+    title="Image credits"
+    lead="Photographs of the societies’ world used on this site, with their authors and licences. Chapter photos are our own."
+  />
+
+  <section class="section bg-canvas" aria-labelledby="credits-title">
+    <div class="wrap">
+      <h2 id="credits-title" class="sr-only">Credits</h2>
+      <ul role="list" class="credits">
+        {
+          credits.map((c, i) => {
+            const img = thumb(c.file);
+            return (
+              <li class="credit" data-reveal style={`--i: ${i % 3}`}>
+                {img && <Image src={img} alt="" widths={[160, 320]} sizes="160px" class="credit-img" />}
+                <div class="min-w-0">
+                  <h3 class="t-title">{c.title}</h3>
+                  <p class="mt-2">
+                    By {c.creator}, licensed{' '}
+                    {c.licenseUrl ? (
+                      <a href={c.licenseUrl} class="link" rel="noopener license">
+                        {c.license}
+                      </a>
+                    ) : (
+                      c.license
+                    )}
+                    , via{' '}
+                    <a href={c.page} class="link" rel="noopener">
+                      {c.via}
+                    </a>
+                    .
+                  </p>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .credits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
+  .credit { display: flex; gap: 24px; align-items: flex-start; }
+  .credit :global(.credit-img) { flex: none; width: 160px; aspect-ratio: 4 / 3; object-fit: cover; }
+  @media (max-width: 899px) {
+    .credits { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 479px) {
+    .credit { flex-direction: column; }
+    .credit :global(.credit-img) { width: 100%; }
+  }
+</style>

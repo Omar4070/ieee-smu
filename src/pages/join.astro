@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import CtaInverted from '../components/CtaInverted.astro';
+import Arrow from '../components/Arrow.astro';
+import { membershipUrl, site } from '../config/site';
+import { societies } from '../config/societies';
+import { url } from '../lib/utils';
+import { Image } from 'astro:assets';
+import motor from '../assets/found/ias-motor-cutaway.jpg';
+import turbines from '../assets/found/pes-wind-turbines.jpg';
+import scope from '../assets/found/ies-oscilloscope-bench.jpg';
+import robots from '../assets/found/ias-robot-line.jpg';
+
+const rowPictures = {
+  PES: { src: turbines, alt: 'Offshore wind turbines in calm water' },
+  IES: { src: scope, alt: 'An oscilloscope measuring a circuit on a lab bench' },
+  IAS: { src: robots, alt: 'Industrial robots on a production line' },
+};
+
+const ieeeBenefits = [
+  { title: 'IEEE Spectrum', text: 'The flagship magazine on technology and engineering, in print and online.' },
+  { title: 'Reduced fees', text: 'Lower registration at IEEE conferences and discounts on publications.' },
+  { title: 'Awards and competitions', text: 'Scholarships, student paper contests and design competitions worldwide.' },
+  { title: 'Career tools', text: 'The IEEE Job Site, mentoring through IEEE Collabratec, and an @ieee.org email alias.' },
+];
+
+const steps = [
+  {
+    title: 'Create a free IEEE account',
+    text: 'Go to the IEEE membership page and sign up with your university email address.',
+  },
+  {
+    title: 'Choose student membership and add societies',
+    text: 'Select IEEE Student Member, then add IES, IAS or PES (or all three) before you pay. The price shown depends on your country.',
+  },
+  {
+    title: `Pick the ${site.studentBranch}`,
+    text: 'When asked for a student branch, choose ours, so your membership counts towards the chapter.',
+  },
+  {
+    title: 'Send us your member number',
+    text: 'We add you to the chapter mailing list and the next event’s invitation.',
+  },
+];
+---
+<BaseLayout
+  title="Join"
+  description="Why and how to join IEEE and the Industrial Electronics, Industry Applications and Power & Energy societies as a student."
+>
+  <PageHeader
+    field="pes"
+    title="Join the chapter"
+    lead="Membership of IEEE and its societies, and why it is worth it while you are still a student."
+    image={motor}
+    imageAlt="A cutaway electric motor showing its rotor and stator windings"
+  />
+
+  <section class="section bg-canvas" aria-labelledby="ieee-title">
+    <div class="wrap benefits">
+      <div>
+        <h2 id="ieee-title" class="t-headline" data-reveal>What IEEE gives you</h2>
+        <p class="mt-6 max-w-[38ch]" data-reveal style="--i: 1">
+          IEEE is the world’s largest technical professional organisation, with members in more than 190 countries.
+          Student membership costs a fraction of the professional rate.
+        </p>
+        <a href={membershipUrl} class="btn mt-8" rel="noopener" data-reveal style="--i: 2">
+          Join IEEE <Arrow size={18} direction="up-right" />
+        </a>
+      </div>
+      <dl class="benefit-list">
+        {
+          ieeeBenefits.map((b, i) => (
+            <div class="benefit" data-reveal style={`--i: ${i}`}>
+              <dt class="t-title">{b.title}</dt>
+              <dd class="mt-2">{b.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="section field-surface" aria-labelledby="societies-title">
+    <div class="wrap">
+      <h2 id="societies-title" class="t-headline" data-reveal>What each society adds</h2>
+      <p class="mt-6 max-w-[56ch]" data-reveal style="--i: 1">
+        Society membership is an add-on to IEEE membership, at a small extra cost for students. Choose the one closest to
+        your interests, or all three.
+      </p>
+      <ul class="society-rows" role="list">
+        {
+          societies.map((s) => (
+            <li class="society-row" data-reveal>
+              <div class={`society-name field-${s.field}`}>
+                <span class="society-id" translate="no">
+                  {s.id}
+                </span>
+                <span class="mt-3 text-[17px] font-medium">{s.name}</span>
+              </div>
+              <div class="society-body">
+                <h3 class="t-title">{s.role}</h3>
+                <ul class="mt-4 flex flex-col gap-2" role="list">
+                  {s.benefits.map((b) => (
+                    <li class="flex gap-3">
+                      <span class={`dot field-${s.field}`} aria-hidden="true" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                <a href={s.url} class="link mt-6 inline-flex items-center gap-2" rel="noopener">
+                  {s.id} membership details <Arrow size={16} direction="up-right" />
+                </a>
+              </div>
+              <Image
+                src={rowPictures[s.id].src}
+                alt={rowPictures[s.id].alt}
+                widths={[320, 480, 720]}
+                sizes="(min-width: 900px) 24vw, 92vw"
+                class="society-img"
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-canvas" aria-labelledby="how-title">
+    <div class="wrap how">
+      <div>
+        <h2 id="how-title" class="t-headline" data-reveal>How to join</h2>
+        <p class="mt-6 max-w-[34ch]" data-reveal style="--i: 1">
+          Not ready yet? Every event we run is open to all students.
+        </p>
+        <p class="mt-4" data-reveal style="--i: 2">
+          Questions about fees or which society to choose?{' '}
+          <a href={url('/contact/')} class="link">Ask the committee</a>.
+        </p>
+      </div>
+      <ol class="steps">
+        {
+          steps.map((step, i) => (
+            <li class="step" data-reveal style={`--i: ${i}`}>
+              <h3 class="t-title">{step.title}</h3>
+              <p class="mt-2">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <CtaInverted
+    title="Ready to join?"
+    text="Joining takes about ten minutes on the IEEE website. Your membership runs until the end of the calendar year."
+    href={membershipUrl}
+    action="Go to IEEE membership"
+  />
+</BaseLayout>
+
+<style>
+  .benefits,
+  .how {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 48px 24px;
+  }
+  .benefits > div:first-child,
+  .how > div:first-child { grid-column: 1 / span 5; }
+  .benefit-list,
+  .steps { grid-column: 7 / span 6; }
+  .benefit-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
+  .benefit dd { margin: 0; }
+
+  .society-rows { display: flex; flex-direction: column; gap: 12px; margin-top: 48px; }
+  .society-row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0 24px;
+    background: var(--canvas);
+  }
+  .society-name {
+    grid-column: 1 / span 4;
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+    padding: 28px;
+  }
+  .society-id { font-size: clamp(56px, 7vw, 104px); font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+  .society-body { grid-column: 5 / span 5; padding: 32px 0; }
+  /* contain: size lets the row text, not the photo, set the row height */
+  .society-row :global(.society-img) { grid-column: 10 / span 3; width: 100%; height: 100%; min-height: 240px; object-fit: cover; contain: size; }
+  .dot { flex: none; width: 10px; height: 10px; margin-top: 0.55em; }
+
+  .steps { list-style: decimal; padding-left: 1.4em; display: flex; flex-direction: column; gap: 32px; }
+  .step::marker { font-size: 20px; font-weight: 500; }
+
+  @media (max-width: 899px) {
+    .benefits, .how { display: flex; flex-direction: column; }
+    .society-row { display: flex; flex-direction: column; }
+    .society-name { min-height: 160px; }
+    .society-body { padding: 24px; }
+    .society-row :global(.society-img) { min-height: 0; aspect-ratio: 16 / 9; contain: none; }
+  }
+  @media (max-width: 539px) {
+    .benefit-list { grid-template-columns: 1fr; }
+  }
+</style>
