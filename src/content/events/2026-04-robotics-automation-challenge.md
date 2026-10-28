@@ -28,8 +28,8 @@ Each team received a six-axis collaborative robot, a conveyor and a box of mixed
 
 ## Results
 
-1. **Team Ampere**: 2 min 41 s, no errors
-2. **Team Kirchhoff**: 2 min 58 s, one error
-3. **Team Tesla Coil**: 3 min 20 s, no errors
+1. **Team Ampere**: 2 min 41 s, no errors
+2. **Team Kirchhoff**: 2 min 58 s, one error
+3. **Team Tesla Coil**: 3 min 20 s, no errors
 
 Thank you to our judges from industry and to the faculty for lending the lab equipment.

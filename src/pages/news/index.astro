@@ -1,0 +1,145 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Arrow from '../../components/Arrow.astro';
+import { formatDate, getNews, isoDate, url } from '../../lib/utils';
+import turbines from '../../assets/found/pes-wind-turbines.jpg';
+
+const [latest, ...rest] = await getNews();
+---
+<BaseLayout
+  title="News"
+  description="Awards, competition results and announcements from the IEEE IES/IAS/PES joint student chapter."
+>
+  <PageHeader
+    field="ias"
+    title="News"
+    lead="Awards, competition results and announcements from the chapter and its members."
+    image={turbines}
+    imageAlt="Offshore wind turbines standing in calm water"
+  />
+
+  {
+    !latest && (
+      <section class="section bg-canvas">
+        <div class="wrap">
+          <p class="t-statement">No news yet. Check back after our next event.</p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    latest && (
+      <section class="section bg-canvas" aria-labelledby="latest-title">
+        <div class="wrap latest">
+          <div class="latest-text">
+            <h2 id="latest-title" class="t-headline" data-reveal>
+              <a href={url(`/news/${latest.id}/`)} class="title-link">
+                {latest.data.title}
+              </a>
+            </h2>
+            <p class="meta mt-6" data-reveal style="--i: 1">
+              <span class="tag field-surface">{latest.data.category}</span>
+              <time datetime={isoDate(latest.data.date)}>{formatDate(latest.data.date)}</time>
+            </p>
+            <p class="mt-6 max-w-[46ch]" data-reveal style="--i: 2">{latest.data.summary}</p>
+            <a href={url(`/news/${latest.id}/`)} class="link mt-8 inline-flex items-center gap-2" aria-hidden="true" tabindex="-1">
+              Read the full story <Arrow size={18} />
+            </a>
+          </div>
+          {latest.data.cover && (
+            <Image
+              src={latest.data.cover}
+              alt={latest.data.coverAlt ?? ''}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 900px) 45vw, 92vw"
+              class="latest-img"
+              data-reveal
+              style="--i: 1"
+            />
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    rest.length > 0 && (
+      <section class="section field-surface" aria-labelledby="earlier-title">
+        <div class="wrap">
+          <h2 id="earlier-title" class="t-headline" data-reveal>
+            Earlier
+          </h2>
+          <ul class="news-list" role="list">
+            {rest.map((n) => (
+              <li class="news-row" data-reveal>
+                <div class="min-w-0">
+                  <h3 class="news-title">
+                    <a href={url(`/news/${n.id}/`)} class="title-link">
+                      {n.data.title}
+                    </a>
+                  </h3>
+                  <p class="meta mt-4">
+                    <span class="tag field-ias">{n.data.category}</span>
+                    <time datetime={isoDate(n.data.date)}>{formatDate(n.data.date)}</time>
+                  </p>
+                  <p class="mt-3 max-w-[60ch]">{n.data.summary}</p>
+                </div>
+                {n.data.cover && (
+                  <Image src={n.data.cover} alt="" widths={[240, 480]} sizes="240px" class="news-thumb" />
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .latest {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 48px 24px;
+    align-items: center;
+  }
+  .latest-text { grid-column: 1 / span 6; }
+  .latest :global(.latest-img) { grid-column: 8 / span 5; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .latest:not(:has(.latest-img)) .latest-text { grid-column: 1 / span 9; }
+
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 17px; }
+  .title-link {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 160ms ease;
+  }
+  .title-link:hover { text-decoration-color: currentColor; }
+
+  .news-list { display: flex; flex-direction: column; gap: 12px; margin-top: 48px; }
+  .news-row {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 32px;
+    align-items: center;
+    padding: 32px;
+    background: var(--canvas);
+  }
+  .news-row:not(:has(.news-thumb)) { grid-template-columns: 1fr; }
+  .news-title {
+    font-size: clamp(22px, 2.1vw, 30px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .news-row :global(.news-thumb) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+  @media (max-width: 899px) {
+    .latest { display: flex; flex-direction: column; align-items: stretch; }
+    .news-row { grid-template-columns: 1fr; padding: 24px; }
+    .news-row :global(.news-thumb) { order: -1; }
+  }
+</style>

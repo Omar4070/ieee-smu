@@ -6,7 +6,7 @@ time: "14:00–18:00"
 type: Workshop
 societies: [IES]
 location: "Power Electronics Lab, [Faculty of Electrical Engineering]"
-summary: "A hands-on workshop: design, solder and test a 12 V to 5 V DC-DC converter, then measure its efficiency on the oscilloscope."
+summary: "A hands-on workshop: design, solder and test a 12 V to 5 V DC-DC converter, then measure its efficiency on the oscilloscope."
 cover: ../../assets/found/ies-oscilloscope-bench.jpg
 coverAlt: "An oscilloscope and bench power supply on a lab bench, wired to a circuit under test"
 registrationUrl: "https://forms.gle/TODO"
@@ -17,7 +17,7 @@ Switching converters are inside every phone charger, laptop and electric car. In
 ## What you will do
 
 - Learn how a buck converter steps voltage down by switching, not by burning power as heat.
-- Size the inductor and capacitor for a 12 V to 5 V, 2 A design.
+- Size the inductor and capacitor for a 12 V to 5 V, 2 A design.
 - Solder the board, then measure ripple and efficiency with an oscilloscope.
 
 ## Who it is for
