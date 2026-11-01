@@ -9,13 +9,13 @@ import type { ImageMetadata } from 'astro';
 interface Props {
   title: string;
   lead?: string;
-  field?: 'navy' | 'blue' | 'pes' | 'ies' | 'ias';
+  field?: 'black' | 'blue' | 'pes' | 'ies' | 'ias';
   /** 'md' for long titles such as event and news headlines. */
   size?: 'lg' | 'md';
   image?: ImageMetadata;
   imageAlt?: string;
 }
-const { title, lead, field = 'navy', size = 'lg', image, imageAlt = '' } = Astro.props;
+const { title, lead, field = 'black', size = 'lg', image, imageAlt = '' } = Astro.props;
 ---
 <section class:list={['page-header field', `field-${field}`, { 'with-image': image }]} aria-labelledby="page-title">
   <div class:list={['wrap', { 'has-image': image }]}>

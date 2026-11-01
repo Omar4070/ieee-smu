@@ -1,25 +1,29 @@
 ---
 /**
- * The built-in chapter mark: three bars in the society colours, in power-chain
- * order (PES, IES, IAS). Replaced by the real logo when `site.logo` is set.
+ * The chapter mark: the three-colour wave from the chapter logo, one trough
+ * per society (IAS green, IES orange, PES blue). Drawn in SVG so it stays
+ * sharp at header size; the full logo is used where there is room.
  */
-import { site } from '../config/site';
-import { url } from '../lib/utils';
-
 interface Props {
-  size?: number;
+  width?: number;
   class?: string;
+  /** Use lighter strokes so the PES blue stays visible on black. */
+  onDark?: boolean;
 }
-const { size = 32, class: className } = Astro.props;
+const { width = 44, class: className, onDark = false } = Astro.props;
+const segment = (x: number) => `M${x} 4C${x + 5} 4 ${x + 5} 20 ${x + 8} 20C${x + 11} 20 ${x + 11} 4 ${x + 16} 4`;
+const colours = onDark ? ['#2fae55', '#ff7a2f', '#5b8fd6'] : ['#0a792d', '#ed5703', '#093f7a'];
 ---
-{
-  site.logo ? (
-    <img src={url(site.logo)} alt="" width={size} height={size} class={className} />
-  ) : (
-    <svg class={className} width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-      <rect x="2" y="6" width="8" height="24" fill="#78BE20" />
-      <rect x="12" y="2" width="8" height="28" fill="#00B5E2" />
-      <rect x="22" y="10" width="8" height="20" fill="#FFC72C" />
-    </svg>
-  )
-}
+<svg
+  class={className}
+  width={width}
+  height={width / 2}
+  viewBox="-2 0 52 24"
+  fill="none"
+  stroke-width="3.5"
+  stroke-linecap="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {colours.map((c, i) => <path d={segment(i * 16)} stroke={c} />)}
+</svg>

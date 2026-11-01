@@ -1,8 +1,9 @@
 ---
 /**
- * Home hero: a stack of file folders on the navy field. Each back folder is a
- * society (in power-chain order) or the events archive; the front folder is
- * the chapter itself and opens into the rest of the page.
+ * Home hero. The chapter logo's wave becomes a live three-phase current: one
+ * sine per society, 120° apart, flowing across the screen. Below it, a stack
+ * of file folders (one per society, then events); pointing at a society's
+ * folder brings its phase forward. The front folder is the chapter itself.
  */
 import { site } from '../../config/site';
 import { societies } from '../../config/societies';
@@ -11,6 +12,21 @@ import Arrow from '../Arrow.astro';
 
 const { upcoming } = await getEvents();
 const next = upcoming[0];
+
+// Three-phase waveform, sampled at build time. One wavelength is 400 units;
+// paths run one extra wavelength so the flow animation can loop seamlessly.
+const wavelength = 400;
+const amplitude = 46;
+const mid = 60;
+const phasePath = (phaseDeg: number) => {
+  const points: string[] = [];
+  for (let x = 0; x <= 1200 + wavelength; x += 6) {
+    const y = mid - amplitude * Math.sin((2 * Math.PI * x) / wavelength - (phaseDeg * Math.PI) / 180);
+    points.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+  }
+  return points.join('');
+};
+const phases = societies.map((s, i) => ({ key: s.field, id: s.id, d: phasePath(i * 120) }));
 
 const folders = [
   ...societies.map((s) => ({
@@ -29,16 +45,22 @@ const folders = [
   },
 ];
 ---
-<section class="hero field-navy field" aria-labelledby="hero-title">
+<section class="hero bg-canvas" aria-labelledby="hero-title">
   <div class="wrap hero-head">
     <h1 id="hero-title" class="hero-title" translate="no" data-reveal>
-      IES<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only">, </span>IAS<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only"> and </span>PES
+      IAS<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only">, </span>IES<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only"> and </span>PES
     </h1>
     <p class="hero-sub" data-reveal style="--i: 1">
-      The IEEE joint student chapter of the Industrial Electronics, Industry Applications and Power &amp; Energy
-      societies at {site.university}.
+      The IEEE Industry Applications, Industrial Electronics and Power &amp; Energy societies joint chapter of the{' '}
+      {site.studentBranch}.
     </p>
   </div>
+
+  <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <g class="flow">
+      {phases.map((p) => <path class={`phase phase-${p.key}`} d={p.d} />)}
+    </g>
+  </svg>
 
   <nav class="folders" aria-label="Explore the chapter">
     {
@@ -55,13 +77,23 @@ const folders = [
         </a>
       ))
     }
-    <div class="folder front" style="--n: 4">
+    <div class="folder front field-black" style="--n: 4">
       <span class="tab tab-shape front-tab" aria-hidden="true">The chapter</span>
       <div class="front-body">
-        <a href={url('/join/')} class="btn">
-          Join the chapter <Arrow size={20} />
-        </a>
-        <p class="front-note">Open to every IEEE student member at {site.university}.</p>
+        <img
+          src={url(site.logoWhite)}
+          alt={`IEEE IAS, IES and PES logos: ${site.studentBranch} Joint Chapter`}
+          width="1248"
+          height="495"
+          class="front-logo"
+          fetchpriority="high"
+        />
+        <div class="front-action">
+          <a href={url('/join/')} class="btn">
+            Join the chapter <Arrow size={20} />
+          </a>
+          <p class="front-note">Open to every IEEE student member at {site.university}.</p>
+        </div>
       </div>
     </div>
   </nav>
@@ -75,8 +107,7 @@ const folders = [
     overflow: hidden;
   }
   .hero-head {
-    padding-top: clamp(48px, 9svh, 96px);
-    padding-bottom: clamp(48px, 7svh, 80px);
+    padding-top: clamp(40px, 7svh, 80px);
     text-align: center;
   }
   .hero-title {
@@ -88,18 +119,60 @@ const folders = [
   }
   .hero-sub {
     max-width: 46ch;
-    margin: clamp(24px, 4svh, 40px) auto 0;
+    margin: clamp(20px, 3svh, 32px) auto 0;
     font-size: 20px;
     line-height: 1.5;
   }
 
+  /* ----- Three-phase waveform ----- */
+  .wave {
+    display: block;
+    width: 100%;
+    height: clamp(72px, 12svh, 120px);
+    margin-top: clamp(16px, 3svh, 32px);
+    overflow: visible;
+  }
+  .phase {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 240ms ease, stroke-width 240ms ease;
+  }
+  .phase-ias { stroke: var(--ias); }
+  .phase-ies { stroke: var(--ies); }
+  .phase-pes { stroke: var(--pes); }
+  /* PES blue and IAS green are too dark on the dark theme's canvas: lift the lines only. */
+  :global([data-theme='dark']) .phase-pes { stroke: #5b8fd6; }
+  :global([data-theme='dark']) .phase-ias { stroke: #2fae55; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .flow { animation: flow 7s linear infinite; }
+  }
+  @keyframes flow {
+    to { transform: translateX(-400px); }
+  }
+
+  /* Pointing at a society's folder brings its phase forward. */
+  .hero:has(.folder.field-ias:is(:hover, :focus-visible)) .phase:not(.phase-ias),
+  .hero:has(.folder.field-ies:is(:hover, :focus-visible)) .phase:not(.phase-ies),
+  .hero:has(.folder.field-pes:is(:hover, :focus-visible)) .phase:not(.phase-pes) {
+    opacity: 0.15;
+  }
+  .hero:has(.folder.field-ias:is(:hover, :focus-visible)) .phase-ias,
+  .hero:has(.folder.field-ies:is(:hover, :focus-visible)) .phase-ies,
+  .hero:has(.folder.field-pes:is(:hover, :focus-visible)) .phase-pes {
+    stroke-width: 7;
+  }
+
+  /* ----- Folder stack ----- */
   .folders {
     flex: 1;
     display: flex;
     flex-direction: column;
     width: min(86%, 1320px);
     margin-inline: auto;
-    padding-top: 40px; /* room for the first tab */
+    padding-top: 56px; /* room for the first tab */
   }
   .folder {
     position: relative;
@@ -168,9 +241,7 @@ const folders = [
 
   .front {
     flex: 1;
-    min-height: 136px;
-    background: var(--canvas);
-    color: var(--ink);
+    min-height: 168px;
   }
   /* Each tab sits beside, not over, the text on the strip in front of it. */
   .folder:nth-of-type(1) { --tab-x: 0%; }
@@ -185,17 +256,28 @@ const folders = [
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 16px 32px;
-    padding: 32px;
+    justify-content: space-between;
+    gap: 24px 48px;
+    padding: 28px 32px 40px;
+  }
+  .front-logo {
+    width: min(360px, 100%);
+    height: auto;
+  }
+  .front-action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
   }
   .front-note {
     font-size: 17px;
+    max-width: 30ch;
   }
 
   @media (max-width: 767px) {
     .hero-head {
-      padding-top: 56px;
-      padding-bottom: 40px;
+      padding-top: 48px;
     }
     .hero-title {
       font-size: min(13vw, 64px);
@@ -203,14 +285,15 @@ const folders = [
     .hero-sub {
       font-size: 17px;
     }
-    .folders {
-      width: 100%;
-    }
     .front-body {
       padding: 24px var(--gutter) 32px;
     }
-    .front-body .btn {
+    .front-action,
+    .front-action .btn {
       width: 100%;
+    }
+    .front-logo {
+      width: min(300px, 100%);
     }
   }
 
@@ -219,7 +302,7 @@ const folders = [
   @media (max-width: 1099px) {
     .folders {
       width: 100%;
-      padding-top: 32px;
+      padding-top: 40px;
     }
     .tab {
       height: 32px;
@@ -230,7 +313,6 @@ const folders = [
     .folder:nth-of-type(3n + 1) .tab { left: 0; }
     .folder:nth-of-type(3n + 2) .tab { left: calc(50% - 56px); }
     .folder:nth-of-type(3n + 3) .tab { left: auto; right: 0; }
-    /* On a phone the next tab covers the bottom of the strip: keep that band clear. */
     .strip {
       align-items: flex-start;
       min-height: 0;

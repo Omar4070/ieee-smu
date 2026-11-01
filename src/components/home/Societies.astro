@@ -16,22 +16,22 @@ import robots from '../../assets/found/ias-robot-line.jpg';
 import cobot from '../../assets/found/ias-cobot-arm.jpg';
 
 const tiles = [
-  { society: 'PES', img: tower, alt: 'A high-voltage transmission tower carrying power lines', title: 'Transmission', fact: 'Moving power across hundreds of kilometres with minimal loss.' },
-  { society: 'PES', img: windTurbines, alt: 'Offshore wind turbines standing in calm water', title: 'Power & Energy Society', fact: 'Generation, grids and renewables.', wide: true, lead: true },
+  { society: 'IAS', img: motor, alt: 'A cutaway electric motor showing rotor and windings', title: 'Electric machines', fact: 'The motors and drives that run every plant.' },
+  { society: 'IAS', img: robots, alt: 'Industrial robots stacking crates on a production line', title: 'Industry Applications Society', fact: 'Machines and power systems of industry.', wide: true, lead: true },
+  { society: 'IAS', img: cobot, alt: 'A collaborative robot arm on a steel work table', title: 'Automation', fact: 'Robots that work alongside people.' },
   { society: 'IES', img: igbt, alt: 'An IGBT power module with screw terminals', title: 'Industrial Electronics Society', fact: 'Converters, drives and control.', lead: true },
   { society: 'IES', img: scope, alt: 'An oscilloscope measuring a circuit on a lab bench', title: 'Measurement', fact: 'Seeing every switching edge on the scope.' },
-  { society: 'IAS', img: motor, alt: 'A cutaway electric motor showing rotor and windings', title: 'Industry Applications Society', fact: 'Machines and power systems of industry.', lead: true },
-  { society: 'IAS', img: cobot, alt: 'A collaborative robot arm on a steel work table', title: 'Automation', fact: 'Robots that work alongside people.' },
-  { society: 'IAS', img: robots, alt: 'Industrial robots stacking crates on a production line', title: 'Production lines', fact: 'Hundreds of drives running in step.' },
+  { society: 'PES', img: tower, alt: 'A high-voltage transmission tower carrying power lines', title: 'Transmission', fact: 'Moving power across hundreds of kilometres with minimal loss.' },
+  { society: 'PES', img: windTurbines, alt: 'Offshore wind turbines standing in calm water', title: 'Power & Energy Society', fact: 'Generation, grids and renewables.', lead: true },
 ] as const;
 ---
 <section class="section bg-canvas" aria-labelledby="societies-title" id="societies">
   <div class="wrap societies">
     <div class="intro">
-      <h2 id="societies-title" class="t-headline" data-reveal>One power chain</h2>
+      <h2 id="societies-title" class="t-headline" data-reveal>Three phases, one current</h2>
       <p class="mt-6 max-w-[30ch]" data-reveal style="--i: 1">
-        Three IEEE societies, one chapter: PES makes and moves energy, IES converts and controls it, IAS puts it to
-        work in industry.
+        Like the three phases of an AC supply, three IEEE societies run together here: IAS puts energy to work in
+        industry, IES converts and controls it, PES generates and moves it.
       </p>
       <a href={url('/about/')} class="link mt-6 inline-block" data-reveal style="--i: 2">How the societies fit together</a>
     </div>

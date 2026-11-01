@@ -12,21 +12,21 @@
   --primary-pressed: #003b5c;
   --on-primary: #ffffff;
 
-  /* Chapter fields: identical in both themes */
-  --navy: #002855;
-  --blue: #00629b;
-  --pes: #78be20;
-  --ies: #00b5e2;
-  --ias: #ffc72c;
-  --field-ink: #0b1620;
+  /* Chapter fields from the SMU joint chapter palette: identical in both themes */
+  --black: #000000;
+  --blue: #00629b; /* SMU Student Branch / IEEE blue */
+  --pes: #093f7a;
+  --ies: #ed5703;
+  --ias: #0a792d;
+  --field-ink: #000000;
   --field-paper: #ffffff;
 
   /* Neutrals: light theme */
   --canvas: #ffffff;
-  --surface-1: #f1f4f6;
-  --surface-2: #e2e8ec;
-  --ink: #0b1620;
-  --ink-muted: #3d4b57;
+  --surface-1: #f2f3f4;
+  --surface-2: #e3e5e7;
+  --ink: #000000;
+  --ink-muted: #4a4f55;
   --link: #00629b;
   --focus: #00629b;
 
@@ -38,11 +38,11 @@
 }
 
 :root[data-theme='dark'] {
-  --canvas: #0b1620;
-  --surface-1: #13212d;
-  --surface-2: #1c2e3c;
-  --ink: #eef3f6;
-  --ink-muted: #b4c2cc;
+  --canvas: #141414;
+  --surface-1: #1f1f1f;
+  --surface-2: #2b2b2b;
+  --ink: #f2f2f2;
+  --ink-muted: #b8bcc0;
   --link: #5cc3ee;
   --focus: #5cc3ee;
   color-scheme: dark;
@@ -57,7 +57,7 @@
   --color-ink-muted: var(--ink-muted);
   --color-link: var(--link);
   --color-primary: var(--primary);
-  --color-navy: var(--navy);
+  --color-black: var(--black);
   --color-blue: var(--blue);
   --color-pes: var(--pes);
   --color-ies: var(--ies);
@@ -162,11 +162,11 @@
   .section { padding-block: var(--section); }
 
   /* ---------- Chapter fields ---------- */
-  .field-navy { background: var(--navy); color: var(--field-paper); }
+  .field-black { background: var(--black); color: var(--field-paper); }
   .field-blue { background: var(--blue); color: var(--field-paper); }
-  .field-pes { background: var(--pes); color: var(--field-ink); }
+  .field-pes { background: var(--pes); color: var(--field-paper); }
   .field-ies { background: var(--ies); color: var(--field-ink); }
-  .field-ias { background: var(--ias); color: var(--field-ink); }
+  .field-ias { background: var(--ias); color: var(--field-paper); }
   .field-ink { background: var(--ink); color: var(--canvas); }
   .field-surface { background: var(--surface-1); color: var(--ink); }
 

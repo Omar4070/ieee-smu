@@ -28,7 +28,7 @@ const ogImage = data.cover ? await getImage({ src: data.cover, width: 1200, heig
 <BaseLayout title={data.title} description={data.summary} image={ogImage?.src} type="article">
   <PageHeader field="ias" size="md" title={data.title} lead={data.summary}>
     <p class="mt-8 flex flex-wrap items-center gap-3 text-[17px]" data-reveal style="--i: 2">
-      <span class="tag field-navy">{data.category}</span>
+      <span class="tag field-black">{data.category}</span>
       <time datetime={isoDate(data.date)}>{formatDate(data.date)}</time>
     </p>
   </PageHeader>

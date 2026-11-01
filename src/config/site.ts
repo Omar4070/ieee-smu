@@ -3,14 +3,14 @@
  * replace it with the real information and the whole site updates.
  */
 export const site = {
-  name: 'IEEE IES/IAS/PES Joint Chapter',
-  shortName: 'IES · IAS · PES',
+  name: 'IEEE IAS/IES/PES Joint Chapter',
+  shortName: 'IAS · IES · PES',
   tagline: 'Power, electronics and industry, built by students.',
   description:
-    'The IEEE Industrial Electronics, Industry Applications and Power & Energy societies joint student chapter: workshops, industrial visits and competitions for engineering students.',
+    'The IEEE Industry Applications, Industrial Electronics and Power & Energy societies joint chapter of the SMU Student Branch: workshops, industrial visits and competitions for engineering students.',
 
-  university: '[University name]', // TODO: e.g. "University of Example"
-  studentBranch: '[University] IEEE Student Branch', // TODO: official student branch name
+  university: 'SMU', // TODO: full university name, if you want it spelled out
+  studentBranch: 'SMU Student Branch',
   city: '[City]', // TODO
   country: '[Country]', // TODO
   timeZone: 'UTC', // TODO: IANA time zone of your city, e.g. "Africa/Algiers", "Europe/Paris"
@@ -41,8 +41,9 @@ export const site = {
   /** Formspree form ID, the part after https://formspree.io/f/ */
   formspreeId: 'TODO_FORMSPREE_ID', // TODO: create a free form at formspree.io
 
-  /** Chapter logo in /public/logos. Leave empty to use the built-in mark. */
-  logo: '', // TODO: e.g. '/logos/chapter.svg'
+  /** Full chapter logo (society logos above the three-colour wave), in /public/logos. */
+  logoColour: '/logos/chapter-logo.png', // for light backgrounds
+  logoWhite: '/logos/chapter-logo-white.png', // for black backgrounds
 } as const;
 
 export const nav = [

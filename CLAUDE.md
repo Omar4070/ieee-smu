@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Static website (Astro 7 + Tailwind CSS 4, no backend) for an IEEE IES/IAS/PES joint student chapter, deployed to GitHub Pages. Content is edited by non-developer chapter officers, so content files and `README.md` recipes must keep working.
+Static website (Astro 7 + Tailwind CSS 4, no backend) for the IEEE IAS/IES/PES joint chapter of the SMU Student Branch, deployed to GitHub Pages. Content is edited by non-developer chapter officers, so content files and `README.md` recipes must keep working.
 
 ## Commands
 
@@ -38,7 +38,7 @@ On Windows Git Bash, prefix commands that pass a path-like env var with `MSYS_NO
 
 ## Styling gotchas
 
-- Design tokens are CSS variables in `src/styles/global.css` (`:root` and `:root[data-theme='dark']`), exposed to Tailwind via `@theme inline` (`bg-canvas`, `text-ink`, `text-ink-muted`…). Field classes `.field-navy/.field-blue/.field-pes/.field-ies/.field-ias/.field-ink/.field-surface` set background and their own text colour; they are identical in both themes. Add the class `field` too when focus rings should follow the field's text colour.
+- Design tokens are CSS variables in `src/styles/global.css` (`:root` and `:root[data-theme='dark']`), exposed to Tailwind via `@theme inline` (`bg-canvas`, `text-ink`, `text-ink-muted`…). Field classes `.field-black/.field-blue/.field-ias/.field-ies/.field-pes/.field-ink/.field-surface` set background and their own text colour; they are identical in both themes. Add the class `field` too when focus rings should follow the field's text colour.
 - **Astro scoped `<style>` is unlayered, Tailwind utilities are layered, so scoped CSS always wins.** Don't combine a responsive Tailwind display utility (`hidden`, `md:…`) with a scoped rule that sets the same property on the same element; put the breakpoint in the scoped CSS instead.
 - **Tailwind's dev scanner can miss classes in newly created files** (e.g. `md:col-span-6` silently absent). If a new page's layout looks wrong in `npm run dev`, restart the dev server before debugging; `npm run build` is unaffected.
 - **Entrance motion:** add `data-reveal` (optional `style="--i: n"` for stagger). The attribute goes `""` → `"in"` → `"done"`, and the CSS only applies while not `done`, so components can keep their own `transform` hover effects. Containers with `data-reveal-children` (Markdown bodies) get each child tagged at runtime. Hero folders use a CSS keyframe with `animation-fill-mode: backwards` instead, for the same reason. Everything is visible without JS and under `prefers-reduced-motion`.
@@ -51,5 +51,7 @@ Read `DESIGN.md` before visual work; `docs/design-critique.md` records the art d
 - No eyebrows/small labels directly above a heading (put category/date/society tags *after* the title), no gradients, no shadows on resting elements, no hairline dividers or 1px outlined boxes (form fields excepted), no rounded corners except avatars, no monospace, no icon-topped rows of identical cards.
 - Every heading ≤ 2 lines at 1440/768/390 px; statements set large stay ≤ 30px.
 - Sentence case for headings and buttons (deliberate deviation from the web-design-guidelines' Title Case rule).
-- Don't place PES green and IES cyan as adjacent full-width sections (too close in lightness).
+- Colours come from the chapter palette (`assets/brand/palette.png`): IAS green `#0a792d` (white text), IES orange `#ed5703` (black text: white fails contrast), PES blue `#093f7a`, black, SMU blue `#00629b` (= `--primary`). Societies always appear in logo order IAS, IES, PES (`src/config/societies.ts` order drives the hero folders, waveform and lists).
+- Thin lines on dark grounds (hero waveform in dark mode, `ChapterMark` in the header) use lighter tints (`#2fae55`, `#ff7a2f`, `#5b8fd6`); fills always use true palette colours.
+- The home hero waveform (`src/components/home/Hero.astro`) is pre-computed SVG paths animated with CSS; folder hover/focus highlights a phase via `.hero:has(.folder.field-xxx:hover)`. Logos: `site.logoColour` / `site.logoWhite`; regenerate icons with `node scripts/generate-icons.mjs`.
 - Found photos show the societies' world and must never be presented as the chapter's own people or events.

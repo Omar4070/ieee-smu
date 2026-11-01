@@ -1,6 +1,7 @@
 /**
- * The three IEEE societies of the joint chapter, in power-chain order:
- * PES generates and moves energy, IES converts and controls it, IAS puts it to work.
+ * The three IEEE societies of the joint chapter, in the order of the chapter
+ * logo: IAS puts energy to work in industry, IES converts and controls it,
+ * PES generates and moves it. Colours come from the chapter palette.
  *
  * `logo`: path to the official society logo in /public/logos (SVG or PNG).
  * Leave it empty to show the society's acronym instead.
@@ -21,20 +22,20 @@ export interface Society {
 
 export const societies: Society[] = [
   {
-    id: 'PES',
-    name: 'Power & Energy Society',
-    role: 'Generates and moves energy',
+    id: 'IAS',
+    name: 'Industry Applications Society',
+    role: 'Puts energy to work in industry',
     summary:
-      'PES is the IEEE community for the electric power industry: how electricity is generated, transmitted, distributed and used, from large power plants to smart grids and renewables.',
-    focus: ['Power generation', 'Transmission and distribution', 'Smart grids', 'Renewable integration', 'Energy storage'],
+      'IAS is about the electrical systems that run industry and commerce: electric machines and drives, industrial power systems, process industries and electrical safety.',
+    focus: ['Electric machines and drives', 'Industrial power systems', 'Process industries', 'Electrical safety', 'Transportation electrification'],
     benefits: [
-      'IEEE Power & Energy Magazine',
-      'Student and young professional programmes, awards and competitions',
-      'Reduced fees at PES conferences such as the General Meeting',
+      'IEEE Industry Applications Magazine',
+      'Student project and paper competitions',
+      'Reduced fees at IAS conferences such as the Annual Meeting',
     ],
-    url: 'https://ieee-pes.org/',
-    field: 'pes',
-    logo: '', // TODO: '/logos/pes.svg'
+    url: 'https://ias.ieee.org/',
+    field: 'ias',
+    logo: '', // TODO: '/logos/ias.svg'
   },
   {
     id: 'IES',
@@ -53,20 +54,20 @@ export const societies: Society[] = [
     logo: '', // TODO: '/logos/ies.svg'
   },
   {
-    id: 'IAS',
-    name: 'Industry Applications Society',
-    role: 'Puts it to work in industry',
+    id: 'PES',
+    name: 'Power & Energy Society',
+    role: 'Generates and moves it',
     summary:
-      'IAS is about the electrical systems that run industry and commerce: electric machines and drives, industrial power systems, process industries and electrical safety.',
-    focus: ['Electric machines and drives', 'Industrial power systems', 'Process industries', 'Electrical safety', 'Transportation electrification'],
+      'PES is the IEEE community for the electric power industry: how electricity is generated, transmitted, distributed and used, from large power plants to smart grids and renewables.',
+    focus: ['Power generation', 'Transmission and distribution', 'Smart grids', 'Renewable integration', 'Energy storage'],
     benefits: [
-      'IEEE Industry Applications Magazine',
-      'Student project and paper competitions',
-      'Reduced fees at IAS conferences such as the Annual Meeting',
+      'IEEE Power & Energy Magazine',
+      'Student and young professional programmes, awards and competitions',
+      'Reduced fees at PES conferences such as the General Meeting',
     ],
-    url: 'https://ias.ieee.org/',
-    field: 'ias',
-    logo: '', // TODO: '/logos/ias.svg'
+    url: 'https://ieee-pes.org/',
+    field: 'pes',
+    logo: '', // TODO: '/logos/pes.svg'
   },
 ];
 

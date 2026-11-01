@@ -1,7 +1,7 @@
-# IEEE IES/IAS/PES Joint Chapter website
+# IEEE IAS/IES/PES Joint Chapter website (SMU Student Branch)
 
-The website of the IEEE Industrial Electronics (IES), Industry Applications (IAS) and Power & Energy
-(PES) societies joint student chapter at [University name].
+The website of the IEEE Industry Applications (IAS), Industrial Electronics (IES) and Power & Energy
+(PES) societies joint chapter of the SMU Student Branch.
 
 It is a static site built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com).
 All content (events, news, the team) lives in plain text files in `src/content/`. You can update the
@@ -168,12 +168,12 @@ To start a new year, copy last year's file, rename it, and edit it:
 | University, city, email, social links, founding year, member numbers | `src/config/site.ts` |
 | Map location and postal address (Contact page) | `src/config/site.ts` (`mapQuery`, `address`) |
 | Contact form ID | `src/config/site.ts` (`formspreeId`), see below |
-| Chapter logo | put it in `public/logos/`, set `logo` in `src/config/site.ts` |
+| Chapter logo | `public/logos/chapter-logo.png` (colour) and `chapter-logo-white.png` (for black backgrounds); originals in `assets/brand/` |
 | Society logos and texts | `src/config/societies.ts`, logo files in `public/logos/` |
 | About page texts (history, mission, vision) | `src/pages/about.astro` |
 | Join page texts | `src/pages/join.astro` |
 | Colours, fonts, spacing | `src/styles/global.css` (read `DESIGN.md` first) |
-| Favicon and social preview image | run `node scripts/generate-icons.mjs` after changing the mark |
+| Favicon and social preview image | run `node scripts/generate-icons.mjs` after changing the logo or colours |
 
 **Contact form (Formspree).** The form needs a free [Formspree](https://formspree.io) account:
 
@@ -244,8 +244,10 @@ The two `run-code` tests need a browser open on the site first:
 The look is described in `DESIGN.md`. The short version:
 
 - One typeface (IBM Plex Sans), one accent colour (IEEE Blue `#00629B`) for buttons and links.
-- Each society has a colour: **PES green**, **IES cyan**, **IAS yellow**; the chapter itself is
-  IEEE dark blue. Use them only for content that belongs to that society.
+- Each society has its colour from the chapter palette: **IAS green** `#0a792d`, **IES orange**
+  `#ed5703`, **PES blue** `#093f7a`; the chapter itself is black, and SMU blue `#00629b` is for
+  buttons and links. Societies always appear in the logo's order: IAS, IES, PES.
+- The logo's three-colour wave is the chapter's motif (header mark, home page waveform).
 - Flat colours and square corners: no gradients, no shadows, no rounded cards, no thin divider lines.
 - Headings stay short: two lines at most, on a phone too.
 - Every photo needs a real `alt` description.

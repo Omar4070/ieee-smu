@@ -1,7 +1,7 @@
 ---
-version: 1.0
-name: IEEE-IES-IAS-PES-joint-chapter
-description: "The chapter's design system. Structure, typography discipline, 4px spacing grid and flat-square geometry are adapted from IBM's Carbon-based DESIGN.md (original kept in docs/IBM-DESIGN.original.md). Colour is replaced by IEEE branding: IEEE Blue (#00629B) is the single action accent, IEEE Dark Blue is the hero ground, and three IEEE secondary colours become 'chapter fields', one per society, ordered along the power chain: PES generates and transmits, IES converts and controls, IAS puts energy to work. Light and dark themes share every field colour; only the neutral canvas and ink swap."
+version: 2.0
+name: IEEE-IAS-IES-PES-SMU-joint-chapter
+description: "The SMU Student Branch IAS/IES/PES Joint Chapter design system. Structure, typography discipline, 4px spacing grid and flat-square geometry are adapted from IBM's Carbon-based DESIGN.md (original kept in docs/IBM-DESIGN.original.md). Colours come from the chapter's own palette (assets/brand/palette.png): IAS green, IES orange, PES blue, black, white and SMU Student Branch blue (#00629B, also IEEE Blue), which is the single action accent. The chapter logo's three-colour wave is the signature motif: on the home page it becomes a live three-phase waveform, one phase per society."
 
 colors:
   # Brand
@@ -9,31 +9,35 @@ colors:
   primary-hover: "#004F7D"
   primary-pressed: "#003B5C"
   on-primary: "#FFFFFF"
-  # Chapter fields (identical in light and dark themes)
-  field-navy: "#002855"       # IEEE Dark Blue: hero, page headers
-  on-field-navy: "#FFFFFF"
-  field-blue: "#00629B"       # IEEE Blue as a field
+  # Chapter fields from the chapter palette (identical in light and dark themes)
+  field-black: "#000000"      # The chapter: nav, page headers, the front folder
+  on-field-black: "#FFFFFF"
+  field-blue: "#00629B"       # SMU Student Branch / IEEE Blue as a field
   on-field-blue: "#FFFFFF"
-  field-pes: "#78BE20"        # Power & Energy Society chapter (green)
-  on-field-pes: "#0B1620"
-  field-ies: "#00B5E2"        # Industrial Electronics Society chapter (cyan)
-  on-field-ies: "#0B1620"
-  field-ias: "#FFC72C"        # Industry Applications Society chapter (yellow)
-  on-field-ias: "#0B1620"
+  field-ias: "#0A792D"        # Industry Applications Society (green)
+  on-field-ias: "#FFFFFF"
+  field-ies: "#ED5703"        # Industrial Electronics Society (orange)
+  on-field-ies: "#000000"
+  field-pes: "#093F7A"        # Power & Energy Society (blue)
+  on-field-pes: "#FFFFFF"
+  # Lighter tints, only for thin lines on dark grounds (hero wave in dark mode, header mark)
+  line-ias-on-dark: "#2FAE55"
+  line-ies-on-dark: "#FF7A2F"
+  line-pes-on-dark: "#5B8FD6"
   # Neutrals, light theme
   light-canvas: "#FFFFFF"
-  light-surface-1: "#F1F4F6"
-  light-surface-2: "#E2E8EC"
-  light-ink: "#0B1620"
-  light-ink-muted: "#3D4B57"
+  light-surface-1: "#F2F3F4"
+  light-surface-2: "#E3E5E7"
+  light-ink: "#000000"
+  light-ink-muted: "#4A4F55"
   light-link: "#00629B"
   light-focus: "#00629B"
   # Neutrals, dark theme
-  dark-canvas: "#0B1620"
-  dark-surface-1: "#13212D"
-  dark-surface-2: "#1C2E3C"
-  dark-ink: "#EEF3F6"
-  dark-ink-muted: "#B4C2CC"
+  dark-canvas: "#141414"
+  dark-surface-1: "#1F1F1F"
+  dark-surface-2: "#2B2B2B"
+  dark-ink: "#F2F2F2"
+  dark-ink-muted: "#B8BCC0"
   dark-link: "#5CC3EE"
   dark-focus: "#5CC3EE"
   # Semantic
@@ -72,15 +76,15 @@ components:
   page-header:      { backgroundColor: "page's chapter field", textColor: "matching on-field", padding: "128px gutter 64px" }
   tile:             { backgroundColor: "a field or surface-1", rounded: "{rounded.none}", padding: 24px, border: none, shadow: none }
   text-input:       { backgroundColor: "{surface-1}", textColor: "{ink}", rounded: "{rounded.none}", padding: "12px 16px", borderBottom: "2px solid {ink-muted}", focusBorderBottom: "2px solid {focus}" }
-  top-nav:          { backgroundColor: "{colors.field-navy}", textColor: "{colors.on-field-navy}", height: 64px }
-  footer:           { layout: "tile board, 8px gaps", wordmarkTile: "{ink} ground", inviteTile: "{colors.primary}" }
+  top-nav:          { backgroundColor: "{colors.field-black}", textColor: "{colors.on-field-black}", height: 64px, mark: "three-colour wave" }
+  footer:           { layout: "tile board, 8px gaps", logoTile: "white chapter logo on {colors.field-black}", inviteTile: "{colors.primary}" }
 ---
 
 ## Overview
 
-This is the design system for the IEEE IES/IAS/PES Joint Chapter website. It keeps the **structure and discipline** of IBM's Carbon-based marketing system (one typeface, flat square geometry, a strict 4px grid, colour used scarcely and with intent) and replaces IBM's palette with **IEEE branding**.
+This is the design system for the IEEE IAS/IES/PES Joint Chapter of the SMU Student Branch. It keeps the **structure and discipline** of IBM's Carbon-based marketing system (one typeface, flat square geometry, a strict 4px grid, colour used scarcely and with intent) and uses **the chapter's own palette and logo**.
 
-The idea that drives the look: **the chapter's three societies cover the whole power chain.** PES generates and transmits energy, IES converts and controls it, IAS puts it to work in industry. Each society gets a flat "chapter field" colour from the IEEE secondary palette, and those fields appear floor-to-ceiling, butted edge to edge, like a set of posters. A colour always *means* something: green is PES, cyan is IES, yellow is IAS, dark blue is the chapter itself.
+The idea comes from the logo: **three societies, like the three phases of an AC supply, carrying one current.** The logo's wave changes colour from IAS green to IES orange to PES blue. On the home page it becomes a live three-phase waveform (three sines, 120° apart) above a stack of coloured folders, and pointing at a society's folder brings its phase forward. A colour always *means* something: green is IAS, orange is IES, blue is PES, black is the chapter itself. Societies always appear in logo order: IAS, IES, PES.
 
 **Key characteristics**
 - **One typeface: IBM Plex Sans** (variable, self-hosted). Display sizes at weight 300 (IBM's light display signature), body 400, emphasis 600. No second face, no italics for emphasis, no monospace.
@@ -98,24 +102,28 @@ The idea that drives the look: **the chapter's three societies cover the whole p
 ### Chapter fields
 | Field | Hex | Text on it | Contrast | Meaning |
 |---|---|---|---|---|
-| Navy | #002855 | white | 15:1 | The chapter: hero, page headers, nav |
-| Blue | #00629B | white | 6.5:1 | IEEE as a whole |
-| PES green | #78BE20 | ink #0B1620 | 8.0:1 | Power & Energy Society |
-| IES cyan | #00B5E2 | ink #0B1620 | 7.4:1 | Industrial Electronics Society |
-| IAS yellow | #FFC72C | ink #0B1620 | 11.9:1 | Industry Applications Society |
+| Black | #000000 | white | 21:1 | The chapter: nav, page headers, front folder, logo tile |
+| SMU blue | #00629B | white | 6.5:1 | SMU Student Branch / IEEE; events |
+| IAS green | #0A792D | white | 5.6:1 | Industry Applications Society |
+| IES orange | #ED5703 | black | 6.0:1 | Industrial Electronics Society (white text would fail at 3.5:1) |
+| PES blue | #093F7A | white | 10.5:1 | Power & Energy Society |
 
-Text on a field is always its assigned ink, white or near-black, never grey. PES green and IES cyan have similar lightness, so **never place those two fields next to each other** as full sections.
+Text on a field is always its assigned ink, white or black, never grey. PES blue and SMU blue are both blues: separate them with another colour where you can.
 
-> TODO: confirm the field colours against the current IEEE Brand Experience guidelines (brand-experience.ieee.org) and each society's style guide before printing anything.
+**Thin lines on dark grounds** (the hero wave in dark mode, the header mark) use lighter tints of the society colours (`#2FAE55`, `#FF7A2F`, `#5B8FD6`), because a 4px line in PES blue disappears on black. Fields and fills always use the true palette colours.
+
+### Logo
+- `public/logos/chapter-logo.png` is the colour logo for light backgrounds; `public/logos/chapter-logo-white.png` is the white logo for black backgrounds (made from the black original). The original files are in `assets/brand/`.
+- The full logo appears in the home page's front folder and the footer. The header uses the three-colour wave mark (`ChapterMark.astro`), because the logo's text is unreadable at header size.
 
 ### Neutrals
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| canvas | #FFFFFF | #0B1620 | Page background |
-| surface-1 | #F1F4F6 | #13212D | Alternate bands, inputs, tiles |
-| surface-2 | #E2E8EC | #1C2E3C | Pressed / selected surfaces |
-| ink | #0B1620 | #EEF3F6 | All running text and headings |
-| ink-muted | #3D4B57 | #B4C2CC | Secondary notes only (dates, captions) |
+| canvas | #FFFFFF | #141414 | Page background |
+| surface-1 | #F2F3F4 | #1F1F1F | Alternate bands, inputs, tiles |
+| surface-2 | #E3E5E7 | #2B2B2B | Pressed / selected surfaces |
+| ink | #000000 | #F2F2F2 | All running text and headings |
+| ink-muted | #4A4F55 | #B8BCC0 | Secondary notes only (dates, captions) |
 | link | #00629B | #5CC3EE | Inline links |
 | focus | #00629B | #5CC3EE | 3px focus outline |
 
@@ -173,13 +181,13 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 
 **Links.** Inline links are underlined (2px, offset 3px) in the link colour. Navigation links are not underlined at rest and underline on hover/focus.
 
-**Page header.** Every inner page opens with a chapter field in that page's colour holding the `h1` at display-lg and one supporting sentence. Pages: About blue, Events navy, Team IES cyan, News IAS yellow, Join PES green, Contact navy.
+**Page header.** Every inner page opens with a chapter field in that page's colour holding the `h1` at display-lg and one supporting sentence. Pages: About SMU blue, Events black, Team IES orange, News IAS green, Join PES blue, Contact black.
 
 **Tiles.** Flat colour or surface-1 rectangles, no border, no shadow, no hover lift. Text that describes a picture tile sits *under* the tile, not on it.
 
 **Text inputs.** surface-1 ground, 2px bottom rule in ink-muted (form fields keep their lines; this is the one place a rule is allowed), focus turns the rule to the focus colour and adds the outline. Labels sit above fields; errors are announced with `aria-live`.
 
-**Navigation.** Navy bar, 64px tall: wordmark left, five plain links, one "Join" action, theme toggle. Below 900px the links collapse into a full-screen menu opened by a labelled button.
+**Navigation.** Black bar, 64px tall: three-colour wave mark and name left, five plain links, one "Join" action, theme toggle. Below 900px the links collapse into a full-screen menu opened by a labelled button.
 
 **Footer.** A board of flat tiles with 8px gaps: statement, navigation, location, email, then the wordmark set large on an ink tile and a "Join the chapter" tile in IEEE Blue.
 
@@ -190,7 +198,8 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 
 ## Motion
 - Section parts enter once as they scroll into view: heading, then text, then picture, staggered 60–90ms, rising 24px with opacity. Content is visible without JavaScript.
-- Signature move: **index with preview.** On the Events archive, pointing at a row shows its photo in a fixed frame and dims the other rows. On touch screens the photo is inline.
+- Live thing: **the three-phase waveform** in the home hero. Three sines 120° apart flow continuously (CSS translate of a pre-computed path); pointing at or focusing a society's folder thickens its phase and fades the other two. Still under reduced motion.
+- Second signature move: **index with preview.** On the Events archive, pointing at a row shows its photo in a fixed frame and dims the other rows. On touch screens the photo is inline.
 - Transform and opacity only. Everything respects `prefers-reduced-motion: reduce` (travel removed, content kept).
 
 ## Do's and Don'ts
@@ -205,7 +214,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 - Don't round corners, add shadows to resting elements, or use gradients.
 - Don't add a second accent colour or a second typeface.
 - Don't use hairline dividers, 1px outlined cards, eyebrow labels, emoji or icon-topped card rows.
-- Don't put green (PES) and cyan (IES) full-width fields next to each other.
+- Don't change the society order (IAS, IES, PES) or swap their colours.
 - Don't present a found picture as the chapter's own event or member.
 
 ## Responsive Behavior

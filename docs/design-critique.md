@@ -12,8 +12,10 @@ Written with the design-taste-frontend skill (`.claude/skills/design-taste-front
   - The "cards that fold into spines" pinned deck became a plain wrapping deck, because there are
     only two or three upcoming events at a time.
   - The intro paragraph is a 30px statement, not a 76px paragraph (house rule on statements).
-- **Idea:** on this site, *the power chain the three societies cover (PES generates, IES converts,
-  IAS applies)* becomes *a stack of coloured folders and chapter fields, always in that order*.
+- **Idea (revised with the chapter logo, November 2026):** on this site, *the logo's three-colour
+  wave* becomes *a live three-phase current*: three sines 120° apart, one per society (IAS green,
+  IES orange, PES blue), flowing above the folder stack. Pointing at a society's folder brings its
+  phase forward. Colours were switched from IEEE secondary colours to the chapter's own palette.
 - **Live thing:** the hero folder stack. Each folder lifts when you point at it, and the Events
   folder always shows the next event and its date, straight from the content files.
 - **Signature move:** index with preview on the past-events archive (CSS only, no JavaScript).
@@ -27,8 +29,8 @@ Written with the design-taste-frontend skill (`.claude/skills/design-taste-front
 ROUND 3
 Seen in one second: "IES · IAS · PES" in large light type on IEEE dark blue, above a stack of
   green, cyan, yellow and blue folders.
-Idea (one sentence): the three societies are the three links of the power chain, so each is a
-  coloured folder and chapter field, in chain order.
+Idea (one sentence): the three societies are the three phases of one current, so the logo's
+  wave becomes a live three-phase waveform and each society keeps its phase colour everywhere.
 Live thing: folder stack in the hero; the Events folder shows the next event from the content.
 Layout words by section: hero=folder stack / about=statement split / societies=specimen tiles /
   events=card deck / stats=photo mosaic / close=inverted statement / footer=tile board

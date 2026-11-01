@@ -1,6 +1,8 @@
-Put official logos here (SVG preferred), then set the paths in
-src/config/site.ts (`logo`) and src/config/societies.ts (`logo`).
+Chapter logos used by the site:
 
-TODO: chapter logo, IES logo, IAS logo, PES logo.
-Get the society logos from each society's brand/style guide page; IEEE's
-brand rules apply to how they may be used.
+- chapter-logo.png        colour logo, transparent background (light pages)
+- chapter-logo-white.png  white logo, transparent background (black tiles)
+
+The original files (and the colour palette) are in /assets/brand/.
+Paths are set in src/config/site.ts (logoColour, logoWhite).
+After replacing a logo, run: node scripts/generate-icons.mjs

@@ -48,8 +48,15 @@ const social = [
       </ul>
     </div>
 
-    <div class="tile field-ink wordmark-tile" aria-hidden="true" translate="no">
-      <span class="wordmark-big">IES · IAS · PES</span>
+    <div class="tile field-black wordmark-tile">
+      <img
+        src={url(site.logoWhite)}
+        alt={`IEEE IAS, IES and PES: ${site.studentBranch} Joint Chapter`}
+        width="1248"
+        height="495"
+        loading="lazy"
+        class="footer-logo"
+      />
     </div>
 
     <a href={url('/join/')} class="tile invite">
@@ -82,13 +89,7 @@ const social = [
     justify-content: center;
     overflow: hidden;
   }
-  .wordmark-big {
-    font-size: clamp(40px, 10vw, 144px);
-    font-weight: 300;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    white-space: nowrap;
-  }
+  .footer-logo { width: min(560px, 90%); height: auto; }
   .invite {
     grid-column: span 4;
     min-height: 320px;
@@ -136,7 +137,6 @@ const social = [
     .contact { grid-column: span 2; }
     .wordmark-tile { grid-column: span 2; min-height: 160px; }
     .invite { grid-column: span 2; min-height: 180px; }
-    .wordmark-big { font-size: 11vw; }
   }
 </style>
 
