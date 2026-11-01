@@ -16,8 +16,9 @@ Written with the design-taste-frontend skill (`.claude/skills/design-taste-front
   wave* becomes *a live three-phase current*: three sines 120° apart, one per society (IAS green,
   IES orange, PES blue), flowing above the folder stack. Pointing at a society's folder brings its
   phase forward. Colours were switched from IEEE secondary colours to the chapter's own palette.
-- **Live thing:** the hero folder stack. Each folder lifts when you point at it, and the Events
-  folder always shows the next event and its date, straight from the content files.
+- **Live thing:** the three-phase wave and folder stack together. Each folder lifts when you point
+  at it and its phase thickens while the others fade; the Events folder always shows the next
+  event and its date, straight from the content files.
 - **Signature move:** index with preview on the past-events archive (CSS only, no JavaScript).
 - **Moving picture:** slow drift on the stats photo and on page-header photos (still under
   reduced motion). No honest footage was good enough: the one open-licence turbine clip was a
@@ -27,17 +28,17 @@ Written with the design-taste-frontend skill (`.claude/skills/design-taste-front
 
 ```
 ROUND 3
-Seen in one second: "IES · IAS · PES" in large light type on IEEE dark blue, above a stack of
-  green, cyan, yellow and blue folders.
+Seen in one second: "IAS · IES · PES" in large light type on white, a flowing green, orange and
+  blue three-phase wave, then a stack of folders in the same colours ending in the black logo folder.
 Idea (one sentence): the three societies are the three phases of one current, so the logo's
   wave becomes a live three-phase waveform and each society keeps its phase colour everywhere.
-Live thing: folder stack in the hero; the Events folder shows the next event from the content.
+Live thing: the three-phase wave; pointing at a society folder brings its phase forward.
 Layout words by section: hero=folder stack / about=statement split / societies=specimen tiles /
   events=card deck / stats=photo mosaic / close=inverted statement / footer=tile board
 Scores: design 7.5 · usability 8 · creativity 7.5 · content 5 → overall 7.3.
 Caps applied: content ≤ 5 (bracketed placeholders such as [University name] are visible).
 Top three problems (most visible first), each with the screenshot it shows in and the fix:
-1. Bracketed placeholders on every first screen (desktop-fold, mobile-fold): fill in
+1. Remaining bracketed placeholders ([City], [Country], address) (desktop-fold, mobile-fold): fill in
    src/config/site.ts.
 2. Every photograph is a credited stand-in from Wikimedia Commons; none shows the chapter's own
    people (all pages): add event photos to the event files and portraits to the team files.
