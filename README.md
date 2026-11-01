@@ -136,7 +136,12 @@ A link starting with `/` would break when the site lives at `github.io/<reposito
 ## 5. Update the team / add a new year's committee
 
 Each committee year is one file in `src/content/team/`, for example `2027-2028.json`. The newest file is
-shown as the current committee; older files stay on the page as "Past committees".
+shown as the current board, drawn as a power-system diagram (Chair and Vice-Chair at the top, the
+other officers hanging from a busbar with live current). Older files stay on the page as "Past committees".
+
+**To fill a seat that is waiting for a photo:** put the photo in `src/assets/team/` (portrait, 4:5, at
+least 800 px wide, face in the upper half), then add `name` and `photo` to that member in the JSON
+file. Until then the seat shows a coloured "Photo coming soon" panel.
 
 To start a new year, copy last year's file, rename it, and edit it:
 
@@ -147,6 +152,7 @@ To start a new year, copy last year's file, rename it, and edit it:
     {
       "name": "First Last",
       "role": "Chair",
+      "lead": true,
       "society": "PES",
       "photo": "../../assets/team/first-last.jpg",
       "linkedin": "https://www.linkedin.com/in/their-profile"
@@ -155,9 +161,10 @@ To start a new year, copy last year's file, rename it, and edit it:
 }
 ```
 
-- `society` (PES, IES or IAS), `photo` and `linkedin` are optional. Without a photo, the member's
-  initials are shown on their society's colour.
-- Photos: square, at least 400 × 400 px, face centred. Ask each member's permission before publishing
+- `role` is required. `name`, `photo`, `society` (PES, IES or IAS, shown as the society's logo) and
+  `linkedin` are optional; leave `name` out while a seat is not announced yet.
+- `"lead": true` puts the member at the top of the diagram (use it for the Chair and Vice-Chair).
+- Photos: portrait (4:5), at least 800 px wide. Ask each member's permission before publishing
   their photo.
 - Watch the commas: every member block except the last ends with `},`.
 

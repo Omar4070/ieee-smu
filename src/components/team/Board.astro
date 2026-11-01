@@ -1,0 +1,260 @@
+---
+/**
+ * The executive board drawn as a single-line diagram of a power system.
+ * Chair and Vice-Chair are the source at the top; a trunk feeds a busbar that
+ * carries live three-colour current (IAS green, IES orange, PES blue); every
+ * officer hangs from the bus on a feeder. Pointing at a card speeds up the
+ * current on its feeder. Seats without a photo yet show a "standby" panel
+ * with the chapter wave running across it.
+ */
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import SocietyLogo from '../SocietyLogo.astro';
+import Arrow from '../Arrow.astro';
+
+interface Props {
+  team: CollectionEntry<'team'>;
+}
+const { team } = Astro.props;
+const leads = team.data.members.filter((m) => m.lead);
+const officers = team.data.members.filter((m) => !m.lead);
+
+// Standby panels cycle through the chapter colours.
+const standby = ['field-black', 'field-blue', 'field-ias', 'field-ies', 'field-pes'];
+let standbyIndex = 0;
+const nextStandby = () => standby[standbyIndex++ % standby.length];
+
+// A short three-phase wave for standby panels (white lines on the panel colour).
+const wave = [0, 120, 240].map((deg) => {
+  const pts: string[] = [];
+  for (let x = 0; x <= 400; x += 5) {
+    const y = 40 - 22 * Math.sin((2 * Math.PI * x) / 200 - (deg * Math.PI) / 180);
+    pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+  }
+  return pts.join('');
+});
+
+const members = [
+  ...leads.map((m) => ({ ...m, size: 'lead' as const, panel: m.photo ? '' : nextStandby() })),
+  ...officers.map((m) => ({ ...m, size: 'officer' as const, panel: m.photo ? '' : nextStandby() })),
+];
+const leadCards = members.filter((m) => m.size === 'lead');
+const officerCards = members.filter((m) => m.size === 'officer');
+---
+<div class="board">
+  {/* Source: Chair and Vice-Chair */}
+  <ul class="leads" role="list">
+    {
+      leadCards.map((m, i) => (
+        <li class="card lead" data-reveal style={`--i: ${i}`}>
+          <figure>
+            <div class:list={['portrait', m.panel]}>
+              {m.photo ? (
+                <Image src={m.photo} alt={m.name ?? m.role} widths={[360, 560, 800]} sizes="(min-width: 900px) 26vw, 46vw" class="photo" />
+              ) : (
+                <div class="standby" aria-hidden="true">
+                  <svg viewBox="0 0 200 80" preserveAspectRatio="none" class="standby-wave">
+                    <g class="standby-flow">
+                      {wave.map((d) => <path d={d} />)}
+                    </g>
+                  </svg>
+                  <span class="standby-label">Photo coming soon</span>
+                </div>
+              )}
+            </div>
+            <figcaption>
+              <h3 class="name">{m.name ?? m.role}</h3>
+              <p class="role">{m.name ? m.role : 'To be announced'}</p>
+              {m.society && <SocietyLogo society={m.society} height={36} class="mt-2" />}
+              {m.linkedin && (
+                <a href={m.linkedin} class="link mt-2 inline-flex items-center gap-1" rel="noopener">
+                  LinkedIn<span class="sr-only"> profile of {m.name}</span>
+                  <Arrow size={16} direction="up-right" />
+                </a>
+              )}
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+
+  {/* Trunk from the source down to the busbar */}
+  <svg class="trunk" viewBox="0 0 8 64" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="cur cur-ias" d="M4 0V64" />
+    <path class="cur cur-ies" d="M4 0V64" />
+    <path class="cur cur-pes" d="M4 0V64" />
+  </svg>
+
+  {/* Busbar with live current */}
+  <svg class="bus" viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="cur bus-ias" d="M0 4H1000" />
+    <path class="cur bus-ies" d="M0 4H1000" />
+    <path class="cur bus-pes" d="M0 4H1000" />
+  </svg>
+
+  {/* Feeders and officers */}
+  <ul class="officers" role="list">
+    {
+      officerCards.map((m, i) => (
+        <li class="card officer" data-reveal style={`--i: ${i % 5}`}>
+          <svg class="feeder" viewBox="0 0 8 56" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <path class="cur cur-ias" d="M4 0V56" />
+            <path class="cur cur-ies" d="M4 0V56" />
+            <path class="cur cur-pes" d="M4 0V56" />
+          </svg>
+          <figure>
+            <div class:list={['portrait', m.panel]}>
+              {m.photo ? (
+                <Image src={m.photo} alt={m.name ?? m.role} widths={[300, 480, 640]} sizes="(min-width: 1100px) 18vw, (min-width: 640px) 30vw, 46vw" class="photo" />
+              ) : (
+                <div class="standby" aria-hidden="true">
+                  <svg viewBox="0 0 200 80" preserveAspectRatio="none" class="standby-wave">
+                    <g class="standby-flow">
+                      {wave.map((d) => <path d={d} />)}
+                    </g>
+                  </svg>
+                  <span class="standby-label">Photo coming soon</span>
+                </div>
+              )}
+            </div>
+            <figcaption>
+              <h3 class="name">{m.name ?? m.role}</h3>
+              <p class="role">{m.name ? m.role : 'To be announced'}</p>
+              {m.society && <SocietyLogo society={m.society} height={32} class="mt-2" />}
+              {m.linkedin && (
+                <a href={m.linkedin} class="link mt-2 inline-flex items-center gap-1" rel="noopener">
+                  LinkedIn<span class="sr-only"> profile of {m.name}</span>
+                  <Arrow size={16} direction="up-right" />
+                </a>
+              )}
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .board { margin-top: clamp(48px, 6vw, 80px); }
+
+  /* ----- Cards ----- */
+  .leads {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 2.4vw, 32px);
+    width: min(620px, 100%);
+    margin-inline: auto;
+  }
+  .officers {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(12px, 1.6vw, 24px);
+  }
+  .card { position: relative; }
+  .card figure { transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .card:hover figure { transform: translateY(-8px); }
+
+  .portrait {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+  }
+  /* Standby colours come from the field-* classes; scoped CSS would override them. */
+  .portrait :global(.photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .card:hover .portrait :global(.photo) { transform: scale(1.05); }
+
+  figcaption { padding-top: 16px; }
+  .name {
+    font-size: clamp(20px, 1.8vw, 26px);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .lead .name { font-size: clamp(24px, 2.2vw, 32px); }
+  .role { margin-top: 4px; font-size: 17px; color: var(--ink-muted); }
+
+  /* ----- Standby panel for seats without a photo ----- */
+  .standby {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 18px;
+  }
+  .standby-wave {
+    position: absolute;
+    left: 0;
+    top: 34%;
+    width: 100%;
+    height: 32%;
+    overflow: visible;
+  }
+  .standby-wave path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-opacity: 0.55;
+    vector-effect: non-scaling-stroke;
+  }
+  .standby-label { position: relative; font-size: 15px; font-weight: 500; }
+
+  /* ----- Single-line diagram: trunk, busbar, feeders ----- */
+  .trunk { display: block; width: 8px; height: 56px; margin: 20px auto 0; }
+  .bus { display: block; width: 100%; height: 8px; }
+  .feeder { display: block; width: 8px; height: 48px; margin: 0 auto 12px; }
+
+  .cur {
+    fill: none;
+    stroke-width: 6;
+    vector-effect: non-scaling-stroke;
+  }
+  .cur-ias, .bus-ias { stroke: var(--ias); }
+  .cur-ies, .bus-ies { stroke: var(--ies); }
+  .cur-pes, .bus-pes { stroke: var(--pes); }
+  :global([data-theme='dark']) .cur-ias, :global([data-theme='dark']) .bus-ias { stroke: #2fae55; }
+  :global([data-theme='dark']) .cur-pes, :global([data-theme='dark']) .bus-pes { stroke: #5b8fd6; }
+
+  /* Three dashed lines offset by a third: together they read as one line of
+     green, orange and blue segments. Animating the offset makes it flow. */
+  .trunk .cur, .feeder .cur { stroke-dasharray: 8 16; }
+  .trunk .cur-ies, .feeder .cur-ies { stroke-dashoffset: -8; }
+  .trunk .cur-pes, .feeder .cur-pes { stroke-dashoffset: -16; }
+  .bus .cur { stroke-dasharray: 30 60; }
+  .bus .bus-ies { stroke-dashoffset: -30; }
+  .bus .bus-pes { stroke-dashoffset: -60; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trunk .cur, .feeder .cur { animation: flow-down 1.4s linear infinite; }
+    .bus .cur { animation: flow-bus 2.6s linear infinite; }
+    .card:hover .feeder .cur { animation-duration: 0.45s; }
+    .standby-flow { animation: standby-flow 6s linear infinite; }
+  }
+  /* Each line keeps its own offset: the animation adds one full pattern length. */
+  @keyframes flow-down { to { stroke-dashoffset: calc(var(--o, 0) - 24); } }
+  .trunk .cur-ias, .feeder .cur-ias { --o: 0; }
+  .trunk .cur-ies, .feeder .cur-ies { --o: -8; }
+  .trunk .cur-pes, .feeder .cur-pes { --o: -16; }
+  @keyframes flow-bus { to { stroke-dashoffset: calc(var(--o, 0) - 90); } }
+  .bus .bus-ias { --o: 0; }
+  .bus .bus-ies { --o: -30; }
+  .bus .bus-pes { --o: -60; }
+  @keyframes standby-flow { to { transform: translateX(-200px); } }
+
+  @media (max-width: 1099px) {
+    .officers { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 8px; }
+  }
+  @media (max-width: 639px) {
+    .officers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .feeder { height: 32px; margin-bottom: 8px; }
+    .trunk { height: 36px; }
+    .role { font-size: 15px; }
+  }
+</style>

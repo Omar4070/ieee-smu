@@ -46,8 +46,9 @@ const team = defineCollection({
       year: z.string(), // shown as the heading, e.g. "2026–2027"
       members: z.array(
         z.object({
-          name: z.string(),
+          name: z.string().optional(), // leave out until the seat is filled
           role: z.string(),
+          lead: z.boolean().default(false), // Chair / Vice-Chair: top of the board diagram
           society: society.optional(),
           photo: image().optional(),
           linkedin: z.url().optional(),
