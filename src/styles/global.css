@@ -168,7 +168,8 @@
   .field-ies { background: var(--ies); color: var(--field-ink); }
   .field-ias { background: var(--ias); color: var(--field-paper); }
   .field-ink { background: var(--ink); color: var(--canvas); }
-  .field-surface { background: var(--surface-1); color: var(--ink); }
+  /* A tint, not a solid grey, so the background waves flow behind grey sections too. */
+  .field-surface { background: color-mix(in srgb, var(--ink) 5%, transparent); color: var(--ink); }
 
   /* ---------- Links ---------- */
   .link {
