@@ -32,7 +32,7 @@
 
   --gutter: clamp(16px, 3vw, 32px);
   --section: clamp(96px, 12vw, 176px);
-  --header-h: 64px;
+  --header-h: 72px;
 
   color-scheme: light;
 }

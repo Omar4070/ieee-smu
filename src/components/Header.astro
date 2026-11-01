@@ -1,17 +1,13 @@
 ---
 import { nav, site } from '../config/site';
 import { isCurrent, url } from '../lib/utils';
-import ChapterMark from './ChapterMark.astro';
 
 const path = Astro.url.pathname;
 ---
 <header class="site-header field-black field">
-  <div class="wrap flex h-16 items-center justify-between gap-6">
+  <div class="wrap flex h-[var(--header-h)] items-center justify-between gap-6">
     <a href={url('/')} class="wordmark flex items-center gap-3 no-underline" aria-label={`${site.name}, home`}>
-      <ChapterMark width={40} onDark />
-      <span class="text-[17px] leading-none font-semibold tracking-tight whitespace-nowrap" translate="no">
-        {site.university} <span class="font-normal">Joint Chapter</span>
-      </span>
+      <img src={url(site.logoWhite)} alt="" width="1248" height="495" class="header-logo" />
     </a>
 
     <nav aria-label="Main" class="hidden min-[900px]:block">
@@ -95,6 +91,7 @@ const path = Astro.url.pathname;
     z-index: 50;
   }
   .wordmark { text-decoration: none; }
+  .header-logo { width: auto; height: 56px; }
 
   .nav-link {
     display: inline-flex;

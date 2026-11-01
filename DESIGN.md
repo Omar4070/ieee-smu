@@ -76,7 +76,7 @@ components:
   page-header:      { backgroundColor: "page's chapter field", textColor: "matching on-field", padding: "128px gutter 64px" }
   tile:             { backgroundColor: "a field or surface-1", rounded: "{rounded.none}", padding: 24px, border: none, shadow: none }
   text-input:       { backgroundColor: "{surface-1}", textColor: "{ink}", rounded: "{rounded.none}", padding: "12px 16px", borderBottom: "2px solid {ink-muted}", focusBorderBottom: "2px solid {focus}" }
-  top-nav:          { backgroundColor: "{colors.field-black}", textColor: "{colors.on-field-black}", height: 64px, mark: "three-colour wave" }
+  top-nav:          { backgroundColor: "{colors.field-black}", textColor: "{colors.on-field-black}", height: 72px, logo: "white chapter logo" }
   footer:           { layout: "tile board, 8px gaps", logoTile: "white chapter logo on {colors.field-black}", inviteTile: "{colors.primary}" }
 ---
 
@@ -114,7 +114,8 @@ Text on a field is always its assigned ink, white or black, never grey. PES blue
 
 ### Logo
 - `public/logos/chapter-logo.png` is the colour logo for light backgrounds; `public/logos/chapter-logo-white.png` is the white logo for black backgrounds (made from the black original). The original files are in `assets/brand/`.
-- The colour logo is the home page's headline (the white logo replaces it in dark mode); the white logo also closes every page in the footer. The page uses WebP copies (`chapter-logo.webp`, `chapter-logo-white.webp`); the PNGs feed the icon script. The header uses the three-colour wave mark (`ChapterMark.astro`) with 'SMU Joint Chapter', because the logo's text is unreadable at header size.
+- The colour logo is the home page's headline (the white logo replaces it in dark mode); the white logo also closes every page in the footer. The page uses WebP copies (`chapter-logo.webp`, `chapter-logo-white.webp`); the PNGs feed the icon script. The white logo also sits top left in the black header (56px tall in a 72px bar).
+- The three society logos are cut from the chapter logo (`public/logos/{ias,ies,pes}-{white,black}.webp`) and sit on the hero folder tabs: white on IAS green and PES blue, black on IES orange.
 
 ### Neutrals
 | Token | Light | Dark | Use |
@@ -187,7 +188,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 
 **Text inputs.** surface-1 ground, 2px bottom rule in ink-muted (form fields keep their lines; this is the one place a rule is allowed), focus turns the rule to the focus colour and adds the outline. Labels sit above fields; errors are announced with `aria-live`.
 
-**Navigation.** Black bar, 64px tall: three-colour wave mark and name left, five plain links, one "Join" action, theme toggle. Below 900px the links collapse into a full-screen menu opened by a labelled button.
+**Navigation.** Black bar, 72px tall: white chapter logo left, five plain links, one "Join" action, theme toggle. Below 900px the links collapse into a full-screen menu opened by a labelled button.
 
 **Footer.** A board of flat tiles with 8px gaps: statement, navigation, location, email, then the wordmark set large on an ink tile and a "Join the chapter" tile in IEEE Blue.
 
