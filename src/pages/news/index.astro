@@ -22,7 +22,7 @@ const [latest, ...rest] = await getNews();
 
   {
     !latest && (
-      <section class="section bg-canvas">
+      <section class="section">
         <div class="wrap">
           <p class="t-statement">No news yet. Check back after our next event.</p>
         </div>
@@ -32,7 +32,7 @@ const [latest, ...rest] = await getNews();
 
   {
     latest && (
-      <section class="section bg-canvas" aria-labelledby="latest-title">
+      <section class="section" aria-labelledby="latest-title">
         <div class="wrap latest">
           <div class="latest-text">
             <h2 id="latest-title" class="t-headline" data-reveal>

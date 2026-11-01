@@ -25,7 +25,7 @@ const [current, ...past] = await getTeams();
 
   {
     current && (
-      <section class="section bg-canvas" aria-labelledby="current-title">
+      <section class="section" aria-labelledby="current-title">
         <div class="wrap">
           <h2 id="current-title" class="t-headline" data-reveal>
             Executive committee {current.data.year}
@@ -86,7 +86,7 @@ const [current, ...past] = await getTeams();
     )
   }
 
-  <section class="section bg-canvas" aria-labelledby="volunteer-title">
+  <section class="section" aria-labelledby="volunteer-title">
     <div class="wrap volunteer">
       <div data-reveal>
         <h2 id="volunteer-title" class="t-headline">Help run the chapter</h2>

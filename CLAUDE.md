@@ -46,6 +46,7 @@ On Windows Git Bash, prefix commands that pass a path-like env var with `MSYS_NO
 ## Society logos and motion
 
 - **Never print the acronyms IAS, IES or PES as visible text** (chapter owner's rule). Use `<SocietyLogo society="IAS" height={40} variant="auto|field|white" />` for labels, and full society names in sentences. Content data keeps the acronyms as values (`societies: [IAS]`, `"society": "IES"`); components turn them into logos.
+- A fixed `BackgroundWaves` layer (z-index -1) sits behind every page: sections on the plain canvas must stay transparent (don't add `bg-canvas` to them, or the waves disappear); give a section a solid background only on purpose (the home hero does).
 - Motion layer: `photo-reveal` class (scroll-timeline curtain reveal, uses the `scale` property so `transform` hovers still work), `WaveDivider.astro`, `Filmstrip.astro`, hero phase draw-in, count-up script in `Stats.astro`, cross-document view transitions in `global.css`. All scroll-driven effects sit inside `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Check motion with `scripts/motion-frames.js` (the regular screenshot script disables motion).
 
 ## Design rules (enforced by the taste-skill lint/inspector)

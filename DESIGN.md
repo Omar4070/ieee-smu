@@ -206,6 +206,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 - Second signature move: **index with preview.** On the Events archive, pointing at a row shows its photo in a fixed frame and dims the other rows. On touch screens the photo is inline.
 - **Hero entrance:** the logo rises in, then the three phases draw themselves one after another before they start flowing.
 - **Curtain reveal:** content photos (class `photo-reveal`) open from a horizontal slit and settle from a slight zoom as they scroll into view (CSS scroll timeline).
+- **Living background** (`BackgroundWaves.astro`, in the base layout): two faint bands of the three-phase wave flow behind every page in opposite directions. Sections on the plain canvas are transparent so it shows through; colour fields, photos, tiles and the home hero stay solid. Opacity 20% light, 22% dark; still under reduced motion.
 - **Wave dividers** (`WaveDivider.astro`): the three-phase wave draws itself between sections as it scrolls into view.
 - **Filmstrip** (`Filmstrip.astro`): two rows of photographs on black slide in opposite directions with the scroll.
 - **Count-up:** the home page figures count up from zero when they appear.

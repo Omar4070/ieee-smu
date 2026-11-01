@@ -1,0 +1,80 @@
+---
+/**
+ * The chapter's three-phase wave as a living background behind every page:
+ * two faint bands of three sines (IAS green, IES orange, PES blue, 120° apart)
+ * flowing in opposite directions. Fixed to the viewport, behind all content;
+ * sections on the plain canvas are transparent so it shows through, while
+ * colour fields, photos and tiles stay solid on top of it.
+ */
+const band = (wavelength: number, amplitude: number, mid: number, height: number) =>
+  [0, 120, 240].map((deg) => {
+    const pts: string[] = [];
+    for (let x = 0; x <= 1200 + wavelength; x += 8) {
+      const y = mid - amplitude * Math.sin((2 * Math.PI * x) / wavelength - (deg * Math.PI) / 180);
+      pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+    }
+    return { d: pts.join(''), height };
+  });
+
+const keys = ['ias', 'ies', 'pes'];
+const upper = band(600, 56, 80, 160);
+const lower = band(900, 80, 110, 220);
+---
+<div class="bg-waves" aria-hidden="true">
+  <svg class="band band-upper" viewBox="0 0 1200 160" preserveAspectRatio="none" focusable="false">
+    <g class="flow flow-upper">
+      {upper.map((p, i) => <path class={`line line-${keys[i]}`} d={p.d} />)}
+    </g>
+  </svg>
+  <svg class="band band-lower" viewBox="0 0 1200 220" preserveAspectRatio="none" focusable="false">
+    <g class="flow flow-lower">
+      {lower.map((p, i) => <path class={`line line-${keys[i]}`} d={p.d} />)}
+    </g>
+  </svg>
+</div>
+
+<style>
+  .bg-waves {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.2;
+  }
+  :global([data-theme='dark']) .bg-waves { opacity: 0.22; }
+
+  .band {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: visible;
+  }
+  .band-upper { top: 16vh; height: clamp(90px, 16vh, 160px); }
+  .band-lower { top: 62vh; height: clamp(120px, 24vh, 220px); }
+
+  .line {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .line-ias { stroke: var(--ias); }
+  .line-ies { stroke: var(--ies); }
+  .line-pes { stroke: var(--pes); }
+  :global([data-theme='dark']) .line-ias { stroke: #2fae55; }
+  :global([data-theme='dark']) .line-pes { stroke: #5b8fd6; }
+
+  .flow { will-change: transform; }
+  @media (prefers-reduced-motion: no-preference) {
+    .flow-upper { animation: bg-flow-upper 26s linear infinite; }
+    .flow-lower { animation: bg-flow-lower 38s linear infinite; }
+  }
+  @keyframes bg-flow-upper {
+    to { transform: translateX(-600px); }
+  }
+  @keyframes bg-flow-lower {
+    from { transform: translateX(-900px); }
+    to { transform: translateX(0); }
+  }
+</style>

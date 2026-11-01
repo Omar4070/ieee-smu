@@ -31,7 +31,7 @@ const gallery = await Promise.all(
 <BaseLayout title={data.title} description={data.summary} image={ogImage.src} type="article">
   <PageHeader field={field} size="md" title={data.title} lead={data.summary} />
 
-  <section class="bg-canvas" aria-label="Event details">
+  <section aria-label="Event details">
     <figure class="cover wrap" data-reveal>
       <Image
         src={data.cover}
@@ -104,7 +104,7 @@ const gallery = await Promise.all(
 
   {
     gallery.length > 0 && (
-      <section class="section bg-canvas" aria-labelledby="photos-title">
+      <section class="section" aria-labelledby="photos-title">
         <div class="wrap">
           <h2 id="photos-title" class="t-headline" data-reveal>
             Photos
@@ -124,7 +124,7 @@ const gallery = await Promise.all(
     )
   }
 
-  <nav class="section bg-canvas pt-0!" aria-label="Events">
+  <nav class="section pt-0!" aria-label="Events">
     <div class="wrap">
       <a href={url('/events/')} class="link inline-flex items-center gap-2 text-[20px]">
         <Arrow size={20} class="rotate-180" /> All events

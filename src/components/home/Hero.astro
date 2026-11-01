@@ -49,7 +49,7 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
   },
 ];
 ---
-<section class="hero bg-canvas" aria-labelledby="hero-title">
+<section class="hero" aria-labelledby="hero-title">
   <div class="wrap hero-head">
     <h1 id="hero-title" class="hero-title" data-reveal>
       <span class="sr-only">IEEE {site.studentBranch} Joint Chapter: Industry Applications, Industrial Electronics and Power &amp; Energy societies</span>
@@ -110,7 +110,10 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 </section>
 
 <style>
+  /* Solid canvas: the hero has its own wave, the background waves stay behind it. */
   .hero {
+    position: relative;
+    background: var(--canvas);
     display: flex;
     flex-direction: column;
     min-height: calc(100svh - var(--header-h));
