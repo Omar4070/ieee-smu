@@ -42,8 +42,8 @@ export const site = {
   formspreeId: 'TODO_FORMSPREE_ID', // TODO: create a free form at formspree.io
 
   /** Full chapter logo (society logos above the three-colour wave), in /public/logos. */
-  logoColour: '/logos/chapter-logo.png', // for light backgrounds
-  logoWhite: '/logos/chapter-logo-white.png', // for black backgrounds
+  logoColour: '/logos/chapter-logo.webp', // for light backgrounds (PNG kept for the icon script)
+  logoWhite: '/logos/chapter-logo-white.webp', // for black backgrounds and dark mode
 } as const;
 
 export const nav = [

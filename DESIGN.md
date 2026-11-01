@@ -114,7 +114,7 @@ Text on a field is always its assigned ink, white or black, never grey. PES blue
 
 ### Logo
 - `public/logos/chapter-logo.png` is the colour logo for light backgrounds; `public/logos/chapter-logo-white.png` is the white logo for black backgrounds (made from the black original). The original files are in `assets/brand/`.
-- The full logo appears in the home page's front folder and the footer. The header uses the three-colour wave mark (`ChapterMark.astro`), because the logo's text is unreadable at header size.
+- The colour logo is the home page's headline (the white logo replaces it in dark mode); the white logo also closes every page in the footer. The page uses WebP copies (`chapter-logo.webp`, `chapter-logo-white.webp`); the PNGs feed the icon script. The header uses the three-colour wave mark (`ChapterMark.astro`) with 'SMU Joint Chapter', because the logo's text is unreadable at header size.
 
 ### Neutrals
 | Token | Light | Dark | Use |

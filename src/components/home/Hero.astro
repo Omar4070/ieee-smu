@@ -47,12 +47,23 @@ const folders = [
 ---
 <section class="hero bg-canvas" aria-labelledby="hero-title">
   <div class="wrap hero-head">
-    <h1 id="hero-title" class="hero-title" translate="no" data-reveal>
-      IAS<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only">, </span>IES<span aria-hidden="true">&thinsp;·&thinsp;</span><span class="sr-only"> and </span>PES
+    <h1 id="hero-title" class="hero-title" data-reveal>
+      <span class="sr-only">IEEE IAS, IES and PES: {site.studentBranch} Joint Chapter</span>
+      <!-- Both logos are decorative here: the heading text above names the chapter. -->
+      <img
+        src={url(site.logoColour)}
+        alt=""
+        aria-hidden="true"
+        width="1248"
+        height="494"
+        class="hero-logo logo-light"
+        fetchpriority="high"
+      />
+      <img src={url(site.logoWhite)} alt="" width="1248" height="495" class="hero-logo logo-dark" aria-hidden="true" />
     </h1>
     <p class="hero-sub" data-reveal style="--i: 1">
-      The IEEE Industry Applications, Industrial Electronics and Power &amp; Energy societies joint chapter of the{' '}
-      {site.studentBranch}.
+      The IEEE Industry Applications, Industrial Electronics and Power &amp; Energy societies, together in one
+      student chapter: workshops, industrial visits and competitions.
     </p>
   </div>
 
@@ -80,14 +91,7 @@ const folders = [
     <div class="folder front field-black" style="--n: 4">
       <span class="tab tab-shape front-tab" aria-hidden="true">The chapter</span>
       <div class="front-body">
-        <img
-          src={url(site.logoWhite)}
-          alt={`IEEE IAS, IES and PES logos: ${site.studentBranch} Joint Chapter`}
-          width="1248"
-          height="495"
-          class="front-logo"
-          fetchpriority="high"
-        />
+        <p class="front-statement">One chapter, three IEEE societies, every engineering student welcome.</p>
         <div class="front-action">
           <a href={url('/join/')} class="btn">
             Join the chapter <Arrow size={20} />
@@ -107,16 +111,20 @@ const folders = [
     overflow: hidden;
   }
   .hero-head {
-    padding-top: clamp(40px, 7svh, 80px);
+    padding-top: clamp(24px, 4svh, 48px);
     text-align: center;
   }
-  .hero-title {
-    font-size: clamp(44px, 10vw, 144px);
-    font-weight: 300;
-    line-height: 0.95;
-    letter-spacing: -0.045em;
-    white-space: nowrap;
+  .hero-title { margin: 0; }
+  .hero-logo {
+    display: block;
+    width: min(800px, 88vw);
+    height: auto;
+    margin-inline: auto;
   }
+  /* The colour logo on light pages, the white one in dark mode. */
+  .logo-dark { display: none; }
+  :global([data-theme='dark']) .logo-light { display: none; }
+  :global([data-theme='dark']) .logo-dark { display: block; }
   .hero-sub {
     max-width: 46ch;
     margin: clamp(20px, 3svh, 32px) auto 0;
@@ -260,9 +268,11 @@ const folders = [
     gap: 24px 48px;
     padding: 28px 32px 40px;
   }
-  .front-logo {
-    width: min(360px, 100%);
-    height: auto;
+  .front-statement {
+    max-width: 24ch;
+    font-size: clamp(22px, 2.1vw, 30px);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
   .front-action {
     display: flex;
@@ -279,8 +289,8 @@ const folders = [
     .hero-head {
       padding-top: 48px;
     }
-    .hero-title {
-      font-size: min(13vw, 64px);
+    .hero-logo {
+      width: 100%;
     }
     .hero-sub {
       font-size: 17px;
@@ -292,9 +302,7 @@ const folders = [
     .front-action .btn {
       width: 100%;
     }
-    .front-logo {
-      width: min(300px, 100%);
-    }
+
   }
 
   /* Below desktop the next tab would cover the strip's text: stagger the tabs
