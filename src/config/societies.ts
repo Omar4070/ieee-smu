@@ -1,10 +1,8 @@
 /**
  * The three IEEE societies of the joint chapter, in the order of the chapter
- * logo: IAS puts energy to work in industry, IES converts and controls it,
- * PES generates and moves it. Colours come from the chapter palette.
- *
- * `logo`: path to the official society logo in /public/logos (SVG or PNG).
- * Leave it empty to show the society's acronym instead.
+ * logo: Industry Applications, Industrial Electronics, Power & Energy.
+ * Colours come from the chapter palette. On the site, societies are shown by
+ * their logos (SocietyLogo.astro), never by their acronyms.
  */
 export type SocietyId = 'PES' | 'IES' | 'IAS';
 
@@ -17,7 +15,6 @@ export interface Society {
   benefits: string[];
   url: string;
   field: 'pes' | 'ies' | 'ias';
-  logo: string;
 }
 
 export const societies: Society[] = [
@@ -26,48 +23,45 @@ export const societies: Society[] = [
     name: 'Industry Applications Society',
     role: 'Puts energy to work in industry',
     summary:
-      'IAS is about the electrical systems that run industry and commerce: electric machines and drives, industrial power systems, process industries and electrical safety.',
+      'The electrical systems that run industry and commerce: electric machines and drives, industrial power systems, process industries and electrical safety: this is the world of the Industry Applications Society.',
     focus: ['Electric machines and drives', 'Industrial power systems', 'Process industries', 'Electrical safety', 'Transportation electrification'],
     benefits: [
       'IEEE Industry Applications Magazine',
       'Student project and paper competitions',
-      'Reduced fees at IAS conferences such as the Annual Meeting',
+      'Reduced fees at the society’s conferences, such as its Annual Meeting',
     ],
     url: 'https://ias.ieee.org/',
     field: 'ias',
-    logo: '', // TODO: '/logos/ias.svg'
   },
   {
     id: 'IES',
     name: 'Industrial Electronics Society',
     role: 'Converts and controls it',
     summary:
-      'IES covers electronics applied to industry: power electronics, motion control, robotics, factory automation and industrial informatics.',
+      'Electronics applied to industry: power electronics, motion control, robotics, factory automation and industrial informatics.',
     focus: ['Power electronics', 'Motion control', 'Robotics', 'Factory automation', 'Industrial informatics'],
     benefits: [
       'IEEE Industrial Electronics Magazine',
-      'Student awards and travel support for IES conferences',
+      'Student awards and travel support for the society’s conferences',
       'Reduced fees at conferences such as IECON',
     ],
     url: 'https://www.ieee-ies.org/',
     field: 'ies',
-    logo: '', // TODO: '/logos/ies.svg'
   },
   {
     id: 'PES',
     name: 'Power & Energy Society',
     role: 'Generates and moves it',
     summary:
-      'PES is the IEEE community for the electric power industry: how electricity is generated, transmitted, distributed and used, from large power plants to smart grids and renewables.',
+      'The IEEE community for the electric power industry: how electricity is generated, transmitted, distributed and used, from large power plants to smart grids and renewables.',
     focus: ['Power generation', 'Transmission and distribution', 'Smart grids', 'Renewable integration', 'Energy storage'],
     benefits: [
       'IEEE Power & Energy Magazine',
       'Student and young professional programmes, awards and competitions',
-      'Reduced fees at PES conferences such as the General Meeting',
+      'Reduced fees at the society’s conferences, such as its General Meeting',
     ],
     url: 'https://ieee-pes.org/',
     field: 'pes',
-    logo: '', // TODO: '/logos/pes.svg'
   },
 ];
 

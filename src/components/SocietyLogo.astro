@@ -1,0 +1,61 @@
+---
+/**
+ * A society's logo, cut from the chapter logo (public/logos/{ias,ies,pes}-*.webp).
+ * The site never prints the acronyms IAS / IES / PES as text: this replaces them.
+ *
+ * variant:
+ *   auto   full colour on light pages, white in dark mode (default)
+ *   field  on the society's own colour: white on IAS green / PES blue, black on IES orange
+ *   white  on any dark ground (black, SMU blue, photos)
+ */
+import { societyById, type SocietyId } from '../config/societies';
+import { url } from '../lib/utils';
+
+interface Props {
+  society: SocietyId | 'Joint';
+  /** Logo height in px. */
+  height?: number;
+  variant?: 'auto' | 'field' | 'white';
+  /** Leave the logo out of the accessibility tree when the name is already written next to it. */
+  decorative?: boolean;
+  class?: string;
+}
+const { society, height = 32, variant = 'auto', decorative = false, class: className } = Astro.props;
+
+const key = society.toLowerCase();
+const name = society === 'Joint' ? 'All three societies' : societyById[society].name;
+const alt = decorative ? '' : name;
+// Logo files are 160px tall; widths keep their proportions.
+const ratio = { ias: 218 / 160, ies: 344 / 160, pes: 230 / 160 }[key] ?? 1;
+const width = Math.round(height * ratio);
+// Inline height: the base stylesheet sets img { height: auto }, which would ignore the attribute.
+const size = `height:${height}px;width:${width}px`;
+const single = variant === 'white' ? 'white' : variant === 'field' ? (key === 'ies' ? 'black' : 'white') : null;
+---
+{
+  society === 'Joint' ? (
+    <span class:list={['joint', className]}>All societies</span>
+  ) : single ? (
+    <img src={url(`/logos/${key}-${single}.webp`)} alt={alt} width={width} height={height} style={size} class:list={['society-logo', className]} loading="lazy" decoding="async" />
+  ) : (
+    <span class:list={['society-logo-auto', className]}>
+      <img src={url(`/logos/${key}-colour.webp`)} alt={alt} width={width} height={height} style={size} class="logo-on-light" loading="lazy" decoding="async" />
+      <img src={url(`/logos/${key}-white.webp`)} alt={alt} width={width} height={height} style={size} class="logo-on-dark" loading="lazy" decoding="async" />
+    </span>
+  )
+}
+
+<style>
+  .society-logo,
+  .society-logo-auto img {
+    display: block;
+    width: auto;
+    flex: none;
+  }
+  .society-logo-auto { display: inline-flex; flex: none; }
+  /* Only the visible version is exposed to screen readers (display: none hides the other). */
+  .logo-on-dark { display: none !important; }
+  :global([data-theme='dark']) .logo-on-light { display: none !important; }
+  :global([data-theme='dark']) .logo-on-dark { display: block !important; }
+  .joint { font-weight: 500; }
+</style>

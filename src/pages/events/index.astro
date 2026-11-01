@@ -3,8 +3,9 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import Arrow from '../../components/Arrow.astro';
+import SocietyLogo from '../../components/SocietyLogo.astro';
 import { fieldFor, formatRange, getEvents, isoDate, url } from '../../lib/utils';
-import tower from '../../assets/found/pes-transmission-tower.jpg';
+import lightning from '../../assets/found/mood-lightning.jpg';
 
 const { upcoming, past } = await getEvents();
 
@@ -17,14 +18,14 @@ for (const e of past) {
 ---
 <BaseLayout
   title="Events"
-  description="Workshops, conferences, industrial visits and competitions run by the IEEE IAS/IES/PES joint chapter."
+  description="Workshops, conferences, industrial visits and competitions run by the IEEE SMU Student Branch Joint Chapter."
 >
   <PageHeader
     field="black"
     title="Events"
     lead="Workshops, talks, industrial visits and competitions. Open to every engineering student; most are free."
-    image={tower}
-    imageAlt="A high-voltage transmission tower against a clear sky"
+    image={lightning}
+    imageAlt="A lightning bolt striking from a blue storm cloud"
   />
 
   <section class="section bg-canvas" aria-labelledby="upcoming-title">
@@ -50,7 +51,7 @@ for (const e of past) {
                   widths={[480, 720, 960, 1200]}
                   sizes="(min-width: 900px) 50vw, 100vw"
                   loading={i === 0 ? 'eager' : 'lazy'}
-                  class="upcoming-img"
+                  class="upcoming-img photo-reveal"
                 />
               </div>
               <div class="upcoming-body" data-reveal style="--i: 1">
@@ -64,8 +65,11 @@ for (const e of past) {
                   </a>
                 </h3>
                 <p class="mt-6 max-w-[48ch]">{e.data.summary}</p>
-                <p class="mt-4">
-                  {e.data.type} · {e.data.societies.join(', ')} · {e.data.location}
+                <p class="meta-row mt-4">
+                  <span class="meta-logos">
+                    {e.data.societies.map((s) => <SocietyLogo society={s} height={48} />)}
+                  </span>
+                  <span>{e.data.type} · {e.data.location}</span>
                 </p>
                 <div class="mt-8 flex flex-wrap gap-3">
                   {e.data.registrationUrl && (
@@ -111,7 +115,8 @@ for (const e of past) {
                         </span>
                         <span class="row-title">{e.data.title}</span>
                         <span class="row-type">
-                          {e.data.type} · {e.data.societies.join(', ')}
+                          {e.data.type}
+                          {e.data.societies.map((s) => <SocietyLogo society={s} height={32} />)}
                         </span>
                       </a>
                       <div class="row-preview" aria-hidden="true">
@@ -180,7 +185,9 @@ for (const e of past) {
   }
   .row-date { grid-row: span 2; font-size: 17px; }
   .row-title { font-size: clamp(22px, 2.1vw, 30px); line-height: 1.15; letter-spacing: -0.01em; }
-  .row-type { font-size: 15px; color: var(--ink-muted); }
+  .row-type { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 15px; color: var(--ink-muted); }
+  .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .meta-logos { display: inline-flex; align-items: center; gap: 14px; }
   .row-link:hover .row-title,
   .row-link:focus-visible .row-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
 

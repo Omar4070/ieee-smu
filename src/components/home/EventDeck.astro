@@ -5,6 +5,7 @@
  */
 import { formatRange, getEvents, isoDate, url } from '../../lib/utils';
 import Arrow from '../Arrow.astro';
+import SocietyLogo from '../SocietyLogo.astro';
 
 const { upcoming: all, past } = await getEvents();
 const upcoming = all.slice(0, 3);
@@ -31,7 +32,12 @@ const tones = ['field-black', 'field-blue', 'tone-3'];
               <p class="card-foot">
                 <span>
                   <time datetime={isoDate(e.data.date)}>{formatRange(e.data.date, e.data.endDate)}</time>
-                  <span class="card-meta">{e.data.type} · {e.data.societies.join(', ')}</span>
+                  <span class="card-meta">
+                    {e.data.type}
+                    <span class="card-logos">
+                      {e.data.societies.map((s) => <SocietyLogo society={s} variant="white" height={40} />)}
+                    </span>
+                  </span>
                 </span>
                 <span class="card-cta" aria-hidden="true">
                   Details <Arrow size={18} />
@@ -70,7 +76,8 @@ const tones = ['field-black', 'field-blue', 'tone-3'];
   }
   .card:has(.card-link:hover) { transform: translateY(-6px); }
   .tone-3 { background: #004f7d; color: #fff; }
-  .card-meta { display: block; font-size: 15px; font-weight: 400; }
+  .card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 6px; font-size: 15px; font-weight: 400; }
+  .card-logos { display: inline-flex; align-items: center; gap: 12px; }
   .card-title {
     font-size: clamp(22px, 2.1vw, 30px);
     line-height: 1.12;

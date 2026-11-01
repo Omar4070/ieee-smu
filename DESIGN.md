@@ -117,6 +117,9 @@ Text on a field is always its assigned ink, white or black, never grey. PES blue
 - The colour logo is the home page's headline (the white logo replaces it in dark mode); the white logo also closes every page in the footer. The page uses WebP copies (`chapter-logo.webp`, `chapter-logo-white.webp`); the PNGs feed the icon script. The white logo also sits top left in the black header (56px tall in a 72px bar).
 - The three society logos are cut from the chapter logo (`public/logos/{ias,ies,pes}-{white,black}.webp`) and sit on the hero folder tabs: white on IAS green and PES blue, black on IES orange.
 
+### Society logos instead of acronyms
+The acronyms IAS, IES and PES are never printed as text. Wherever a society is named as a label (tags, cards, event details, team roles, headings), the site shows its logo through `SocietyLogo.astro`; in running sentences it uses the full name. Variants: `auto` (colour on light pages, white in dark mode), `field` (on the society's own colour: white, or black on IES orange) and `white` (dark cards, photos). Files: `public/logos/{ias,ies,pes}-{colour,white,black}.webp`, cut from the chapter logo.
+
 ### Neutrals
 | Token | Light | Dark | Use |
 |---|---|---|---|
@@ -201,7 +204,13 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 - Section parts enter once as they scroll into view: heading, then text, then picture, staggered 60–90ms, rising 24px with opacity. Content is visible without JavaScript.
 - Live thing: **the three-phase waveform** in the home hero. Three sines 120° apart flow continuously (CSS translate of a pre-computed path); pointing at or focusing a society's folder thickens its phase and fades the other two. Still under reduced motion.
 - Second signature move: **index with preview.** On the Events archive, pointing at a row shows its photo in a fixed frame and dims the other rows. On touch screens the photo is inline.
-- Transform and opacity only. Everything respects `prefers-reduced-motion: reduce` (travel removed, content kept).
+- **Hero entrance:** the logo rises in, then the three phases draw themselves one after another before they start flowing.
+- **Curtain reveal:** content photos (class `photo-reveal`) open from a horizontal slit and settle from a slight zoom as they scroll into view (CSS scroll timeline).
+- **Wave dividers** (`WaveDivider.astro`): the three-phase wave draws itself between sections as it scrolls into view.
+- **Filmstrip** (`Filmstrip.astro`): two rows of photographs on black slide in opposite directions with the scroll.
+- **Count-up:** the home page figures count up from zero when they appear.
+- **Page transitions:** cross-document view transitions cross-fade pages; the header stays still.
+- Scroll-driven effects degrade gracefully: browsers without scroll timelines show everything in place (the filmstrip drifts slowly on a timer instead). Everything respects `prefers-reduced-motion: reduce` (motion removed, content kept).
 
 ## Do's and Don'ts
 

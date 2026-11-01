@@ -5,7 +5,7 @@
  */
 import { Image } from 'astro:assets';
 import { site } from '../../config/site';
-import turbines from '../../assets/found/pes-wind-turbines.jpg';
+import linesDusk from '../../assets/found/pes-lines-dusk.jpg';
 
 const years = new Date().getFullYear() - site.founded;
 ---
@@ -18,19 +18,19 @@ const years = new Date().getFullYear() - site.founded;
   <div class="mosaic">
     <div class="photo" data-reveal>
       <Image
-        src={turbines}
-        alt="Offshore wind turbines in calm water under a pale sky"
+        src={linesDusk}
+        alt="High-voltage transmission lines crossing fields at dusk"
         widths={[480, 800, 1200, 1600]}
         sizes="(min-width: 768px) 66vw, 100vw"
         class="photo-img"
       />
     </div>
     <div class="figure field-ias" data-reveal style="--i: 1">
-      <p class="figure-num tabular-nums">{site.stats.members}</p>
+      <p class="figure-num tabular-nums" data-count={site.stats.members}>{site.stats.members}</p>
       <p class="figure-cap">student members across the three societies</p>
     </div>
     <div class="figure field-black" data-reveal style="--i: 2">
-      <p class="figure-num tabular-nums">{site.stats.eventsPerYear}</p>
+      <p class="figure-num tabular-nums" data-count={site.stats.eventsPerYear}>{site.stats.eventsPerYear}</p>
       <p class="figure-cap">workshops, visits and competitions last year</p>
     </div>
   </div>
@@ -75,3 +75,30 @@ const years = new Date().getFullYear() - site.founded;
     .figure-cap { font-size: 15px; }
   }
 </style>
+
+<script>
+  // Figures count up from zero the first time they scroll into view.
+  const figures = document.querySelectorAll<HTMLElement>('[data-count]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const el = entry.target as HTMLElement;
+          const target = Number(el.dataset.count);
+          const start = performance.now();
+          const step = (now: number) => {
+            const t = Math.min(1, (now - start) / 1400);
+            el.textContent = String(Math.round(target * (1 - Math.pow(1 - t, 3))));
+            if (t < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+          io.unobserve(el);
+        }
+      },
+      { threshold: 0.6 },
+    );
+    figures.forEach((el) => io.observe(el));
+  }
+</script>

@@ -1,0 +1,140 @@
+---
+/**
+ * "Where power meets industry": two rows of photographs of the societies' world
+ * on black, sliding in opposite directions as the page scrolls (CSS scroll
+ * timeline). Browsers without scroll timelines get a slow time-based drift;
+ * reduced motion gets still rows you can swipe.
+ */
+import { Image } from 'astro:assets';
+import linesDusk from '../../assets/found/pes-lines-dusk.jpg';
+import circuit from '../../assets/found/ies-circuit-green.jpg';
+import substation from '../../assets/found/pes-substation-night.jpg';
+import controlRoom from '../../assets/found/ias-control-room.jpg';
+import lightning from '../../assets/found/mood-lightning.jpg';
+import components from '../../assets/found/ies-components-macro.jpg';
+import towers from '../../assets/found/pes-cooling-towers.jpg';
+import sunset from '../../assets/found/mood-sunset-lines.jpg';
+import robots from '../../assets/found/ias-robot-line.jpg';
+import motor from '../../assets/found/ias-motor-cutaway.jpg';
+
+const rowA = [
+  { src: linesDusk, alt: 'High-voltage transmission lines crossing fields at dusk', caption: 'Transmission at dusk' },
+  { src: circuit, alt: 'A backlit green circuit board with copper traces', caption: 'Circuit traces' },
+  { src: robots, alt: 'Industrial robots stacking crates on a production line', caption: 'Automated production' },
+  { src: substation, alt: 'An electrical substation lit up at night', caption: 'A substation at night' },
+  { src: motor, alt: 'A cutaway electric motor showing rotor and windings', caption: 'Inside a motor' },
+];
+const rowB = [
+  { src: lightning, alt: 'A lightning bolt striking from a blue storm cloud', caption: 'Raw energy' },
+  { src: controlRoom, alt: 'Switchgear panels and meters in an industrial control room', caption: 'Control room' },
+  { src: components, alt: 'Close-up of capacitors and components on a circuit board', caption: 'Power electronics up close' },
+  { src: towers, alt: 'Cooling towers of a power plant releasing steam', caption: 'Generation' },
+  { src: sunset, alt: 'Power line towers silhouetted against an orange sunset', caption: 'The grid at sunset' },
+];
+---
+<section class="film field-black" aria-labelledby="film-title">
+  <div class="wrap film-head">
+    <h2 id="film-title" class="t-headline" data-reveal>Where power meets industry</h2>
+    <p class="film-lead" data-reveal style="--i: 1">
+      From the power plant to the factory floor: the world our three societies work in, and the places our visits take
+      you.
+    </p>
+  </div>
+
+  {
+    [rowA, rowB].map((row, r) => (
+      <div
+        class:list={['row', r === 0 ? 'row-a' : 'row-b']}
+        role="region"
+        aria-label={r === 0 ? 'Photographs, first row' : 'Photographs, second row'}
+        tabindex="0"
+      >
+        <ul class="track" role="list">
+          {row.map((p) => (
+            <li class="frame">
+              <figure>
+                <div class="frame-img">
+                  <Image src={p.src} alt={p.alt} widths={[360, 560, 800]} sizes="(min-width: 900px) 30vw, 72vw" />
+                </div>
+                <figcaption>{p.caption}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  .film {
+    padding-block: var(--section);
+    overflow: hidden;
+  }
+  .film-head {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 24px;
+    align-items: end;
+    margin-bottom: clamp(48px, 6vw, 88px);
+  }
+  .film-head h2 { grid-column: 1 / span 6; }
+  .film-lead { grid-column: 8 / span 5; font-size: 20px; }
+
+  .row + .row { margin-top: 20px; }
+  .track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    will-change: transform;
+  }
+  .row-a .track { padding-left: 4vw; }
+  .row-b .track { padding-left: 18vw; }
+  .frame { width: clamp(260px, 30vw, 480px); }
+  .frame-img { overflow: hidden; aspect-ratio: 4 / 3; }
+  .frame-img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 700ms ease;
+    filter: saturate(0.85);
+  }
+  .frame:hover .frame-img :global(img) { transform: scale(1.06); filter: saturate(1.1); }
+  figcaption { margin-top: 12px; font-size: 15px; color: rgb(255 255 255 / 0.82); }
+
+  /* Scroll-linked drift: the rows slide in opposite directions as the section passes. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .track {
+        animation: drift-left linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+      }
+      .row-b .track { animation-name: drift-right; }
+    }
+    @supports not (animation-timeline: view()) {
+      .track { animation: drift-left 60s linear infinite alternate; }
+      .row-b .track { animation-name: drift-right; }
+    }
+  }
+  @keyframes drift-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-1 * (100% - 100vw) - 4vw)); }
+  }
+  @keyframes drift-right {
+    from { transform: translateX(calc(-1 * (100% - 100vw) - 18vw)); }
+    to { transform: translateX(0); }
+  }
+
+  /* Reduced motion: still rows the visitor can swipe or scroll sideways. */
+  @media (prefers-reduced-motion: reduce) {
+    .row { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; }
+  }
+
+  @media (max-width: 899px) {
+    .film-head { display: flex; flex-direction: column; align-items: flex-start; }
+    .film-lead { font-size: 17px; }
+    .row + .row { margin-top: 14px; }
+    .track { gap: 14px; }
+  }
+</style>

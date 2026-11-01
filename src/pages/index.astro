@@ -4,6 +4,8 @@ import Hero from '../components/home/Hero.astro';
 import Societies from '../components/home/Societies.astro';
 import EventDeck from '../components/home/EventDeck.astro';
 import Stats from '../components/home/Stats.astro';
+import Filmstrip from '../components/home/Filmstrip.astro';
+import WaveDivider from '../components/WaveDivider.astro';
 import CtaInverted from '../components/CtaInverted.astro';
 import { site } from '../config/site';
 import { url } from '../lib/utils';
@@ -31,7 +33,9 @@ import { url } from '../lib/utils';
     </div>
   </section>
 
+  <WaveDivider class="mt-[var(--section)]" />
   <Societies />
+  <Filmstrip />
   <EventDeck />
   <Stats />
   <CtaInverted />

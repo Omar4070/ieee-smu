@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Arrow from '../components/Arrow.astro';
 import { site } from '../config/site';
+import sunset from '../assets/found/mood-sunset-lines.jpg';
 
 const formAction = `https://formspree.io/f/${site.formspreeId}`;
 const mapSrc =
@@ -14,11 +15,13 @@ const social = [
   { href: site.social.facebook, label: 'Facebook' },
 ];
 ---
-<BaseLayout title="Contact" description={`Contact the IEEE IAS/IES/PES joint chapter at ${site.university}.`}>
+<BaseLayout title="Contact" description={`Contact the IEEE SMU Student Branch Joint Chapter at ${site.university}.`}>
   <PageHeader
     field="black"
     title="Contact us"
     lead="Questions about events, membership or partnerships. We answer within a few days during the semester."
+    image={sunset}
+    imageAlt="Power line towers silhouetted against an orange sunset"
   />
 
   <section class="section bg-canvas" aria-labelledby="form-title">
@@ -154,6 +157,7 @@ const social = [
 
 <script>
   import { site } from '../config/site';
+import sunset from '../assets/found/mood-sunset-lines.jpg';
 
   // Progressive enhancement: without JavaScript the form posts to Formspree directly.
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');

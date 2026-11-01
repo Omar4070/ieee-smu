@@ -2,9 +2,10 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
-import SocietyMark from '../components/SocietyMark.astro';
+import SocietyLogo from '../components/SocietyLogo.astro';
 import CtaInverted from '../components/CtaInverted.astro';
 import Arrow from '../components/Arrow.astro';
+import WaveDivider from '../components/WaveDivider.astro';
 import { site } from '../config/site';
 import { societies } from '../config/societies';
 import tower from '../assets/found/pes-transmission-tower.jpg';
@@ -28,7 +29,7 @@ const history = [
 ---
 <BaseLayout
   title="About"
-  description={`History, mission and vision of the IEEE IAS/IES/PES joint chapter at ${site.university}, and what each society covers.`}
+  description={`History, mission and vision of the IEEE SMU Student Branch Joint Chapter at ${site.university}, and what each society covers.`}
 >
   <PageHeader
     field="blue"
@@ -57,6 +58,8 @@ const history = [
       </ol>
     </div>
   </section>
+
+  <WaveDivider class="mb-[var(--section)]" />
 
   <section class="field field-black" aria-labelledby="mission-title">
     <div class="wrap section grid gap-16 md:grid-cols-2 md:gap-6">
@@ -92,17 +95,14 @@ const history = [
               alt={pictures[s.id].alt}
               widths={[480, 720, 960]}
               sizes="(min-width: 900px) 40vw, 86vw"
-              class="society-img"
+              class="society-img photo-reveal"
             />
           </div>
           <div class="society-body">
-            <h3 id={`${s.id}-name`} class="t-headline">
-              {s.name}
+            <h3 id={`${s.id}-name`} class="society-heading">
+              <SocietyLogo society={s.id} height={88} />
             </h3>
-            <p class="t-title mt-4 flex items-center gap-3">
-              <SocietyMark society={s} size={32} />
-              {s.role}
-            </p>
+            <p class="t-title mt-6">{s.role}</p>
             <p class="mt-6 max-w-[52ch]">{s.summary}</p>
             <h4 class="mt-8 font-semibold">Focus areas</h4>
             <ul class="focus" role="list">
@@ -111,7 +111,7 @@ const history = [
               ))}
             </ul>
             <a href={s.url} class="link mt-8 inline-flex items-center gap-2" rel="noopener">
-              Visit the {s.id} website <Arrow size={18} direction="up-right" />
+              Visit the society’s website <Arrow size={18} direction="up-right" />
             </a>
           </div>
         </article>
@@ -128,7 +128,7 @@ const history = [
           alt="An oscilloscope and bench instruments wired to a circuit under test"
           widths={[400, 640, 900]}
           sizes="(min-width: 1024px) 36vw, 92vw"
-          class="mt-10 aspect-[4/3] w-full object-cover"
+          class="photo-reveal mt-10 aspect-[4/3] w-full object-cover"
           data-reveal
           style="--i: 1"
         />
@@ -190,6 +190,7 @@ const history = [
   .society-body {
     padding: 48px max(var(--gutter), 6%);
   }
+  .society-heading { margin: 0; }
   .flip .society-field { order: 2; }
   .focus {
     display: flex;

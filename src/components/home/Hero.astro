@@ -52,7 +52,7 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 <section class="hero bg-canvas" aria-labelledby="hero-title">
   <div class="wrap hero-head">
     <h1 id="hero-title" class="hero-title" data-reveal>
-      <span class="sr-only">IEEE IAS, IES and PES: {site.studentBranch} Joint Chapter</span>
+      <span class="sr-only">IEEE {site.studentBranch} Joint Chapter: Industry Applications, Industrial Electronics and Power &amp; Energy societies</span>
       <!-- Both logos are decorative here: the heading text above names the chapter. -->
       <img
         src={url(site.logoColour)}
@@ -73,7 +73,7 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 
   <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
     <g class="flow">
-      {phases.map((p) => <path class={`phase phase-${p.key}`} d={p.d} />)}
+      {phases.map((p, i) => <path class={`phase phase-${p.key}`} d={p.d} pathLength="1" style={`--p: ${i}`} />)}
     </g>
   </svg>
 
@@ -123,9 +123,13 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
   .hero-title { margin: 0; }
   .hero-logo {
     display: block;
-    width: min(800px, 88vw);
+    animation: logo-in 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    width: min(1100px, 88vw);
     height: auto;
     margin-inline: auto;
+  }
+  @keyframes logo-in {
+    from { opacity: 0; transform: translateY(18px) scale(0.97); }
   }
   /* The colour logo on light pages, the white one in dark mode. */
   .logo-dark { display: none; }
@@ -162,6 +166,15 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 
   @media (prefers-reduced-motion: no-preference) {
     .flow { animation: flow 7s linear infinite; }
+    .phase {
+      stroke-dasharray: 1;
+      animation: phase-draw 1600ms cubic-bezier(0.6, 0, 0.2, 1) both;
+      animation-delay: calc(300ms + var(--p) * 220ms);
+    }
+  }
+  @keyframes phase-draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
   }
   @keyframes flow {
     to { transform: translateX(-400px); }

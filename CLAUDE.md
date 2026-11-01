@@ -43,6 +43,11 @@ On Windows Git Bash, prefix commands that pass a path-like env var with `MSYS_NO
 - **Tailwind's dev scanner can miss classes in newly created files** (e.g. `md:col-span-6` silently absent). If a new page's layout looks wrong in `npm run dev`, restart the dev server before debugging; `npm run build` is unaffected.
 - **Entrance motion:** add `data-reveal` (optional `style="--i: n"` for stagger). The attribute goes `""` → `"in"` → `"done"`, and the CSS only applies while not `done`, so components can keep their own `transform` hover effects. Containers with `data-reveal-children` (Markdown bodies) get each child tagged at runtime. Hero folders use a CSS keyframe with `animation-fill-mode: backwards` instead, for the same reason. Everything is visible without JS and under `prefers-reduced-motion`.
 
+## Society logos and motion
+
+- **Never print the acronyms IAS, IES or PES as visible text** (chapter owner's rule). Use `<SocietyLogo society="IAS" height={40} variant="auto|field|white" />` for labels, and full society names in sentences. Content data keeps the acronyms as values (`societies: [IAS]`, `"society": "IES"`); components turn them into logos.
+- Motion layer: `photo-reveal` class (scroll-timeline curtain reveal, uses the `scale` property so `transform` hovers still work), `WaveDivider.astro`, `Filmstrip.astro`, hero phase draw-in, count-up script in `Stats.astro`, cross-document view transitions in `global.css`. All scroll-driven effects sit inside `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Check motion with `scripts/motion-frames.js` (the regular screenshot script disables motion).
+
 ## Design rules (enforced by the taste-skill lint/inspector)
 
 Read `DESIGN.md` before visual work; `docs/design-critique.md` records the art direction ("colour chapters": each society is a colour field, always in power-chain order). Rules the inspector fails on and that are easy to break:

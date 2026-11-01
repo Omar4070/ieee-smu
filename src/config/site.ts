@@ -3,8 +3,8 @@
  * replace it with the real information and the whole site updates.
  */
 export const site = {
-  name: 'IEEE IAS/IES/PES Joint Chapter',
-  shortName: 'IAS · IES · PES',
+  name: 'IEEE SMU Student Branch Joint Chapter',
+  shortName: 'SMU Joint Chapter',
   tagline: 'Power, electronics and industry, built by students.',
   description:
     'The IEEE Industry Applications, Industrial Electronics and Power & Energy societies joint chapter of the SMU Student Branch: workshops, industrial visits and competitions for engineering students.',

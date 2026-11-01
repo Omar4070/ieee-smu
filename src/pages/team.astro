@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Avatar from '../components/Avatar.astro';
 import Arrow from '../components/Arrow.astro';
+import SocietyLogo from '../components/SocietyLogo.astro';
 import { getTeams, url } from '../lib/utils';
 import { Image } from 'astro:assets';
 import cobot from '../assets/found/ias-cobot-arm.jpg';
@@ -12,7 +13,7 @@ const [current, ...past] = await getTeams();
 ---
 <BaseLayout
   title="Team"
-  description="The executive committee of the IEEE IAS/IES/PES joint chapter, current and past."
+  description="The executive committee of the IEEE SMU Student Branch Joint Chapter, current and past."
 >
   <PageHeader
     field="ies"
@@ -35,10 +36,12 @@ const [current, ...past] = await getTeams();
                 <Avatar name={m.name} photo={m.photo} society={m.society} size={112} />
                 <div class="min-w-0">
                   <h3 class="member-name">{m.name}</h3>
-                  <p class="member-role">
-                    {m.role}
-                    {m.society && <span class="text-ink-muted"> · {m.society}</span>}
-                  </p>
+                  <p class="member-role">{m.role}</p>
+                  {m.society && (
+                    <div class="mt-2">
+                      <SocietyLogo society={m.society} height={40} />
+                    </div>
+                  )}
                   {m.linkedin && (
                     <a href={m.linkedin} class="link mt-2 inline-flex items-center gap-1" rel="noopener">
                       LinkedIn<span class="sr-only"> profile of {m.name}</span>
@@ -100,7 +103,7 @@ const [current, ...past] = await getTeams();
         alt="Industrial robots stacking crates along a production line"
         widths={[480, 720, 960]}
         sizes="(min-width: 900px) 45vw, 92vw"
-        class="volunteer-img"
+        class="volunteer-img photo-reveal"
         data-reveal
         style="--i: 1"
       />

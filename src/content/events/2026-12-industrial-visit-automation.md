@@ -25,4 +25,4 @@ Textbook motors and drives look different when there are two hundred of them run
 
 ## Practical details
 
-Transport is provided. Closed shoes and long trousers are required on the factory floor. Open to all chapter members; priority goes to IAS and IES members.
+Transport is provided. Closed shoes and long trousers are required on the factory floor. Open to all chapter members; priority goes to members of the Industry Applications and Industrial Electronics societies.

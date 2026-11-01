@@ -1,0 +1,66 @@
+---
+/**
+ * The chapter logo's three-phase wave as a section transition. Each phase draws
+ * itself as the divider scrolls into view (CSS scroll timeline); without that
+ * support, or with reduced motion, the wave is simply shown.
+ */
+interface Props {
+  /** Visual height in px. */
+  height?: number;
+  class?: string;
+}
+const { height = 64, class: className } = Astro.props;
+
+const wavelength = 300;
+const amplitude = 22;
+const mid = 32;
+const phase = (deg: number) => {
+  const pts: string[] = [];
+  for (let x = 0; x <= 1200; x += 6) {
+    const y = mid - amplitude * Math.sin((2 * Math.PI * x) / wavelength - (deg * Math.PI) / 180);
+    pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+  }
+  return pts.join('');
+};
+const phases = [
+  { key: 'ias', d: phase(0) },
+  { key: 'ies', d: phase(120) },
+  { key: 'pes', d: phase(240) },
+];
+---
+<div class:list={['wave-divider', className]} aria-hidden="true">
+  <svg viewBox="0 0 1200 64" preserveAspectRatio="none" style={`height:${height}px`} focusable="false">
+    {phases.map((p, i) => <path class={`w w-${p.key}`} d={p.d} pathLength="1" style={`--d: ${i}`} />)}
+  </svg>
+</div>
+
+<style>
+  .wave-divider { overflow: hidden; }
+  svg { display: block; width: 100%; overflow: visible; }
+  .w {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .w-ias { stroke: var(--ias); }
+  .w-ies { stroke: var(--ies); }
+  .w-pes { stroke: var(--pes); }
+  :global([data-theme='dark']) .w-ias { stroke: #2fae55; }
+  :global([data-theme='dark']) .w-pes { stroke: #5b8fd6; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .w {
+        stroke-dasharray: 1;
+        animation: draw linear both;
+        animation-timeline: view();
+        animation-range: entry calc(var(--d) * 8%) cover 50%;
+      }
+    }
+  }
+  @keyframes draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+</style>
