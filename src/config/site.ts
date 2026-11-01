@@ -20,7 +20,7 @@ export const site = {
 
   social: {
     facebook: 'https://www.facebook.com/', // TODO: chapter Facebook page
-    instagram: 'https://www.instagram.com/', // TODO: chapter Instagram profile
+    instagram: 'https://www.instagram.com/ieee.ias.ies.pes.smu/',
     linkedin: 'https://www.linkedin.com/', // TODO: chapter LinkedIn page
   },
 
