@@ -56,7 +56,7 @@ deliberately minimal). The "no footage" warning is explained above.
 
 Studied https://cs-smu.ieee.tn/ (rotating text ring around its logo, typed hero word, constellation canvas, custom cursor, scroll progress bar, glowing tilt cards). Took the principles, not the look:
 
-- living centrepiece → a **phasor wheel** that generates the three-phase wave (AC theory, the chapter's own subject), not a text ring;
+- living centrepiece → a phasor wheel generating the wave was tried and removed at the owner's request (it read as ugly); the flowing three-phase wave alone carries the hero;
 - changing word → a **rolling counter** of activities, not a typewriter;
 - scroll progress → a **three-phase power meter**, not a single bar;
 - reactive cards → gentle **pointer tilt** on photographs, without glow or neon.

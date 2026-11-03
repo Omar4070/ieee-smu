@@ -84,33 +84,11 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
     </p>
   </div>
 
-  <div class="wave-band">
-    <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <g class="flow">
-        {phases.map((p, i) => <path class={`phase phase-${p.key}`} d={p.d} pathLength="1" style={`--p: ${i}`} />)}
-      </g>
-    </svg>
-    {/* A rotating phasor: three arms 120° apart. In AC theory, a rotating phasor is what traces a sine wave,
-        so the three-phase wave flows out of it. */}
-    <svg class="phasor" viewBox="-60 -60 120 120" aria-hidden="true" focusable="false">
-      <circle class="phasor-disc" r="56" />
-      <circle class="phasor-ring" r="46" />
-      <g class="phasor-spin">
-        {phases.map((p, i) => {
-          const a = (-90 + i * 120) * (Math.PI / 180);
-          const x = (46 * Math.cos(a)).toFixed(1);
-          const y = (46 * Math.sin(a)).toFixed(1);
-          return (
-            <g class={`arm arm-${p.key}`}>
-              <line x1="0" y1="0" x2={x} y2={y} />
-              <circle cx={x} cy={y} r="5" />
-            </g>
-          );
-        })}
-      </g>
-      <circle class="phasor-hub" r="5" />
-    </svg>
-  </div>
+  <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <g class="flow">
+      {phases.map((p, i) => <path class={`phase phase-${p.key}`} d={p.d} pathLength="1" style={`--p: ${i}`} />)}
+    </g>
+  </svg>
 
   <nav class="folders" aria-label="Explore the chapter">
     {
@@ -219,44 +197,6 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
     50%, 70% { transform: translateY(-4.8em); }
     75%, 95% { transform: translateY(-7.2em); }
     100% { transform: translateY(-9.6em); }
-  }
-
-  /* ----- Phasor wheel feeding the waveform ----- */
-  .wave-band { position: relative; }
-  .phasor {
-    position: absolute;
-    left: max(var(--gutter), 3vw);
-    top: 50%;
-    width: clamp(96px, 13vw, 164px);
-    height: auto;
-    translate: 0 -46%;
-    overflow: visible;
-  }
-  .phasor-disc { fill: var(--canvas); }
-  .phasor-ring { fill: none; stroke: var(--ink); stroke-opacity: 0.18; stroke-width: 1.5; }
-  .phasor-hub { fill: var(--ink); }
-  .arm line { stroke-width: 4; stroke-linecap: round; }
-  .arm-ias line { stroke: var(--ias); }
-  .arm-ies line { stroke: var(--ies); }
-  .arm-pes line { stroke: var(--pes); }
-  .arm-ias circle { fill: var(--ias); }
-  .arm-ies circle { fill: var(--ies); }
-  .arm-pes circle { fill: var(--pes); }
-  :global([data-theme='dark']) .arm-ias line { stroke: #2fae55; }
-  :global([data-theme='dark']) .arm-pes line { stroke: #5b8fd6; }
-  :global([data-theme='dark']) .arm-ias circle { fill: #2fae55; }
-  :global([data-theme='dark']) .arm-pes circle { fill: #5b8fd6; }
-  .arm { transition: opacity 240ms ease; }
-  @media (prefers-reduced-motion: no-preference) {
-    /* One turn per wavelength of flow, counter-clockwise like a phasor diagram. */
-    .phasor-spin { transform-box: view-box; transform-origin: 0 0; animation: phasor-turn 7s linear infinite; }
-  }
-  @keyframes phasor-turn { to { transform: rotate(-360deg); } }
-  /* Pointing at a society's folder lights its arm too. */
-  .hero:has(.folder.field-ias:is(:hover, :focus-visible)) .arm:not(.arm-ias),
-  .hero:has(.folder.field-ies:is(:hover, :focus-visible)) .arm:not(.arm-ies),
-  .hero:has(.folder.field-pes:is(:hover, :focus-visible)) .arm:not(.arm-pes) {
-    opacity: 0.15;
   }
 
   /* ----- Three-phase waveform ----- */

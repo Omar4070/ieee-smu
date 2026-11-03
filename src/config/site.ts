@@ -9,11 +9,11 @@ export const site = {
   description:
     'The IEEE Industry Applications, Industrial Electronics and Power & Energy societies joint chapter of the SMU Student Branch: workshops, industrial visits and competitions for engineering students.',
 
-  university: 'SMU', // TODO: full university name, if you want it spelled out
+  university: 'South Mediterranean University',
   studentBranch: 'SMU Student Branch',
-  city: '[City]', // TODO
-  country: '[Country]', // TODO
-  timeZone: 'UTC', // TODO: IANA time zone of your city, e.g. "Africa/Algiers", "Europe/Paris"
+  city: 'Tunis',
+  country: 'Tunisia',
+  timeZone: 'Africa/Tunis',
   founded: 2019, // TODO: year the chapter was founded
 
   email: 'chapter@example.org', // TODO: chapter email address
@@ -31,12 +31,12 @@ export const site = {
   },
 
   /**
-   * Google Maps embed. Replace `mapQuery` with your building's name and city
-   * (or paste a full embed URL from Google Maps → Share → Embed a map into `mapEmbedUrl`).
+   * Google Maps embed: `mapQuery` is what the map searches for (or paste a full embed URL from
+   * Google Maps → Share → Embed a map into `mapEmbedUrl` to pin an exact building).
    */
-  mapQuery: 'Faculty of Electrical Engineering', // TODO
-  mapEmbedUrl: '', // TODO (optional)
-  address: '[Building, Faculty of Electrical Engineering, University, City]', // TODO
+  mapQuery: 'South Mediterranean University, Berges du Lac 2, Tunis',
+  mapEmbedUrl: '', // optional
+  address: 'South Mediterranean University, Berges du Lac 2, Tunis, Tunisia',
 
   /** Formspree form ID, the part after https://formspree.io/f/ */
   formspreeId: 'TODO_FORMSPREE_ID', // TODO: create a free form at formspree.io

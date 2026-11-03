@@ -5,7 +5,7 @@ date: 2026-04-18
 endDate: 2026-04-19
 type: Competition
 societies: [IAS, IES]
-location: "Main hall, [University]"
+location: "Main hall, South Mediterranean University"
 summary: "Twelve student teams had 24 hours to program a robot arm to sort parts on a moving conveyor. Fastest error-free run won."
 cover: ../../assets/found/ias-cobot-arm.jpg
 coverAlt: "A collaborative robot arm mounted on a perforated steel table next to its teach pendant"

@@ -8,7 +8,7 @@ import sunset from '../assets/found/mood-sunset-lines.jpg';
 const formAction = `https://formspree.io/f/${site.formspreeId}`;
 const mapSrc =
   site.mapEmbedUrl ||
-  `https://www.google.com/maps?q=${encodeURIComponent(`${site.mapQuery}, ${site.university}, ${site.city}`)}&output=embed`;
+  `https://www.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&output=embed`;
 const social = [
   { href: site.social.linkedin, label: 'LinkedIn' },
   { href: site.social.instagram, label: 'Instagram' },
@@ -94,7 +94,7 @@ const social = [
     <h2 id="map-title" class="sr-only">Map</h2>
     <iframe
       src={mapSrc}
-      title={`Map showing ${site.mapQuery}`}
+      title={`Map showing ${site.university}, ${site.city}`}
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
       class="map"></iframe>

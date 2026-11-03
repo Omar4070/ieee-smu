@@ -5,7 +5,7 @@ date: 2026-11-21
 time: "14:00–18:00"
 type: Workshop
 societies: [IES]
-location: "Power Electronics Lab, [Faculty of Electrical Engineering]"
+location: "Power Electronics Lab, South Mediterranean University"
 summary: "A hands-on workshop: design, solder and test a 12 V to 5 V DC-DC converter, then measure its efficiency on the oscilloscope."
 cover: ../../assets/found/ies-oscilloscope-bench.jpg
 coverAlt: "An oscilloscope and bench power supply on a lab bench, wired to a circuit under test"
