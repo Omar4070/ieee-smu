@@ -64,7 +64,7 @@ const officerCards = members.filter((m) => m.size === 'officer');
             </div>
             <figcaption>
               <h3 class="name">{m.name ?? m.role}</h3>
-              <p class="role">{m.name ? m.role : 'To be announced'}</p>
+              {(m.name || !m.photo) && <p class="role">{m.name ? m.role : 'To be announced'}</p>}
               {m.society && <SocietyLogo society={m.society} height={36} class="mt-2" />}
               {m.linkedin && (
                 <a href={m.linkedin} class="link mt-2 inline-flex items-center gap-1" rel="noopener">
@@ -120,7 +120,7 @@ const officerCards = members.filter((m) => m.size === 'officer');
             </div>
             <figcaption>
               <h3 class="name">{m.name ?? m.role}</h3>
-              <p class="role">{m.name ? m.role : 'To be announced'}</p>
+              {(m.name || !m.photo) && <p class="role">{m.name ? m.role : 'To be announced'}</p>}
               {m.society && <SocietyLogo society={m.society} height={32} class="mt-2" />}
               {m.linkedin && (
                 <a href={m.linkedin} class="link mt-2 inline-flex items-center gap-1" rel="noopener">
