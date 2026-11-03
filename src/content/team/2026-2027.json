@@ -1,11 +1,11 @@
 {
   "year": "2026–2027",
   "members": [
-    { "role": "Chair", "lead": true, "photo": "../../assets/team/chair.jpg" },
-    { "role": "Vice-Chair", "lead": true, "photo": "../../assets/team/vice-chair.jpg" },
-    { "role": "Secretary", "photo": "../../assets/team/secretary.jpg" },
-    { "role": "Treasurer", "photo": "../../assets/team/treasurer.jpg" },
-    { "role": "HR Manager", "photo": "../../assets/team/hr-manager.jpg" },
+    { "name": "Hedi Ennaifer", "role": "Chair", "lead": true, "photo": "../../assets/team/hedi-ennaifer.jpg" },
+    { "name": "Zayneb Sassi", "role": "Vice-Chair", "lead": true, "photo": "../../assets/team/zayneb-sassi.jpg" },
+    { "name": "Malak Belhadj", "role": "Secretary", "photo": "../../assets/team/malak-belhadj.jpg" },
+    { "name": "Youssef Bousnina", "role": "Treasurer", "photo": "../../assets/team/youssef-bousnina.jpg" },
+    { "name": "Mouhannad Elfarra", "role": "HR Manager", "photo": "../../assets/team/mouhannad-elfarra.jpg" },
     { "name": "Omar Ben Tkhayat", "role": "Webmaster", "photo": "../../assets/team/omar-ben-tkhayat.jpg" },
     { "name": "Walid Fakhfakh", "role": "Media Manager", "photo": "../../assets/team/walid-fakhfakh.jpg" }
   ]
