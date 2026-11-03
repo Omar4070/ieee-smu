@@ -56,12 +56,12 @@ const years = new Date().getFullYear() - site.founded;
   }
   .figure { padding: 28px; }
   .figure-num {
-    font-size: clamp(56px, 10vw, 144px);
+    font-size: clamp(44px, 6vw, 96px);
     font-weight: 300;
     line-height: 1;
     letter-spacing: -0.03em;
   }
-  .figure-cap { max-width: 22ch; margin-top: 16px; font-size: 20px; line-height: 1.35; }
+  .figure-cap { max-width: 22ch; margin-top: 16px; font-size: 17px; line-height: 1.35; }
 
   @media (max-width: 767px) {
     .mosaic {
@@ -71,7 +71,7 @@ const years = new Date().getFullYear() - site.founded;
     }
     .photo { grid-column: span 2; grid-row: auto; aspect-ratio: 4 / 3; }
     .figure { aspect-ratio: 1; padding: 20px; }
-    .figure-num { font-size: 15vw; }
+    .figure-num { font-size: 12vw; }
     .figure-cap { font-size: 15px; }
   }
 </style>

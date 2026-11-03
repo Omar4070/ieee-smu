@@ -32,7 +32,7 @@ const {
 </section>
 
 <style>
-  .cta { min-height: 90svh; display: flex; }
+  .cta { min-height: 62svh; display: flex; }
   .cta-inner {
     display: flex;
     flex-direction: column;
@@ -43,7 +43,7 @@ const {
   }
   .cta-title {
     max-width: 11ch;
-    font-size: clamp(56px, 10vw, 144px);
+    font-size: clamp(34px, 4.4vw, 64px);
     font-weight: 300;
     line-height: 0.92;
     letter-spacing: -0.045em;
@@ -55,13 +55,13 @@ const {
     justify-content: space-between;
     gap: 24px 48px;
   }
-  .cta-text { max-width: 40ch; font-size: 20px; }
+  .cta-text { max-width: 40ch; font-size: 18px; }
   .cta-btn { min-height: 56px; }
   /* In dark theme the inverted field is light, the button stays IEEE blue. */
 
   @media (max-width: 639px) {
-    .cta { min-height: 80svh; }
-    .cta-title { font-size: 15vw; }
+    .cta { min-height: 60svh; }
+    .cta-title { font-size: 10vw; }
     .cta-text { font-size: 17px; }
     .cta-btn { width: 100%; }
   }

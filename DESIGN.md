@@ -46,11 +46,11 @@ colors:
   semantic-error: "#DA1E28"
 
 typography:
-  display-xl:   { fontFamily: Montserrat, fontSize: "clamp(56px, 10vw, 160px)", fontWeight: 300, lineHeight: 0.95, letterSpacing: "-0.04em" }
-  display-lg:   { fontFamily: Montserrat, fontSize: "clamp(44px, 7vw, 112px)",  fontWeight: 300, lineHeight: 1.0,  letterSpacing: "-0.03em" }
-  headline:     { fontFamily: Montserrat, fontSize: "clamp(32px, 3.6vw, 52px)", fontWeight: 400, lineHeight: 1.1,  letterSpacing: "-0.02em" }
-  statement:    { fontFamily: Montserrat, fontSize: "clamp(24px, 2.6vw, 36px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: "-0.01em" }
-  body:         { fontFamily: Montserrat, fontSize: "clamp(17px, 1.2vw, 19px)", fontWeight: 400, lineHeight: 1.55, letterSpacing: "0.16px" }
+  display-xl:   { fontFamily: Montserrat, fontSize: "clamp(40px, 5.6vw, 88px)", fontWeight: 300, lineHeight: 0.95, letterSpacing: "-0.04em" }
+  display-lg:   { fontFamily: Montserrat, fontSize: "clamp(34px, 4.4vw, 64px)",  fontWeight: 300, lineHeight: 1.0,  letterSpacing: "-0.03em" }
+  headline:     { fontFamily: Montserrat, fontSize: "clamp(26px, 2.4vw, 36px)", fontWeight: 400, lineHeight: 1.1,  letterSpacing: "-0.02em" }
+  statement:    { fontFamily: Montserrat, fontSize: "clamp(19px, 1.6vw, 24px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: "-0.01em" }
+  body:         { fontFamily: Montserrat, fontSize: "clamp(16px, 1.1vw, 17px)", fontWeight: 400, lineHeight: 1.55, letterSpacing: "0.16px" }
   small:        { fontFamily: Montserrat, fontSize: "15px", fontWeight: 400, lineHeight: 1.45, letterSpacing: "0.16px" }
   emphasis:     { fontFamily: Montserrat, fontWeight: 600 }
 
@@ -143,11 +143,13 @@ The acronyms IAS, IES and PES are never printed as text. Wherever a society is n
 
 | Token | Size | Weight | Leading | Tracking | Use |
 |---|---|---|---|---|---|
-| display-xl | clamp(56px, 10vw, 160px) | 300 | 0.95 | -0.04em | Hero headline only |
-| display-lg | clamp(44px, 7vw, 112px) | 300 | 1.0 | -0.03em | Page titles, chapter headings |
-| headline | clamp(32px, 3.6vw, 52px) | 400 | 1.1 | -0.02em | Section headings |
-| statement | clamp(24px, 2.6vw, 36px) | 400 | 1.25 | -0.01em | Intro paragraphs set large (≤ 3 lines) |
-| body | 17–19px | 400 | 1.55 | 0.16px | Running text |
+| display-xl | clamp(40px, 5.6vw, 88px) | 300 | 0.95 | -0.04em | Hero headline only |
+| display-lg | clamp(34px, 4.4vw, 64px) | 300 | 1.0 | -0.03em | Page titles, chapter headings |
+| headline | clamp(26px, 2.4vw, 36px) | 400 | 1.1 | -0.02em | Section headings |
+| statement | clamp(19px, 1.6vw, 24px) | 400 | 1.25 | -0.01em | Intro paragraphs set large (≤ 3 lines) |
+
+The scale was deliberately reduced (owner: titles were "so big"): keep headings modest and do not scale them back up.
+| body | 16–17px | 400 | 1.55 | 0.16px | Running text |
 | small | 15px | 400 | 1.45 | 0.16px | Dates, captions, meta |
 
 **Principles**
@@ -229,7 +231,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 ### Do
 - Give each section one flat field or surface, and change it at a hard edge.
 - Use the society colour whenever content belongs to one society (tags, tiles, page fields).
-- Keep body text at the full ink colour, 17px or more.
+- Keep body text at the full ink colour, 16px or more.
 - Keep headings to two lines at every width.
 
 ### Don't
