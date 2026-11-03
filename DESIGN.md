@@ -45,17 +45,19 @@ colors:
   semantic-error: "#DA1E28"
 
 typography:
-  display-xl:   { fontFamily: IBM Plex Sans, fontSize: "clamp(56px, 10vw, 160px)", fontWeight: 300, lineHeight: 0.95, letterSpacing: "-0.04em" }
-  display-lg:   { fontFamily: IBM Plex Sans, fontSize: "clamp(44px, 7vw, 112px)",  fontWeight: 300, lineHeight: 1.0,  letterSpacing: "-0.03em" }
-  headline:     { fontFamily: IBM Plex Sans, fontSize: "clamp(32px, 3.6vw, 52px)", fontWeight: 400, lineHeight: 1.1,  letterSpacing: "-0.02em" }
-  statement:    { fontFamily: IBM Plex Sans, fontSize: "clamp(24px, 2.6vw, 36px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: "-0.01em" }
-  body:         { fontFamily: IBM Plex Sans, fontSize: "clamp(17px, 1.2vw, 19px)", fontWeight: 400, lineHeight: 1.55, letterSpacing: "0.16px" }
-  small:        { fontFamily: IBM Plex Sans, fontSize: "15px", fontWeight: 400, lineHeight: 1.45, letterSpacing: "0.16px" }
-  emphasis:     { fontFamily: IBM Plex Sans, fontWeight: 600 }
+  display-xl:   { fontFamily: Montserrat, fontSize: "clamp(56px, 10vw, 160px)", fontWeight: 300, lineHeight: 0.95, letterSpacing: "-0.04em" }
+  display-lg:   { fontFamily: Montserrat, fontSize: "clamp(44px, 7vw, 112px)",  fontWeight: 300, lineHeight: 1.0,  letterSpacing: "-0.03em" }
+  headline:     { fontFamily: Montserrat, fontSize: "clamp(32px, 3.6vw, 52px)", fontWeight: 400, lineHeight: 1.1,  letterSpacing: "-0.02em" }
+  statement:    { fontFamily: Montserrat, fontSize: "clamp(24px, 2.6vw, 36px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: "-0.01em" }
+  body:         { fontFamily: Montserrat, fontSize: "clamp(17px, 1.2vw, 19px)", fontWeight: 400, lineHeight: 1.55, letterSpacing: "0.16px" }
+  small:        { fontFamily: Montserrat, fontSize: "15px", fontWeight: 400, lineHeight: 1.45, letterSpacing: "0.16px" }
+  emphasis:     { fontFamily: Montserrat, fontWeight: 600 }
 
 rounded:
-  none: 0px                   # everything: buttons, images, tiles, inputs
-  full: 9999px                # avatars only
+  sm: 10px                    # buttons, inputs, content photos, small panels
+  md: 16px                    # cards, tiles, picture frames, panels, footer tiles
+  pill: 9999px                # focus-area chips
+  none: 0px                   # only full-bleed bands that touch the screen edges, and folder tabs
 
 spacing:                      # 4px base grid (Carbon)
   xxs: 4px
@@ -70,12 +72,12 @@ spacing:                      # 4px base grid (Carbon)
   gutter: "clamp(16px, 3vw, 32px)"   # the one pair of outer page margins
 
 components:
-  button-primary:   { backgroundColor: "{colors.primary}", textColor: "{colors.on-primary}", rounded: "{rounded.none}", padding: "16px 24px", minHeight: 48px }
-  button-inverse:   { backgroundColor: "{ink}", textColor: "{canvas}", rounded: "{rounded.none}", padding: "16px 24px", minHeight: 48px }
+  button-primary:   { backgroundColor: "{colors.primary}", textColor: "{colors.on-primary}", rounded: "{rounded.sm}", padding: "16px 24px", minHeight: 48px }
+  button-inverse:   { backgroundColor: "{ink}", textColor: "{canvas}", rounded: "{rounded.sm}", padding: "16px 24px", minHeight: 48px }
   chapter-field:    { backgroundColor: "{colors.field-*}", textColor: "{colors.on-field-*}", minHeight: "90svh on the home page, auto elsewhere" }
   page-header:      { backgroundColor: "page's chapter field", textColor: "matching on-field", padding: "128px gutter 64px" }
-  tile:             { backgroundColor: "a field or surface-1", rounded: "{rounded.none}", padding: 24px, border: none, shadow: none }
-  text-input:       { backgroundColor: "{surface-1}", textColor: "{ink}", rounded: "{rounded.none}", padding: "12px 16px", borderBottom: "2px solid {ink-muted}", focusBorderBottom: "2px solid {focus}" }
+  tile:             { backgroundColor: "a field or surface-1", rounded: "{rounded.md}", padding: 24px, border: none, shadow: none }
+  text-input:       { backgroundColor: "{surface-1}", textColor: "{ink}", rounded: "{rounded.sm} top corners", padding: "12px 16px", borderBottom: "2px solid {ink-muted}", focusBorderBottom: "2px solid {focus}" }
   top-nav:          { backgroundColor: "{colors.field-black}", textColor: "{colors.on-field-black}", height: 72px, logo: "white chapter logo" }
   footer:           { layout: "tile board, 8px gaps", logoTile: "white chapter logo on {colors.field-black}", inviteTile: "{colors.primary}" }
 ---
@@ -87,10 +89,10 @@ This is the design system for the IEEE IAS/IES/PES Joint Chapter of the SMU Stud
 The idea comes from the logo: **three societies, like the three phases of an AC supply, carrying one current.** The logo's wave changes colour from IAS green to IES orange to PES blue. On the home page it becomes a live three-phase waveform (three sines, 120° apart) above a stack of coloured folders, and pointing at a society's folder brings its phase forward. A colour always *means* something: green is IAS, orange is IES, blue is PES, black is the chapter itself. Societies always appear in logo order: IAS, IES, PES.
 
 **Key characteristics**
-- **One typeface: IBM Plex Sans** (variable, self-hosted). Display sizes at weight 300 (IBM's light display signature), body 400, emphasis 600. No second face, no italics for emphasis, no monospace.
+- **One typeface: Montserrat** (variable, self-hosted). Display sizes at weight 300, body 400, emphasis 500–600. No second face, no italics for emphasis, no monospace. Montserrat is wide: keep headings short so they stay within two lines.
 - **One accent: IEEE Blue `#00629B`** carries primary buttons and links. It is never used as decoration.
 - **Flat fields, hard edges.** Sections change colour at a hard horizontal edge. No gradients, no shadows at rest, no glass, no hairline dividers.
-- **Square corners everywhere** (`rounded.none`). Only member portraits may be circular.
+- **Softly rounded corners** (chapter owner's choice): 16px (`--radius`) on cards, tiles, picture frames and panels; 10px (`--radius-sm`) on buttons, inputs and content photos. Full-bleed bands that touch the screen edges stay square, and so do the folder tabs.
 - **Two themes.** Light and dark swap only the neutrals (canvas, surfaces, ink). Chapter fields keep their colours in both themes so the brand stays recognisable.
 
 ## Colors
@@ -133,7 +135,7 @@ The acronyms IAS, IES and PES are never printed as text. Wherever a society is n
 
 ## Typography
 
-**IBM Plex Sans** (SIL Open Font License), self-hosted via `@fontsource-variable/ibm-plex-sans` so no third-party font request is made. Fallback: `"Helvetica Neue", Arial, sans-serif`.
+**Montserrat** (SIL Open Font License), self-hosted via `@fontsource-variable/montserrat` so no third-party font request is made. Fallback: `"Helvetica Neue", Arial, sans-serif`.
 
 | Token | Size | Weight | Leading | Tracking | Use |
 |---|---|---|---|---|---|
@@ -175,8 +177,8 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 | float | `0 12px 32px rgb(0 0 0 / .25)` | Only things that truly float: the open mobile menu |
 
 ## Shapes
-- `rounded.none` (0px) on buttons, tiles, images, inputs and containers.
-- `rounded.full` only on member portrait photos.
+- `--radius` (16px) on cards, tiles, picture frames, panels and footer tiles; `--radius-sm` (10px) on buttons, inputs and content photos (`.photo-reveal`); 6px on tags; pills only for focus-area chips.
+- Square (0px) only where a band touches the screen edge, and on the folder-tab shapes.
 - The **folder tab** (a trapezoid cut with `clip-path`) is the one signature shape: hero folders and page-header tabs.
 
 ## Components
@@ -198,7 +200,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 ## Imagery
 1. The chapter's own photographs (events, visits, team). **TODO: replace all placeholders.**
 2. Real, credited pictures of the field (substations, motors, converters, factories) from Wikimedia Commons, credited on the Credits page. They show the *world* of the societies, never the chapter's own people or events.
-3. Square corners, one treatment, `loading="lazy"` except the first image on screen, explicit `width`/`height`.
+3. Rounded corners (`--radius-sm` / `--radius`), one treatment, `loading="lazy"` except the first image on screen, explicit `width`/`height`.
 
 ## Motion
 - Section parts enter once as they scroll into view: heading, then text, then picture, staggered 60–90ms, rising 24px with opacity. Content is visible without JavaScript.
@@ -221,7 +223,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 - Keep headings to two lines at every width.
 
 ### Don't
-- Don't round corners, add shadows to resting elements, or use gradients.
+- Don't add shadows to resting elements or use gradients; don't invent new corner radii beyond `--radius` and `--radius-sm`.
 - Don't add a second accent colour or a second typeface.
 - Don't use hairline dividers, 1px outlined cards, eyebrow labels, emoji or icon-topped card rows.
 - Don't change the society order (IAS, IES, PES) or swap their colours.

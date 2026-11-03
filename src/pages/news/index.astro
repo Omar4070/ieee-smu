@@ -127,6 +127,7 @@ const [latest, ...rest] = await getNews();
     gap: 32px;
     align-items: center;
     padding: 32px;
+    border-radius: var(--radius);
     background: var(--canvas);
   }
   .news-row:not(:has(.news-thumb)) { grid-template-columns: 1fr; }

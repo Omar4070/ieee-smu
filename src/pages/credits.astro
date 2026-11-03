@@ -56,7 +56,7 @@ const thumb = (file: string) => files[`../assets/found/${file}`]?.default;
 <style>
   .credits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
   .credit { display: flex; gap: 24px; align-items: flex-start; }
-  .credit :global(.credit-img) { flex: none; width: 160px; aspect-ratio: 4 / 3; object-fit: cover; }
+  .credit :global(.credit-img) { flex: none; width: 160px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-sm); }
   @media (max-width: 899px) {
     .credits { grid-template-columns: 1fr; }
   }

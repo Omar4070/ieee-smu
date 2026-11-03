@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/ibm-plex-sans';
+@import '@fontsource-variable/montserrat';
 
 /* Dark mode follows the data-theme attribute set by the theme toggle. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
@@ -34,6 +34,10 @@
   --section: clamp(96px, 12vw, 176px);
   --header-h: 72px;
 
+  /* Corner radii: cards, photos, tiles, panels / buttons, inputs, small parts. */
+  --radius: 16px;
+  --radius-sm: 10px;
+
   color-scheme: light;
 }
 
@@ -49,7 +53,7 @@
 }
 
 @theme inline {
-  --font-sans: 'IBM Plex Sans Variable', 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Montserrat Variable', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
   --color-canvas: var(--canvas);
   --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
@@ -199,7 +203,7 @@
     min-height: 52px;
     padding: 14px 24px;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     background: var(--primary);
     color: var(--on-primary);
     font: inherit;
@@ -248,6 +252,7 @@
 
   /* ---------- Society tag ---------- */
   .tag {
+    border-radius: 6px;
     display: inline-flex;
     align-items: center;
     min-height: 28px;
@@ -274,6 +279,9 @@
   }
 }
 
+/* Content photos have softly rounded corners. */
+.photo-reveal { border-radius: var(--radius-sm); }
+
 /* Photos unveil like a curtain as they scroll into view: a horizontal slit opens
    while the picture settles from a slight zoom. Uses the `scale` property, so
    hover zooms written with `transform` still work. */
@@ -288,11 +296,11 @@
 }
 @keyframes photo-unveil {
   from {
-    clip-path: inset(22% 0 22% 0);
+    clip-path: inset(22% 0 22% 0 round var(--radius-sm));
     scale: 1.14;
   }
   to {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0 round var(--radius-sm));
     scale: 1;
   }
 }

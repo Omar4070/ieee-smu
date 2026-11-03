@@ -1,6 +1,6 @@
 ---
 # TODO: sample news item. Replace with a real award, or delete this file.
-title: "Chapter recognised for outstanding student activities"
+title: "Chapter recognised by our IEEE region"
 date: 2026-03-02
 category: Award
 summary: "Our IEEE region recognised the chapter for its programme of workshops and industrial visits during the 2025 calendar year."

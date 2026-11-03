@@ -54,9 +54,10 @@ On Windows Git Bash, prefix commands that pass a path-like env var with `MSYS_NO
 
 Read `DESIGN.md` before visual work; `docs/design-critique.md` records the art direction ("colour chapters": each society is a colour field, always in power-chain order). Rules the inspector fails on and that are easy to break:
 
-- One typeface (IBM Plex Sans Variable, self-hosted), one accent (`--primary` IEEE blue) for buttons/links. Keep to the existing type steps (`t-display-lg`, `t-headline`, `t-statement`, `t-title`, body, `t-small`), about five sizes per page.
-- No eyebrows/small labels directly above a heading (put category/date/society tags *after* the title), no gradients, no shadows on resting elements, no hairline dividers or 1px outlined boxes (form fields excepted), no rounded corners except avatars, no monospace, no icon-topped rows of identical cards.
+- One typeface (Montserrat Variable, self-hosted via `@fontsource-variable/montserrat`; it is wide, so watch the two-line heading rule), one accent (`--primary` IEEE blue) for buttons/links. Keep to the existing type steps (`t-display-lg`, `t-headline`, `t-statement`, `t-title`, body, `t-small`), about five sizes per page.
+- No eyebrows/small labels directly above a heading (put category/date/society tags *after* the title), no gradients, no shadows on resting elements, no hairline dividers or 1px outlined boxes (form fields excepted), no monospace, no icon-topped rows of identical cards.
 - Every heading ≤ 2 lines at 1440/768/390 px; statements set large stay ≤ 30px.
+- Corners are softly rounded (owner's choice, overrides the taste skill's square rule): `var(--radius)` 16px for cards/tiles/frames/panels, `var(--radius-sm)` 10px for buttons/inputs/photos; full-bleed bands and folder tabs stay square.
 - Sentence case for headings and buttons (deliberate deviation from the web-design-guidelines' Title Case rule).
 - Colours come from the chapter palette (`assets/brand/palette.png`): IAS green `#0a792d` (white text), IES orange `#ed5703` (black text: white fails contrast), PES blue `#093f7a`, black, SMU blue `#00629b` (= `--primary`). Societies always appear in logo order IAS, IES, PES (`src/config/societies.ts` order drives the hero folders, waveform and lists).
 - Thin lines on dark grounds (hero waveform in dark mode, favicon) use lighter tints (`#2fae55`, `#ff7a2f`, `#5b8fd6`); fills always use true palette colours.

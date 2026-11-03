@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import BackgroundWaves from '../components/BackgroundWaves.astro';
 import { site } from '../config/site';
 import { url } from '../lib/utils';
-import plexLatin from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
+import montserratLatin from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
 
 interface Props {
   /** Page title; the chapter name is appended automatically. */
@@ -44,7 +44,7 @@ const ogImage = new URL(image ?? url('/og-default.png'), Astro.site);
     <meta property="og:locale" content="en_GB" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="preload" href={plexLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={montserratLatin} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />

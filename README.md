@@ -250,12 +250,12 @@ The two `run-code` tests need a browser open on the site first:
 
 The look is described in `DESIGN.md`. The short version:
 
-- One typeface (IBM Plex Sans), one accent colour (IEEE Blue `#00629B`) for buttons and links.
+- One typeface (Montserrat), one accent colour (IEEE Blue `#00629B`) for buttons and links.
 - Each society has its colour from the chapter palette: **IAS green** `#0a792d`, **IES orange**
   `#ed5703`, **PES blue** `#093f7a`; the chapter itself is black, and SMU blue `#00629b` is for
   buttons and links. Societies always appear in the logo's order: IAS, IES, PES.
 - The logo's three-colour wave is the chapter's motif (header mark, home page waveform).
-- Flat colours and square corners: no gradients, no shadows, no rounded cards, no thin divider lines.
+- Flat colours and softly rounded corners (16px cards, 10px buttons): no gradients, no shadows, no thin divider lines.
 - Headings stay short: two lines at most, on a phone too.
 - Every photo needs a real `alt` description.
 
@@ -273,5 +273,5 @@ The look is described in `DESIGN.md`. The short version:
 
 ---
 
-Built with Astro, Tailwind CSS and IBM Plex Sans (SIL Open Font License). Photographs from Wikimedia
+Built with Astro, Tailwind CSS and Montserrat (SIL Open Font License). Photographs from Wikimedia
 Commons are credited on the Image credits page. IEEE and the society names are trademarks of IEEE.

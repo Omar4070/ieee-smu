@@ -48,7 +48,7 @@ const { title, lead, field = 'black', size = 'lg', image, imageAlt = '' } = Astr
   .has-image .text { grid-column: 1 / span 7; }
   .picture { grid-column: 8 / span 5; }
   .with-image { padding-top: clamp(48px, 6vw, 96px); }
-  .picture { overflow: hidden; }
+  .picture { overflow: hidden; border-radius: var(--radius); }
   .picture :global(.picture-img) {
     width: 100%;
     aspect-ratio: 4 / 3;
@@ -65,7 +65,7 @@ const { title, lead, field = 'black', size = 'lg', image, imageAlt = '' } = Astr
   }
   .title-md {
     max-width: 24ch;
-    font-size: clamp(30px, 5vw, 76px);
+    font-size: clamp(26px, 5vw, 76px);
     font-weight: 300;
     line-height: 1.04;
     letter-spacing: -0.025em;

@@ -145,6 +145,7 @@ for (const e of past) {
     grid-column: 1 / span 6;
     aspect-ratio: 4 / 3;
     padding: 8%;
+    border-radius: var(--radius);
   }
   .upcoming-media :global(.upcoming-img) { width: 100%; height: 100%; object-fit: cover; }
   .upcoming-body { grid-column: 8 / span 5; }
@@ -198,6 +199,8 @@ for (const e of past) {
     width: calc((100% - 11 * 24px) / 12 * 4 + 3 * 24px);
     aspect-ratio: 1;
     opacity: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
     pointer-events: none;
     transition: opacity 240ms ease;
   }

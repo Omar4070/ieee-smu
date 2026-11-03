@@ -275,13 +275,14 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 
   .front {
     flex: 1;
+    border-radius: 0 0 var(--radius) var(--radius);
     min-height: 168px;
   }
   /* Each tab sits beside, not over, the text on the strip in front of it. */
   .folder:nth-of-type(1) { --tab-x: 0%; }
-  .folder:nth-of-type(2) { --tab-x: 44%; }
-  .folder:nth-of-type(3) { --tab-x: 58%; }
-  .folder:nth-of-type(4) { --tab-x: 72%; }
+  .folder:nth-of-type(2) { --tab-x: 54%; }
+  .folder:nth-of-type(3) { --tab-x: 65%; }
+  .folder:nth-of-type(4) { --tab-x: 76%; }
   .front-tab {
     left: auto;
     right: 0;
