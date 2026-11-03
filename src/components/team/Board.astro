@@ -50,7 +50,7 @@ const officerCards = members.filter((m) => m.size === 'officer');
           <figure>
             <div class:list={['portrait', m.panel]}>
               {m.photo ? (
-                <Image src={m.photo} alt={m.name ?? m.role} widths={[360, 560, 800]} sizes="(min-width: 900px) 26vw, 46vw" class="photo" />
+                <Image src={m.photo} alt={`Portrait of ${m.name ?? `the ${m.role}`}`} widths={[360, 560, 800]} sizes="(min-width: 900px) 26vw, 46vw" class="photo" />
               ) : (
                 <div class="standby" aria-hidden="true">
                   <svg viewBox="0 0 200 80" preserveAspectRatio="none" class="standby-wave">
@@ -106,7 +106,7 @@ const officerCards = members.filter((m) => m.size === 'officer');
           <figure>
             <div class:list={['portrait', m.panel]}>
               {m.photo ? (
-                <Image src={m.photo} alt={m.name ?? m.role} widths={[300, 480, 640]} sizes="(min-width: 1100px) 18vw, (min-width: 640px) 30vw, 46vw" class="photo" />
+                <Image src={m.photo} alt={`Portrait of ${m.name ?? `the ${m.role}`}`} widths={[300, 480, 640]} sizes="(min-width: 1100px) 18vw, (min-width: 640px) 30vw, 46vw" class="photo" />
               ) : (
                 <div class="standby" aria-hidden="true">
                   <svg viewBox="0 0 200 80" preserveAspectRatio="none" class="standby-wave">
