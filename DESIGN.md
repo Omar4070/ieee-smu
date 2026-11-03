@@ -33,11 +33,12 @@ colors:
   light-link: "#00629B"
   light-focus: "#00629B"
   # Neutrals, dark theme
-  dark-canvas: "#141414"
-  dark-surface-1: "#1F1F1F"
-  dark-surface-2: "#2B2B2B"
-  dark-ink: "#F2F2F2"
-  dark-ink-muted: "#B8BCC0"
+  dark-canvas: "#0F1C2E"     # midnight blue: the dark theme is never black
+  dark-surface-1: "#172A42"
+  dark-surface-2: "#203752"
+  dark-ink: "#EEF3F8"
+  dark-ink-muted: "#B3C2D3"
+  dark-field-black: "#1C3557" # the "black" chapter blocks become deep navy in dark mode
   dark-link: "#5CC3EE"
   dark-focus: "#5CC3EE"
   # Semantic
@@ -78,7 +79,7 @@ components:
   page-header:      { backgroundColor: "page's chapter field", textColor: "matching on-field", padding: "128px gutter 64px" }
   tile:             { backgroundColor: "a field or surface-1", rounded: "{rounded.md}", padding: 24px, border: none, shadow: none }
   text-input:       { backgroundColor: "{surface-1}", textColor: "{ink}", rounded: "{rounded.sm} top corners", padding: "12px 16px", borderBottom: "2px solid {ink-muted}", focusBorderBottom: "2px solid {focus}" }
-  top-nav:          { backgroundColor: "{colors.field-black}", textColor: "{colors.on-field-black}", height: 72px, logo: "white chapter logo" }
+  top-nav:          { backgroundColor: "{colors.field-blue}", textColor: "#FFFFFF", height: 72px, logo: "white chapter logo", tabs: "society colours, filled when current" }
   footer:           { layout: "tile board, 8px gaps", logoTile: "white chapter logo on {colors.field-black}", inviteTile: "{colors.primary}" }
 ---
 
@@ -125,11 +126,14 @@ The acronyms IAS, IES and PES are never printed as text. Wherever a society is n
 ### Neutrals
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| canvas | #FFFFFF | #141414 | Page background |
-| surface-1 | #F2F3F4 | #1F1F1F | Alternate bands, inputs, tiles |
-| surface-2 | #E3E5E7 | #2B2B2B | Pressed / selected surfaces |
-| ink | #000000 | #F2F2F2 | All running text and headings |
-| ink-muted | #4A4F55 | #B8BCC0 | Secondary notes only (dates, captions) |
+| canvas | #FFFFFF | #0F1C2E (midnight blue) | Page background |
+| surface-1 | #F2F3F4 | #172A42 | Alternate bands, inputs, tiles |
+| surface-2 | #E3E5E7 | #203752 | Pressed / selected surfaces |
+| ink | #000000 | #EEF3F8 | All running text and headings |
+| ink-muted | #4A4F55 | #B3C2D3 | Secondary notes only (dates, captions) |
+| field-black | #000000 | #1C3557 (deep navy) | Chapter blocks: banners, front folder, filmstrip, logo tile |
+
+**The dark theme never uses black** (chapter owner's rule): its grounds are midnight and navy blues from the PES blue family.
 | link | #00629B | #5CC3EE | Inline links |
 | focus | #00629B | #5CC3EE | 3px focus outline |
 
@@ -193,7 +197,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 
 **Text inputs.** surface-1 ground, 2px bottom rule in ink-muted (form fields keep their lines; this is the one place a rule is allowed), focus turns the rule to the focus colour and adds the outline. Labels sit above fields; errors are announced with `aria-live`.
 
-**Navigation.** Black bar, 72px tall: white chapter logo left, five plain links, one "Join" action, theme toggle. Below 900px the links collapse into a full-screen menu opened by a labelled button.
+**Navigation.** SMU-blue bar (both themes), 72px tall: white chapter logo left. Menu links are coloured tabs cycling IAS green, IES orange, PES blue: each carries a short bar in a light tint of its colour, hover tints the tab and stretches the bar, the current page fills the tab (black text on orange). White Join button; five plain links, one "Join" action, theme toggle. Below 900px the links collapse into a full-screen menu opened by a labelled button.
 
 **Footer.** A board of flat tiles with 8px gaps: statement, navigation, location, email, then the wordmark set large on an ink tile and a "Join the chapter" tile in IEEE Blue.
 
