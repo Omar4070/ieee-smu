@@ -1,0 +1,32 @@
+{
+  "name": "IEEE SMU Student Branch Joint Chapter",
+  "shortName": "SMU Joint Chapter",
+  "tagline": "Power, electronics and industry, built by students.",
+  "description": "The IEEE Industry Applications, Industrial Electronics and Power & Energy societies joint chapter of the SMU Student Branch: workshops, industrial visits and competitions for engineering students.",
+  "university": "South Mediterranean University",
+  "studentBranch": "SMU Student Branch",
+  "city": "Tunis",
+  "country": "Tunisia",
+  "timeZone": "Africa/Tunis",
+  "founded": 2019,
+  "email": "chapter@example.org",
+  "social": {
+    "facebook": "https://www.facebook.com/",
+    "instagram": "https://www.instagram.com/ieee.ias.ies.pes.smu/",
+    "linkedin": "https://www.linkedin.com/"
+  },
+  "stats": {
+    "members": 120,
+    "eventsPerYear": 14
+  },
+  "mapQuery": "South Mediterranean University, Berges du Lac 2, Tunis",
+  "mapEmbedUrl": "",
+  "address": "South Mediterranean University, Berges du Lac 2, Tunis, Tunisia",
+  "formspreeId": "TODO_FORMSPREE_ID",
+  "history": [
+    { "year": 2019, "text": "Students from the three societies found the joint chapter within the student branch." },
+    { "year": 2021, "text": "First industrial visit, to a regional power plant, with forty members." },
+    { "year": 2023, "text": "The first Robotics & Automation Challenge brings eight teams to campus." },
+    { "year": 2026, "text": "Fourteen events in one year, and recognition from our IEEE region." }
+  ]
+}

@@ -7,10 +7,15 @@ It is a static site built with [Astro](https://astro.build) and [Tailwind CSS](h
 All content (events, news, the team) lives in plain text files in `src/content/`. You can update the
 site without touching any code, and every push to `main` publishes it automatically to GitHub Pages.
 
+**The easiest way to edit is the dashboard at `/admin/`** (see below): forms for events, news, the
+team and the chapter details, with photo upload. The sections after it explain the same files for
+editing by hand.
+
 ---
 
 ## Contents
 
+0. [The dashboard: edit without code](#the-dashboard-edit-without-code)
 1. [Run the site on your computer](#1-run-the-site-on-your-computer)
 2. [Where things are](#2-where-things-are)
 3. [Add an event](#3-add-an-event)
@@ -24,6 +29,41 @@ site without touching any code, and every push to `main` publishes it automatica
 11. [Troubleshooting](#11-troubleshooting)
 
 ---
+
+## The dashboard: edit without code
+
+The site has a dashboard ([Sveltia CMS](https://github.com/sveltia/sveltia-cms), free, nothing to
+install on a server) at **`/admin/`**, for example `https://<your-site>/admin/`. It has four sections:
+
+| Section | What you can do |
+|---|---|
+| **Events** | Add, edit or delete events: title, dates, type, societies, place, summary, cover photo, gallery, registration link and the article |
+| **News** | Add, edit or delete news items |
+| **Team** | Edit the committee (name, role, photo, LinkedIn; drag members to reorder), or add a new committee year |
+| **Chapter settings** | Chapter name, university, email, social links, founding year, home page numbers, map, address, Formspree ID and the history milestones on the About page |
+
+Fields marked `*` are required; the hints under each field say what to enter. Photos you upload go
+into the right folder (`src/assets/events`, `news` or `team`) automatically.
+
+**Two ways to sign in**
+
+1. **Online (after the site is on GitHub).** Open `/admin/` on the published site, choose
+   **Sign in with access token**, and paste a GitHub token:
+   GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** →
+   *Generate new token* → *Only select repositories* → this repository → *Repository permissions* →
+   **Contents: Read and write**. Every **Save** becomes a commit on `main`, and the site is rebuilt and
+   published about two minutes later (watch the **Actions** tab). Each officer who edits the site
+   needs to be a collaborator on the repository and make their own token.
+2. **On your computer (works now).** Run `npm run dev`, open <http://localhost:4321/admin/index.html>
+   in **Chrome or Edge**, choose **Work with local repository** and select the project folder. Saves
+   write straight into the files; the site at <http://localhost:4321> updates immediately. Publish
+   them as usual ([section 7](#7-publish-your-changes)).
+
+**One-time setup:** once the repository is on GitHub, put its name in `public/admin/config.yml`
+(`repo: your-account/your-repository`, replacing the `TODO` line) and push.
+
+Pages with longer fixed texts (mission, vision, the Join steps, the society descriptions) and the
+design are still edited in the code (see [section 6](#6-change-chapter-details-links-and-texts)).
 
 ## 1. Run the site on your computer
 
@@ -56,13 +96,14 @@ src/
     news/          one .md file per news item    ← and these
     team/          one .json file per committee year
   config/
-    site.ts        chapter name, email, social links, numbers, Formspree ID
+    settings.json  chapter name, email, social links, numbers, Formspree ID, history (dashboard: Chapter settings)
+    site.ts        reads settings.json; logo paths and the menu
     societies.ts   texts about IES, IAS and PES, their logos
   assets/          photos (put new ones in assets/events, assets/news, assets/team)
   pages/           one file per page (About, Join, Contact…)
   components/      building blocks shared by pages (header, footer…)
   styles/global.css  colours, type sizes, buttons
-public/            files copied as-is (favicon, logos in public/logos/)
+public/            files copied as-is (favicon, logos in public/logos/, the dashboard in public/admin/)
 DESIGN.md          the design system: colours, type, spacing, rules
 ```
 
@@ -172,12 +213,13 @@ To start a new year, copy last year's file, rename it, and edit it:
 
 | What | Where |
 |---|---|
-| University, city, email, social links, founding year, member numbers | `src/config/site.ts` |
-| Map location and postal address (Contact page) | `src/config/site.ts` (`mapQuery`, `address`) |
-| Contact form ID | `src/config/site.ts` (`formspreeId`), see below |
+| University, city, email, social links, founding year, member numbers | Dashboard → Chapter settings (file `src/config/settings.json`) |
+| Map location and postal address (Contact page) | Dashboard → Chapter settings (`mapQuery`, `address`) |
+| Contact form ID | Dashboard → Chapter settings (`formspreeId`), see below |
 | Chapter logo | `public/logos/chapter-logo.png` (colour) and `chapter-logo-white.png` (for black backgrounds); originals in `assets/brand/` |
 | Society logos and texts | `src/config/societies.ts`, logo files in `public/logos/` |
-| About page texts (history, mission, vision) | `src/pages/about.astro` |
+| About page history milestones | Dashboard → Chapter settings → History |
+| About page texts (mission, vision) | `src/pages/about.astro` |
 | Join page texts | `src/pages/join.astro` |
 | Colours, fonts, spacing | `src/styles/global.css` (read `DESIGN.md` first) |
 | Favicon and social preview image | run `node scripts/generate-icons.mjs` after changing the logo or colours |
@@ -186,7 +228,7 @@ To start a new year, copy last year's file, rename it, and edit it:
 
 1. Sign up with the chapter email and create a new form.
 2. Copy its ID: the part after `https://formspree.io/f/`, for example `xyzabcd`.
-3. Set `formspreeId: 'xyzabcd'` in `src/config/site.ts`.
+3. Paste it into **Formspree form ID** in the dashboard (Chapter settings), or set `"formspreeId": "xyzabcd"` in `src/config/settings.json`.
 
 Until then, the form tells visitors to email you instead.
 

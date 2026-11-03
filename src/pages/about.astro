@@ -18,13 +18,8 @@ const pictures = {
   IAS: { src: motor, alt: 'A cutaway electric motor showing its rotor and stator windings' },
 };
 
-// TODO: replace with the chapter's real milestones.
-const history = [
-  { year: site.founded, text: 'Students from the three societies found the joint chapter within the student branch.' },
-  { year: site.founded + 2, text: 'First industrial visit, to a regional power plant, with forty members.' },
-  { year: site.founded + 4, text: 'The first Robotics & Automation Challenge brings eight teams to campus.' },
-  { year: site.founded + 7, text: 'Fourteen events in one year, and recognition from our IEEE region.' },
-];
+// Milestones are edited in the dashboard (Chapter settings → History), stored in src/config/settings.json.
+const history = site.history;
 ---
 <BaseLayout
   title="About"

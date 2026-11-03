@@ -1,0 +1,215 @@
+# Dashboard (Sveltia CMS) for the chapter website, opened at /admin/.
+# Every field here matches the content schemas in src/content.config.ts:
+# change both together.
+
+backend:
+  name: github
+  repo: TODO-github-account/ieee-ias-ies-pes-website # TODO: the GitHub repository, "account/name"
+  branch: main
+  commit_messages:
+    create: 'Add {{collection}} "{{slug}}" from the dashboard'
+    update: 'Update {{collection}} "{{slug}}" from the dashboard'
+    delete: 'Delete {{collection}} "{{slug}}" from the dashboard'
+    uploadMedia: 'Upload "{{path}}" from the dashboard'
+    deleteMedia: 'Delete "{{path}}" from the dashboard'
+
+# Fallback folder; each collection below keeps its pictures next to its kind of content.
+media_folder: src/assets
+public_folder: /src/assets
+
+# Leave optional fields out of the file when they are empty (the site rejects empty links and dates).
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: events
+    label: Events
+    label_singular: Event
+    description: >-
+      One page per event. Events whose date has passed move to the archive on their own (the site rebuilds every night).
+    folder: src/content/events
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{year}}-{{month}}-{{slug}}'
+    summary: '{{title}} — {{date}}'
+    sortable_fields: [date, title]
+    media_folder: ../../assets/events
+    public_folder: ../../assets/events
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: date
+        label: Date
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - name: endDate
+        label: End date
+        hint: Only for events lasting more than one day.
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        required: false
+      - { name: time, label: Time, hint: 'For example 14:00–17:00', widget: string, required: false }
+      - name: type
+        label: Type
+        widget: select
+        options: [Workshop, Conference, Industrial visit, Competition, Talk, Social]
+      - name: societies
+        label: Societies
+        hint: The society logos shown on the event.
+        widget: select
+        multiple: true
+        min: 1
+        options:
+          - { label: Industry Applications Society, value: IAS }
+          - { label: Industrial Electronics Society, value: IES }
+          - { label: Power & Energy Society, value: PES }
+          - { label: Whole joint chapter, value: Joint }
+      - { name: location, label: Location, widget: string }
+      - name: summary
+        label: Summary
+        hint: One or two sentences for the event cards (at most 220 characters).
+        widget: text
+        maxlength: 220
+      - { name: cover, label: Cover photo, widget: image }
+      - { name: coverAlt, label: Cover photo description, hint: 'What the photo shows, for people who cannot see it.', widget: string }
+      - name: registrationUrl
+        label: Registration link
+        hint: Full link starting with https://, for example a Google Form.
+        widget: string
+        required: false
+        pattern: ['^https?://', 'Start the link with https://']
+      - name: gallery
+        label: Photo gallery
+        label_singular: Photo
+        widget: list
+        required: false
+        collapsed: true
+        summary: '{{fields.alt}}'
+        fields:
+          - { name: src, label: Photo, widget: image }
+          - { name: alt, label: Photo description, widget: string }
+      - { name: body, label: Article, widget: markdown }
+
+  - name: news
+    label: News
+    label_singular: News item
+    folder: src/content/news
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{year}}-{{month}}-{{slug}}'
+    summary: '{{title}} — {{date}}'
+    sortable_fields: [date, title]
+    media_folder: ../../assets/news
+    public_folder: ../../assets/news
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: date
+        label: Date
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - name: category
+        label: Category
+        widget: select
+        options: [Award, Competition, Announcement]
+      - { name: summary, label: Summary, hint: At most 220 characters., widget: text, maxlength: 220 }
+      - { name: cover, label: Cover photo, widget: image, required: false }
+      - { name: coverAlt, label: Cover photo description, widget: string, required: false }
+      - { name: body, label: Article, widget: markdown }
+
+  - name: team
+    label: Team
+    label_singular: Committee year
+    description: >-
+      One entry per committee year. The latest year is shown on the Team page; older years stay as the archive.
+    folder: src/content/team
+    extension: json
+    format: json
+    create: true
+    identifier_field: year
+    slug: '{{year}}'
+    summary: 'Committee {{year}}'
+    media_folder: ../../assets/team
+    public_folder: ../../assets/team
+    fields:
+      - { name: year, label: Year, hint: 'For example 2027–2028', widget: string }
+      - name: members
+        label: Members
+        label_singular: Member
+        hint: Drag to reorder; the board follows this order.
+        widget: list
+        summary: '{{fields.role}}: {{fields.name}}'
+        fields:
+          - { name: name, label: Name, hint: Leave empty while the seat is not filled., widget: string, required: false }
+          - { name: role, label: Role, widget: string }
+          - name: lead
+            label: Lead (top of the board)
+            hint: Turn on for the Chair and Vice-Chair.
+            widget: boolean
+            default: false
+          - name: society
+            label: Society
+            widget: select
+            required: false
+            options:
+              - { label: Industry Applications Society, value: IAS }
+              - { label: Industrial Electronics Society, value: IES }
+              - { label: Power & Energy Society, value: PES }
+              - { label: Whole joint chapter, value: Joint }
+          - { name: photo, label: Photo, hint: 'Portrait, ideally 4:5 (for example 800 × 1000 px).', widget: image, required: false }
+          - name: linkedin
+            label: LinkedIn profile
+            widget: string
+            required: false
+            pattern: ['^https?://', 'Start the link with https://']
+
+  - name: settings
+    label: Chapter settings
+    files:
+      - name: site
+        label: Chapter details, contacts, numbers and history
+        file: src/config/settings.json
+        format: json
+        fields:
+          - { name: name, label: Chapter name, widget: string }
+          - { name: shortName, label: Short name, widget: string }
+          - { name: tagline, label: Tagline, widget: string }
+          - { name: description, label: Description for search engines, widget: text }
+          - { name: university, label: University, widget: string }
+          - { name: studentBranch, label: Student branch, widget: string }
+          - { name: city, label: City, widget: string }
+          - { name: country, label: Country, widget: string }
+          - { name: timeZone, label: Time zone, hint: 'For example Africa/Tunis', widget: string }
+          - { name: founded, label: Year founded, widget: number, value_type: int }
+          - { name: email, label: Chapter email, widget: string }
+          - name: social
+            label: Social media links
+            widget: object
+            fields:
+              - { name: facebook, label: Facebook, widget: string }
+              - { name: instagram, label: Instagram, widget: string }
+              - { name: linkedin, label: LinkedIn, widget: string }
+          - name: stats
+            label: Numbers on the home page
+            widget: object
+            fields:
+              - { name: members, label: Members, widget: number, value_type: int }
+              - { name: eventsPerYear, label: Events last year, widget: number, value_type: int }
+          - { name: mapQuery, label: Map search, hint: What the contact-page map searches for., widget: string }
+          - { name: mapEmbedUrl, label: Map embed link, hint: 'Optional: Google Maps → Share → Embed a map → the src link.', widget: string, required: false }
+          - { name: address, label: Address, widget: string }
+          - { name: formspreeId, label: Formspree form ID, hint: 'The part after https://formspree.io/f/ (contact form).', widget: string }
+          - name: history
+            label: History (About page)
+            label_singular: Milestone
+            widget: list
+            summary: '{{fields.year}}: {{fields.text}}'
+            fields:
+              - { name: year, label: Year, widget: number, value_type: int }
+              - { name: text, label: What happened, widget: text }
