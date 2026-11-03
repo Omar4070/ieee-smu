@@ -210,6 +210,10 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 - Section parts enter once as they scroll into view: heading, then text, then picture, staggered 60–90ms, rising 24px with opacity. Content is visible without JavaScript.
 - Live thing: **the three-phase waveform** in the home hero. Three sines 120° apart flow continuously (CSS translate of a pre-computed path); pointing at or focusing a society's folder thickens its phase and fades the other two. Still under reduced motion.
 - Second signature move: **index with preview.** On the Events archive, pointing at a row shows its photo in a fixed frame and dims the other rows. On touch screens the photo is inline.
+- **Phasor wheel:** at the left of the hero waveform, three arms 120° apart (IAS, IES, PES) rotate counter-clockwise, one turn per wavelength; the wave flows out of it. Pointing at a society folder lights its arm and its phase.
+- **Rolling word:** "Join us for workshops / industrial visits / competitions / talks" rolls like an analog counter, underlined in the society colours.
+- **Power meter:** three thin lines along the bottom of the header fill as the page scrolls, each easing differently like three phases.
+- **Tilt:** society tiles, filmstrip photos, board portraits and event pictures lean towards the mouse (pointer devices only).
 - **Hero entrance:** the logo rises in, then the three phases draw themselves one after another before they start flowing.
 - **Curtain reveal:** content photos (class `photo-reveal`) open from a horizontal slit and settle from a slight zoom as they scroll into view (CSS scroll timeline).
 - **Living background** (`BackgroundWaves.astro`, in the base layout): four faint bands of the three-phase wave, spread evenly over the viewport, flow behind every page in alternating directions. Canvas sections are transparent and grey sections (`.field-surface`) are a 5% ink tint, so the waves show through both; colour fields, photos, tiles and the home hero stay solid. Opacity 18% light, 20% dark; still under reduced motion. There are no static wave lines anywhere.

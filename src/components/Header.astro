@@ -59,6 +59,13 @@ const path = Astro.url.pathname;
     </div>
   </div>
 
+  <!-- Scroll progress: three phase lines that fill as the page is read. -->
+  <div class="meter" aria-hidden="true">
+    <span class="meter-line meter-ias"></span>
+    <span class="meter-line meter-ies"></span>
+    <span class="meter-line meter-pes"></span>
+  </div>
+
   <div id="mobile-menu" class="mobile-menu field-blue" hidden>
     <nav aria-label="Main" class="wrap pt-6 pb-10">
       <ul role="list" class="flex flex-col">
@@ -91,6 +98,30 @@ const path = Astro.url.pathname;
     z-index: 50;
   }
   .wordmark { text-decoration: none; }
+
+  .meter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    flex-direction: column;
+    pointer-events: none;
+  }
+  .meter-line { height: 2px; transform-origin: left center; transform: scaleX(0); }
+  .meter-ias { background: #3ccf6b; }
+  .meter-ies { background: #ff8a3d; }
+  .meter-pes { background: #9fd6ff; }
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .meter { display: flex; }
+      .meter-line { animation: meter-fill linear both; animation-timeline: scroll(root); }
+      /* Three phases: the same reading, each line easing differently so they ripple. */
+      .meter-ies { animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
+      .meter-pes { animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.6); }
+    }
+  }
+  @keyframes meter-fill { to { transform: scaleX(1); } }
   .header-logo { width: auto; height: 56px; }
 
   /* Coloured menu tabs: each link takes a society colour in logo order

@@ -67,15 +67,50 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
     </h1>
     <p class="hero-sub" data-reveal style="--i: 1">
       The IEEE Industry Applications, Industrial Electronics and Power &amp; Energy societies, together in one
-      student chapter: workshops, industrial visits and competitions.
+      student chapter.
+    </p>
+    <p class="hero-roll" data-reveal style="--i: 2">
+      Join us for
+      <span class="sr-only">workshops, industrial visits, competitions and talks.</span>
+      <span class="roll" aria-hidden="true">
+        <span class="roll-track">
+          <span class="roll-word roll-ias">workshops</span>
+          <span class="roll-word roll-ies">industrial visits</span>
+          <span class="roll-word roll-pes">competitions</span>
+          <span class="roll-word roll-ias">talks</span>
+          <span class="roll-word roll-ias">workshops</span>
+        </span>
+      </span>
     </p>
   </div>
 
-  <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <g class="flow">
-      {phases.map((p, i) => <path class={`phase phase-${p.key}`} d={p.d} pathLength="1" style={`--p: ${i}`} />)}
-    </g>
-  </svg>
+  <div class="wave-band">
+    <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <g class="flow">
+        {phases.map((p, i) => <path class={`phase phase-${p.key}`} d={p.d} pathLength="1" style={`--p: ${i}`} />)}
+      </g>
+    </svg>
+    {/* A rotating phasor: three arms 120° apart. In AC theory, a rotating phasor is what traces a sine wave,
+        so the three-phase wave flows out of it. */}
+    <svg class="phasor" viewBox="-60 -60 120 120" aria-hidden="true" focusable="false">
+      <circle class="phasor-disc" r="56" />
+      <circle class="phasor-ring" r="46" />
+      <g class="phasor-spin">
+        {phases.map((p, i) => {
+          const a = (-90 + i * 120) * (Math.PI / 180);
+          const x = (46 * Math.cos(a)).toFixed(1);
+          const y = (46 * Math.sin(a)).toFixed(1);
+          return (
+            <g class={`arm arm-${p.key}`}>
+              <line x1="0" y1="0" x2={x} y2={y} />
+              <circle cx={x} cy={y} r="5" />
+            </g>
+          );
+        })}
+      </g>
+      <circle class="phasor-hub" r="5" />
+    </svg>
+  </div>
 
   <nav class="folders" aria-label="Explore the chapter">
     {
@@ -145,6 +180,85 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
     line-height: 1.5;
   }
 
+  /* ----- Rolling word: an analog-counter roll through what the chapter runs ----- */
+  .hero-roll {
+    margin: 8px auto 0;
+    font-size: 20px;
+    line-height: 1.8;
+  }
+  .roll {
+    display: inline-block;
+    height: 1.8em;
+    margin-left: 0.3em;
+    overflow: hidden;
+    vertical-align: top;
+    text-align: left;
+  }
+  .roll-track { display: flex; flex-direction: column; }
+  /* Each word box is taller than the window, so the previous word's underline stays out of view. */
+  .roll-word {
+    flex: none;
+    height: 2.4em;
+    line-height: 1.8;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 5px;
+  }
+  .roll-ias { text-decoration-color: var(--ias); }
+  .roll-ies { text-decoration-color: var(--ies); }
+  .roll-pes { text-decoration-color: var(--pes); }
+  :global([data-theme='dark']) .roll-ias { text-decoration-color: #2fae55; }
+  :global([data-theme='dark']) .roll-pes { text-decoration-color: #5b8fd6; }
+  @media (prefers-reduced-motion: no-preference) {
+    .roll-track { animation: roll 10s cubic-bezier(0.7, 0, 0.2, 1) infinite; }
+  }
+  @keyframes roll {
+    0%, 20% { transform: translateY(0); }
+    25%, 45% { transform: translateY(-2.4em); }
+    50%, 70% { transform: translateY(-4.8em); }
+    75%, 95% { transform: translateY(-7.2em); }
+    100% { transform: translateY(-9.6em); }
+  }
+
+  /* ----- Phasor wheel feeding the waveform ----- */
+  .wave-band { position: relative; }
+  .phasor {
+    position: absolute;
+    left: max(var(--gutter), 3vw);
+    top: 50%;
+    width: clamp(96px, 13vw, 164px);
+    height: auto;
+    translate: 0 -46%;
+    overflow: visible;
+  }
+  .phasor-disc { fill: var(--canvas); }
+  .phasor-ring { fill: none; stroke: var(--ink); stroke-opacity: 0.18; stroke-width: 1.5; }
+  .phasor-hub { fill: var(--ink); }
+  .arm line { stroke-width: 4; stroke-linecap: round; }
+  .arm-ias line { stroke: var(--ias); }
+  .arm-ies line { stroke: var(--ies); }
+  .arm-pes line { stroke: var(--pes); }
+  .arm-ias circle { fill: var(--ias); }
+  .arm-ies circle { fill: var(--ies); }
+  .arm-pes circle { fill: var(--pes); }
+  :global([data-theme='dark']) .arm-ias line { stroke: #2fae55; }
+  :global([data-theme='dark']) .arm-pes line { stroke: #5b8fd6; }
+  :global([data-theme='dark']) .arm-ias circle { fill: #2fae55; }
+  :global([data-theme='dark']) .arm-pes circle { fill: #5b8fd6; }
+  .arm { transition: opacity 240ms ease; }
+  @media (prefers-reduced-motion: no-preference) {
+    /* One turn per wavelength of flow, counter-clockwise like a phasor diagram. */
+    .phasor-spin { transform-box: view-box; transform-origin: 0 0; animation: phasor-turn 7s linear infinite; }
+  }
+  @keyframes phasor-turn { to { transform: rotate(-360deg); } }
+  /* Pointing at a society's folder lights its arm too. */
+  .hero:has(.folder.field-ias:is(:hover, :focus-visible)) .arm:not(.arm-ias),
+  .hero:has(.folder.field-ies:is(:hover, :focus-visible)) .arm:not(.arm-ies),
+  .hero:has(.folder.field-pes:is(:hover, :focus-visible)) .arm:not(.arm-pes) {
+    opacity: 0.15;
+  }
+
   /* ----- Three-phase waveform ----- */
   .wave {
     display: block;
@@ -170,17 +284,19 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
   @media (prefers-reduced-motion: no-preference) {
     .flow { animation: flow 7s linear infinite; }
     .phase {
-      stroke-dasharray: 1;
-      animation: phase-draw 1600ms cubic-bezier(0.6, 0, 0.2, 1) both;
+      /* The dash exists only while drawing in (fill-mode backwards): with a stretched viewBox and
+         non-scaling strokes the dash length is slightly off, which would leave a gap afterwards. */
+      animation: phase-draw 1600ms cubic-bezier(0.6, 0, 0.2, 1) backwards;
       animation-delay: calc(300ms + var(--p) * 220ms);
     }
   }
   @keyframes phase-draw {
-    from { stroke-dashoffset: 1; }
-    to { stroke-dashoffset: 0; }
+    from { stroke-dasharray: 1; stroke-dashoffset: 1; }
+    to { stroke-dasharray: 1; stroke-dashoffset: 0; }
   }
   @keyframes flow {
-    to { transform: translateX(-400px); }
+    from { transform: translateX(-400px); }
+    to { transform: translateX(0); }
   }
 
   /* Pointing at a society's folder brings its phase forward. */

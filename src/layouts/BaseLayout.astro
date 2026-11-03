@@ -85,6 +85,20 @@ const ogImage = new URL(image ?? url('/og-default.png'), Astro.site);
         el.setAttribute('data-reveal', '');
         (el as HTMLElement).style.setProperty('--i', String(Math.min(i, 3)));
       });
+      // Photographs lean gently towards the pointer (mouse only, motion allowed).
+      if (matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+        document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+          el.style.transition = 'transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1)';
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            el.style.transform = `perspective(900px) rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 7).toFixed(2)}deg)`;
+          });
+          el.addEventListener('pointerleave', () => (el.style.transform = ''));
+        });
+      }
+
       const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
       const reveal = (el: HTMLElement) => {
         el.dataset.reveal = 'in';

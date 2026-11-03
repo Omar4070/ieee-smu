@@ -51,3 +51,14 @@ Top three problems (most visible first), each with the screenshot it shows in an
 `inspect.mjs` reports "few pictures" on the Team, Contact, 404 and single news pages. These clear up
 once real member portraits and news photos are added (Contact's picture is the map; the 404 page is
 deliberately minimal). The "no footage" warning is explained above.
+
+## Motion inspired by another chapter (November 2026)
+
+Studied https://cs-smu.ieee.tn/ (rotating text ring around its logo, typed hero word, constellation canvas, custom cursor, scroll progress bar, glowing tilt cards). Took the principles, not the look:
+
+- living centrepiece → a **phasor wheel** that generates the three-phase wave (AC theory, the chapter's own subject), not a text ring;
+- changing word → a **rolling counter** of activities, not a typewriter;
+- scroll progress → a **three-phase power meter**, not a single bar;
+- reactive cards → gentle **pointer tilt** on photographs, without glow or neon.
+
+Not taken: dark space theme, starfield/constellation canvas, custom cursor, glitch titles, sound, guided tour.

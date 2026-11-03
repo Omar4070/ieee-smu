@@ -44,7 +44,7 @@ for (const e of past) {
         {
           upcoming.map((e, i) => (
             <li class="upcoming">
-              <div class={`upcoming-media ${fieldFor(e.data.societies[0])}`} data-reveal>
+              <div class={`upcoming-media ${fieldFor(e.data.societies[0])}`} data-reveal data-tilt>
                 <Image
                   src={e.data.cover}
                   alt={e.data.coverAlt}

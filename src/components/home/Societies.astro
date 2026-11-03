@@ -42,7 +42,7 @@ const tiles = [
           const s = societyById[t.society];
           return (
             <li class:list={['tile-item', { wide: 'wide' in t && t.wide }]} data-reveal style={`--i: ${i % 4}`}>
-              <div class={`tile field-${s.field}`}>
+              <div class={`tile field-${s.field}`} data-tilt>
                 <Image
                   src={t.img}
                   alt={t.alt}

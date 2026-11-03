@@ -53,7 +53,7 @@ const rowB = [
           {row.map((p) => (
             <li class="frame">
               <figure>
-                <div class="frame-img">
+                <div class="frame-img" data-tilt>
                   <Image src={p.src} alt={p.alt} widths={[360, 560, 800]} sizes="(min-width: 900px) 30vw, 72vw" />
                 </div>
                 <figcaption>{p.caption}</figcaption>

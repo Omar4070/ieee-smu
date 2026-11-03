@@ -48,7 +48,7 @@ const officerCards = members.filter((m) => m.size === 'officer');
       leadCards.map((m, i) => (
         <li class="card lead" data-reveal style={`--i: ${i}`}>
           <figure>
-            <div class:list={['portrait', m.panel]}>
+            <div class:list={['portrait', m.panel]} data-tilt>
               {m.photo ? (
                 <Image src={m.photo} alt={`Portrait of ${m.name ?? `the ${m.role}`}`} widths={[360, 560, 800]} sizes="(min-width: 900px) 26vw, 46vw" class="photo" />
               ) : (
@@ -104,7 +104,7 @@ const officerCards = members.filter((m) => m.size === 'officer');
             <path class="cur cur-pes" d="M4 0V56" />
           </svg>
           <figure>
-            <div class:list={['portrait', m.panel]}>
+            <div class:list={['portrait', m.panel]} data-tilt>
               {m.photo ? (
                 <Image src={m.photo} alt={`Portrait of ${m.name ?? `the ${m.role}`}`} widths={[300, 480, 640]} sizes="(min-width: 1100px) 18vw, (min-width: 640px) 30vw, 46vw" class="photo" />
               ) : (
