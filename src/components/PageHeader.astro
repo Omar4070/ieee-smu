@@ -1,7 +1,7 @@
 ---
 /**
  * Every inner page opens on its chapter colour (see DESIGN.md → Page header),
- * optionally with one picture on the right.
+ * optionally with one picture filling its right half.
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -27,7 +27,7 @@ const { title, lead, field = 'black', size = 'lg', image, imageAlt = '' } = Astr
     {
       image && (
         <div class="picture" data-reveal style="--i: 2">
-          <Image src={image} alt={imageAlt} widths={[400, 640, 900]} sizes="(min-width: 900px) 34vw, 92vw" loading="eager" class="picture-img" />
+          <Image src={image} alt={imageAlt} widths={[480, 800, 1200, 1600]} sizes="(min-width: 900px) 50vw, 100vw" loading="eager" class="picture-img" />
         </div>
       )
     }
@@ -39,19 +39,21 @@ const { title, lead, field = 'black', size = 'lg', image, imageAlt = '' } = Astr
     padding-top: clamp(80px, 12vw, 160px);
     padding-bottom: clamp(56px, 7vw, 96px);
   }
-  .has-image {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 40px 24px;
-    align-items: end;
+  /* With a picture: the picture fills the right half of the band, edge to edge (square, it touches the screen). */
+  .with-image { position: relative; display: flex; align-items: flex-end; min-height: clamp(420px, 60svh, 600px); padding-top: clamp(64px, 8vw, 112px); }
+  .has-image { width: 100%; }
+  .has-image .text { width: 46%; }
+  .picture {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    overflow: hidden;
   }
-  .has-image .text { grid-column: 1 / span 7; }
-  .picture { grid-column: 8 / span 5; }
-  .with-image { padding-top: clamp(48px, 6vw, 96px); }
-  .picture { overflow: hidden; border-radius: var(--radius); }
   .picture :global(.picture-img) {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 100%;
     object-fit: cover;
     animation: header-drift 24s ease-in-out infinite alternate;
   }
@@ -60,8 +62,10 @@ const { title, lead, field = 'black', size = 'lg', image, imageAlt = '' } = Astr
     to { transform: scale(1.08) translateX(-1.5%); }
   }
   @media (max-width: 899px) {
-    .has-image { display: flex; flex-direction: column; align-items: stretch; }
-    .picture :global(.picture-img) { aspect-ratio: 16 / 10; }
+    .with-image { display: block; min-height: 0; padding-top: 0; }
+    .has-image { display: flex; flex-direction: column; }
+    .has-image .text { width: auto; padding-top: clamp(32px, 7vw, 56px); }
+    .picture { order: -1; position: relative; width: auto; margin-inline: calc(-1 * var(--gutter)); aspect-ratio: 16 / 10; }
   }
   .title-md {
     max-width: 24ch;

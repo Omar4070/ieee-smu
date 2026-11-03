@@ -31,7 +31,7 @@
   --focus: #00629b;
 
   --gutter: clamp(16px, 3vw, 32px);
-  --section: clamp(96px, 12vw, 176px);
+  --section: clamp(72px, 8vw, 120px);
   --header-h: 72px;
 
   /* Corner radii: cards, photos, tiles, panels / buttons, inputs, small parts. */
@@ -232,7 +232,7 @@
   .btn-on-field > svg { color: var(--btn-text, #fff); }
 
   /* ---------- Markdown body ---------- */
-  .prose { max-width: 68ch; }
+  .prose { max-width: 58ch; }
   .prose > * + * { margin-top: 1em; }
   .prose h2 {
     margin-top: 2em;

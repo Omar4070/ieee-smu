@@ -29,21 +29,9 @@ const gallery = await Promise.all(
 );
 ---
 <BaseLayout title={data.title} description={data.summary} image={ogImage.src} type="article">
-  <PageHeader field={field} size="md" title={data.title} lead={data.summary} />
+  <PageHeader field={field} size="md" title={data.title} lead={data.summary} image={data.cover} imageAlt={data.coverAlt} />
 
   <section aria-label="Event details">
-    <figure class="cover wrap" data-reveal>
-      <Image
-        src={data.cover}
-        alt={data.coverAlt}
-        widths={[640, 960, 1440, 1920]}
-        sizes="(min-width: 1440px) 1376px, 96vw"
-        loading="eager"
-        fetchpriority="high"
-        class="cover-img photo-reveal"
-      />
-    </figure>
-
     <div class="wrap detail">
       <div class="prose" data-reveal-children>
         <Content />
@@ -153,9 +141,7 @@ const gallery = await Promise.all(
   .facts-list dt { font-size: 15px; color: var(--ink-muted); padding-top: 2px; }
   .facts-list dd { margin: 0; font-weight: 500; }
 
-  .cover { padding-top: clamp(24px, 4vw, 48px); }
   .detail { padding-top: clamp(56px, 8vw, 112px); }
-  .cover :global(.cover-img) { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; }
 
   /* Columns keep any number of photos tidy, in their own proportions. */
   .gallery {
@@ -174,7 +160,6 @@ const gallery = await Promise.all(
 
   @media (max-width: 899px) {
     .detail { display: flex; flex-direction: column; }
-    .cover :global(.cover-img) { aspect-ratio: 4 / 3; }
     .gallery { columns: 2; }
     .facts { width: 100%; }
   }

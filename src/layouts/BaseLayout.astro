@@ -23,9 +23,11 @@ const { title, description = site.description, image, type = 'website', noindex 
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name}, ${site.university}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image ?? url('/og-default.png'), Astro.site);
+// The power-on opening plays on the home page only, so visitors landing on an inner page can read at once.
+const isHome = Astro.url.pathname.replace(/index\.html$/, '') === url('/');
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-home={isHome ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -66,9 +68,9 @@ const ogImage = new URL(image ?? url('/og-default.png'), Astro.site);
           theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         d.dataset.theme = theme;
-        // Power-on opening: first page of a visit only, never with reduced motion.
+        // Power-on opening: home page, first page of a visit only, never with reduced motion.
         try {
-          if (!sessionStorage.getItem('powered') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          if (d.hasAttribute('data-home') && !sessionStorage.getItem('powered') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
             d.classList.add('intro');
             sessionStorage.setItem('powered', '1');
           }
@@ -78,7 +80,7 @@ const ogImage = new URL(image ?? url('/og-default.png'), Astro.site);
   </head>
   <body class="flex min-h-svh flex-col">
     <a href="#main" class="skip-link">Skip to content</a>
-    <PowerOn />
+    {isHome && <PowerOn />}
     <BackgroundWaves />
     <Header />
     <main id="main" tabindex="-1" class="flex-1 focus:outline-none">

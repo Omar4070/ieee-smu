@@ -119,6 +119,9 @@ const social = [
     transition: text-decoration-color 160ms ease;
   }
   .footer-link:hover { text-decoration-color: currentColor; }
+  /* Pages that close on the "Join the current" band already invite; the footer does not ask twice. */
+  :global(body:has(.cta)) .invite { display: none; }
+  :global(body:has(.cta)) .wordmark-tile { grid-column: 1 / -1; }
 
   @media (max-width: 1099px) {
     .statement { grid-column: span 6; }

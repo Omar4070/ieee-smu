@@ -1,6 +1,6 @@
 ---
 /**
- * "Power-on" opening, once per visit: a dark navy screen, the three phase
+ * "Power-on" opening on the home page, once per visit (about 1.7s): a dark navy screen, the three phase
  * waves race across and the chapter logo powers up, then the screen splits
  * into three colour bands (IAS green, IES orange, PES blue) that slide away
  * like breakers opening. Timed entirely in CSS; the head script in
@@ -53,10 +53,10 @@ const waves = [
 
   /* Three breaker bands under the stage; they slide away last. */
   .po-bands { position: absolute; inset: 0; display: grid; grid-template-rows: repeat(3, 1fr); }
-  .po-band { animation: po-band-out 720ms cubic-bezier(0.7, 0, 0.2, 1) 2050ms forwards; }
+  .po-band { animation: po-band-out 520ms cubic-bezier(0.7, 0, 0.2, 1) 1100ms forwards; }
   .po-ias { background: var(--ias); }
-  .po-ies { background: var(--ies); animation-name: po-band-out-right; animation-delay: 2120ms; }
-  .po-pes { background: var(--pes); animation-delay: 2190ms; }
+  .po-ies { background: var(--ies); animation-name: po-band-out-right; animation-delay: 1150ms; }
+  .po-pes { background: var(--pes); animation-delay: 1200ms; }
   @keyframes po-band-out { to { transform: translateX(-101%); } }
   @keyframes po-band-out-right { to { transform: translateX(101%); } }
 
@@ -67,7 +67,7 @@ const waves = [
     display: grid;
     place-items: center;
     background: #0b1a2e;
-    animation: po-stage-out 360ms ease 1700ms forwards;
+    animation: po-stage-out 300ms ease 900ms forwards;
   }
   .po-stage::after {
     content: '';
@@ -75,7 +75,7 @@ const waves = [
     inset: 0;
     background: #fff;
     opacity: 0;
-    animation: po-flash 420ms ease 1450ms forwards;
+    animation: po-flash 300ms ease 720ms forwards;
   }
   @keyframes po-stage-out { to { opacity: 0; } }
   @keyframes po-flash { 35% { opacity: 0.55; } 100% { opacity: 0; } }
@@ -96,8 +96,8 @@ const waves = [
     vector-effect: non-scaling-stroke;
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    animation: po-draw 900ms cubic-bezier(0.6, 0, 0.2, 1) forwards;
-    animation-delay: calc(var(--n) * 130ms);
+    animation: po-draw 600ms cubic-bezier(0.6, 0, 0.2, 1) forwards;
+    animation-delay: calc(var(--n) * 90ms);
   }
   .po-wave-ias { stroke: #3ccf6b; }
   .po-wave-ies { stroke: #ff8a3d; }
@@ -110,7 +110,7 @@ const waves = [
     height: auto;
     opacity: 0;
     transform: scale(0.9);
-    animation: po-logo 800ms cubic-bezier(0.2, 0.7, 0.2, 1) 650ms forwards;
+    animation: po-logo 560ms cubic-bezier(0.2, 0.7, 0.2, 1) 300ms forwards;
   }
   @keyframes po-logo {
     /* The "powering up" glow exists only during the 3-second opening overlay, never at rest. */
@@ -123,7 +123,7 @@ const waves = [
   const root = document.documentElement;
   if (root.classList.contains('intro')) {
     const end = () => root.classList.remove('intro', 'intro-skip');
-    const timer = setTimeout(end, 2950);
+    const timer = setTimeout(end, 1750);
     const skip = () => {
       clearTimeout(timer);
       root.classList.add('intro-skip');

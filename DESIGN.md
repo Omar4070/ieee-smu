@@ -76,7 +76,7 @@ components:
   button-primary:   { backgroundColor: "{colors.primary}", textColor: "{colors.on-primary}", rounded: "{rounded.sm}", padding: "16px 24px", minHeight: 48px }
   button-inverse:   { backgroundColor: "{ink}", textColor: "{canvas}", rounded: "{rounded.sm}", padding: "16px 24px", minHeight: 48px }
   chapter-field:    { backgroundColor: "{colors.field-*}", textColor: "{colors.on-field-*}", minHeight: "90svh on the home page, auto elsewhere" }
-  page-header:      { backgroundColor: "page's chapter field", textColor: "matching on-field", padding: "128px gutter 64px" }
+  page-header:      { backgroundColor: "page's chapter field", textColor: "matching on-field", minHeight: "clamp(420px, 60svh, 600px)", picture: "right half, edge to edge, square" }
   tile:             { backgroundColor: "a field or surface-1", rounded: "{rounded.md}", padding: 24px, border: none, shadow: none }
   text-input:       { backgroundColor: "{surface-1}", textColor: "{ink}", rounded: "{rounded.sm} top corners", padding: "12px 16px", borderBottom: "2px solid {ink-muted}", focusBorderBottom: "2px solid {focus}" }
   top-nav:          { backgroundColor: "{colors.field-blue}", textColor: "#FFFFFF", height: 72px, logo: "white chapter logo", tabs: "society colours, filled when current" }
@@ -193,7 +193,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 
 **Links.** Inline links are underlined (2px, offset 3px) in the link colour. Navigation links are not underlined at rest and underline on hover/focus.
 
-**Page header.** Every inner page opens with a chapter field in that page's colour holding the `h1` at display-lg and one supporting sentence. Pages: About SMU blue, Events black, Team IES orange, News IAS green, Join PES blue, Contact black.
+**Page header.** Every inner page opens with a chapter field in that page's colour holding the `h1` at display-lg and one supporting sentence on the left, and one picture filling the right half of the band edge to edge (square, it touches the screen; on phones it sits on top at full width). Event and news pages use their cover there. Pages: About SMU blue, Events black, Team IES orange, News IAS green, Join PES blue, Contact black.
 
 **Tiles.** Flat colour or surface-1 rectangles, no border, no shadow, no hover lift. Text that describes a picture tile sits *under* the tile, not on it.
 

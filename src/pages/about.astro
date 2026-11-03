@@ -11,6 +11,7 @@ import tower from '../assets/found/pes-transmission-tower.jpg';
 import igbt from '../assets/found/ies-igbt-module.jpg';
 import motor from '../assets/found/ias-motor-cutaway.jpg';
 import bench from '../assets/found/ies-oscilloscope-bench.jpg';
+import controlRoom from '../assets/found/ias-control-room.jpg';
 
 const pictures = {
   PES: { src: tower, alt: 'A high-voltage transmission tower carrying power lines across a valley' },
@@ -29,6 +30,8 @@ const history = site.history;
     field="blue"
     title="About the chapter"
     lead={`One chapter for three IEEE societies, run by students of ${site.university} since ${site.founded}.`}
+    image={controlRoom}
+    imageAlt="Switchgear panels and meters in an industrial control room"
   />
 
   <section class="section" aria-labelledby="history-title">
@@ -126,7 +129,7 @@ const history = site.history;
           style="--i: 1"
         />
       </div>
-      <div class="lg:col-span-6 lg:col-start-7" data-reveal style="--i: 1">
+      <div class="max-w-[60ch] lg:col-span-6 lg:col-start-7" data-reveal style="--i: 1">
         <p>
           The chapter belongs to the {site.studentBranch}, part of IEEE, the world’s largest technical professional
           organisation. The branch handles membership and shared resources; the chapter runs the programme for power,
@@ -160,7 +163,7 @@ const history = site.history;
     line-height: 1;
     letter-spacing: -0.02em;
   }
-  .history-text { font-size: 17px; line-height: 1.45; }
+  .history-text { max-width: 52ch; font-size: 17px; line-height: 1.45; }
 
   .society {
     display: grid;
