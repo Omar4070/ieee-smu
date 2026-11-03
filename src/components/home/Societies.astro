@@ -42,6 +42,10 @@ const tiles = [
           const s = societyById[t.society];
           return (
             <li class:list={['tile-item', { wide: 'wide' in t && t.wide }]} data-reveal style={`--i: ${i % 4}`}>
+              {/* Logo or title sits above the photo, in a header of equal height on every tile. */}
+              <h3 class="tile-title">
+                {'lead' in t && t.lead ? <SocietyLogo society={s.id} height={64} /> : t.title}
+              </h3>
               <div class={`tile field-${s.field}`} data-tilt>
                 <Image
                   src={t.img}
@@ -51,9 +55,6 @@ const tiles = [
                   class="tile-img photo-reveal"
                 />
               </div>
-              <h3 class="tile-title">
-                {'lead' in t && t.lead ? <SocietyLogo society={s.id} height={64} /> : t.title}
-              </h3>
               <p class="tile-fact">{t.fact}</p>
             </li>
           );
@@ -95,15 +96,16 @@ const tiles = [
   }
   .tile-title {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 10px;
-    margin-top: 14px;
+    min-height: 64px;
+    margin-bottom: 14px;
     font-size: 20px;
     font-weight: 500;
     line-height: 1.25;
   }
   .tile-fact {
-    margin-top: 4px;
+    margin-top: 12px;
     font-size: 15px;
     line-height: 1.45;
     color: var(--ink-muted);

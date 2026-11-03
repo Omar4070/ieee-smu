@@ -430,3 +430,67 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
     }
   }
 </style>
+
+<script>
+  // Resonance: with a mouse, the three-phase waves swell around the pointer in
+  // proportion to its speed (plus a faint electric crackle), then settle back.
+  // Takes over the CSS flow while active; does nothing on touch screens or with
+  // reduced motion, where the CSS animation (or a still wave) remains.
+  const hero = document.querySelector<HTMLElement>('.hero');
+  const svg = hero?.querySelector<SVGSVGElement>('.wave');
+  if (hero && svg && matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+    const flow = svg.querySelector<SVGGElement>('.flow')!;
+    const paths = [...svg.querySelectorAll<SVGPathElement>('.phase')];
+    const WAVELENGTH = 400;
+    const AMPLITUDE = 46;
+    const MID = 60;
+    const PERIOD = 7000;
+    let pointerX = 600;
+    let energy = 0;
+    let last: { x: number; y: number; t: number } | null = null;
+    let running = false;
+    const start = performance.now();
+
+    flow.style.animation = 'none';
+
+    hero.addEventListener('pointermove', (e) => {
+      const r = svg.getBoundingClientRect();
+      pointerX = ((e.clientX - r.left) / r.width) * 1200;
+      const now = performance.now();
+      if (last) {
+        const speed = Math.hypot(e.clientX - last.x, e.clientY - last.y) / Math.max(8, now - last.t);
+        energy = Math.min(1, energy + speed * 0.09);
+      }
+      last = { x: e.clientX, y: e.clientY, t: now };
+    });
+
+    const draw = (now: number) => {
+      const phase = ((now - start) / PERIOD) * 2 * Math.PI;
+      energy *= 0.965;
+      paths.forEach((path, i) => {
+        const offset = (i * 2 * Math.PI) / 3;
+        let d = '';
+        for (let x = 0; x <= 1200; x += 6) {
+          const g = Math.exp(-(((x - pointerX) / 180) ** 2));
+          const swell = 1 + 1.25 * energy * g;
+          const crackle = energy * g * 7 * Math.sin(x * 0.21 + phase * 9 + i);
+          const y = MID - AMPLITUDE * swell * Math.sin((2 * Math.PI * x) / WAVELENGTH - phase - offset) + crackle;
+          d += `${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`;
+        }
+        path.setAttribute('d', d);
+      });
+      if (running) requestAnimationFrame(draw);
+    };
+
+    // Only animate while the hero is on screen.
+    new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting;
+      if (visible && !running) {
+        running = true;
+        requestAnimationFrame(draw);
+      } else if (!visible) {
+        running = false;
+      }
+    }).observe(svg);
+  }
+</script>

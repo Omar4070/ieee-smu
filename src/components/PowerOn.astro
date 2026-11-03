@@ -1,0 +1,135 @@
+---
+/**
+ * "Power-on" opening, once per visit: a dark navy screen, the three phase
+ * waves race across and the chapter logo powers up, then the screen splits
+ * into three colour bands (IAS green, IES orange, PES blue) that slide away
+ * like breakers opening. Timed entirely in CSS; the head script in
+ * BaseLayout adds html.intro only on the first page of a session and never
+ * under reduced motion. Any click, key, wheel or touch skips it, and it never
+ * blocks clicks (pointer-events: none).
+ */
+import { site } from '../config/site';
+import { url } from '../lib/utils';
+
+const phase = (deg: number) => {
+  const pts: string[] = [];
+  for (let x = 0; x <= 1200; x += 6) {
+    const y = 100 - 70 * Math.sin((2 * Math.PI * x) / 300 - (deg * Math.PI) / 180);
+    pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+  }
+  return pts.join('');
+};
+const waves = [
+  { key: 'ias', d: phase(0) },
+  { key: 'ies', d: phase(120) },
+  { key: 'pes', d: phase(240) },
+];
+---
+<div class="power-on" aria-hidden="true">
+  <div class="po-bands">
+    <span class="po-band po-ias"></span>
+    <span class="po-band po-ies"></span>
+    <span class="po-band po-pes"></span>
+  </div>
+  <div class="po-stage">
+    <svg class="po-waves" viewBox="0 0 1200 200" preserveAspectRatio="none" focusable="false">
+      {waves.map((w, i) => <path class={`po-wave po-wave-${w.key}`} d={w.d} pathLength="1" style={`--n: ${i}`} />)}
+    </svg>
+    <img class="po-logo" src={url(site.logoWhite)} alt="" width="1248" height="495" />
+  </div>
+</div>
+
+<style is:global>
+  .power-on { display: none; }
+  html.intro .power-on {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+  }
+  html.intro-skip .power-on { animation: po-skip 220ms ease forwards; }
+  @keyframes po-skip { to { opacity: 0; } }
+
+  /* Three breaker bands under the stage; they slide away last. */
+  .po-bands { position: absolute; inset: 0; display: grid; grid-template-rows: repeat(3, 1fr); }
+  .po-band { animation: po-band-out 720ms cubic-bezier(0.7, 0, 0.2, 1) 2050ms forwards; }
+  .po-ias { background: var(--ias); }
+  .po-ies { background: var(--ies); animation-name: po-band-out-right; animation-delay: 2120ms; }
+  .po-pes { background: var(--pes); animation-delay: 2190ms; }
+  @keyframes po-band-out { to { transform: translateX(-101%); } }
+  @keyframes po-band-out-right { to { transform: translateX(101%); } }
+
+  /* The dark stage: waves race across, the logo powers up, a flash, then it fades to show the bands. */
+  .po-stage {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: #0b1a2e;
+    animation: po-stage-out 360ms ease 1700ms forwards;
+  }
+  .po-stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    animation: po-flash 420ms ease 1450ms forwards;
+  }
+  @keyframes po-stage-out { to { opacity: 0; } }
+  @keyframes po-flash { 35% { opacity: 0.55; } 100% { opacity: 0; } }
+
+  .po-waves {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 34vh;
+    translate: 0 -50%;
+    overflow: visible;
+  }
+  .po-wave {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: po-draw 900ms cubic-bezier(0.6, 0, 0.2, 1) forwards;
+    animation-delay: calc(var(--n) * 130ms);
+  }
+  .po-wave-ias { stroke: #3ccf6b; }
+  .po-wave-ies { stroke: #ff8a3d; }
+  .po-wave-pes { stroke: #6fb4ff; }
+  @keyframes po-draw { to { stroke-dashoffset: 0; } }
+
+  .po-logo {
+    position: relative;
+    width: min(560px, 78vw);
+    height: auto;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: po-logo 800ms cubic-bezier(0.2, 0.7, 0.2, 1) 650ms forwards;
+  }
+  @keyframes po-logo {
+    /* The "powering up" glow exists only during the 3-second opening overlay, never at rest. */
+    60% { opacity: 1; filter: drop-shadow(0 0 32px rgb(255 255 255 / 0.55)); } /* taste-skill-ignore */
+    100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 12px rgb(255 255 255 / 0.25)); } /* taste-skill-ignore */
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  if (root.classList.contains('intro')) {
+    const end = () => root.classList.remove('intro', 'intro-skip');
+    const timer = setTimeout(end, 2950);
+    const skip = () => {
+      clearTimeout(timer);
+      root.classList.add('intro-skip');
+      setTimeout(end, 240);
+      ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((t) => removeEventListener(t, skip));
+    };
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((t) => addEventListener(t, skip, { passive: true }));
+  }
+</script>
