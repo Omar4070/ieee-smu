@@ -36,6 +36,11 @@ Add `?as=m-3` to the address to open the demo as one person (`m-1` Chair … `m-
 
 ## Connect it for real (once, about 15 minutes)
 
+**Already done for the chapter (November 2026):** the Supabase project is `ieee-smu-board`
+(Frankfurt), its address and public key are in `.github/workflows/deploy.yml`, and the live app
+is at <https://omar4070.github.io/ieee-smu/board/>. The steps below are for setting it up again
+(a new project, or another chapter).
+
 1. **Create the project.** Sign up at <https://supabase.com> (free plan) → **New project**. Pick the
    region closest to Tunisia (Frankfurt or Paris) and save the database password somewhere safe.
 2. **Create the tables.** In the project: **SQL editor → New query**, paste the whole of
