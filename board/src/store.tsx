@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { backend } from './lib/backend';
 import { byBoardOrder } from './lib/rules';
 import type { BoardEvent, Data, Invite, Meeting, Member, Presence, Rows, Table, Task } from './lib/types';
@@ -81,13 +81,21 @@ export function StoreProvider(props: {
     return map;
   }, [data.members]);
 
-  const put = <T extends Table>(table: T, row: Rows[T]) =>
+  // Every local change bumps this, so a refresh that started before it never overwrites it.
+  const writes = useRef(0);
+
+  const put = <T extends Table>(table: T, row: Rows[T]) => {
+    writes.current++;
     setData((d) => ({ ...d, [table]: upsertBy(d[table] as Rows[T][], row, (r) => r.id === row.id) }));
-  const drop = (table: Table, id: string) =>
+  };
+  const drop = (table: Table, id: string) => {
+    writes.current++;
     setData((d) => ({ ...d, [table]: (d[table] as { id: string }[]).filter((r) => r.id !== id) }));
+  };
 
   /** Runs a save; on failure shows the error and returns undefined (so `fn` must return a value). */
   async function attempt<T>(fn: () => Promise<T>, ok?: string): Promise<T | undefined> {
+    writes.current++;
     try {
       const r = await fn();
       if (ok) toast(ok);
@@ -95,8 +103,37 @@ export function StoreProvider(props: {
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Something went wrong. Try again.', 'error');
       return undefined;
+    } finally {
+      writes.current++;
     }
   }
+
+  // ---------------------------------------------------------- refresh by itself
+  // Everyone else's changes arrive without a reload: when the app comes back to the screen (phone
+  // unlocked, tab reopened, connection back) and every minute while it is open. Quiet on failure:
+  // offline, the screen simply keeps what it has.
+  const lastLoad = useRef(Date.now());
+  const refresh = useCallback(async () => {
+    const before = writes.current;
+    try {
+      const fresh = await backend.load();
+      lastLoad.current = Date.now();
+      if (writes.current === before) setData(fresh); // a save happened meanwhile: wait for the next round
+    } catch { /* keep what is on screen */ }
+  }, []);
+  useEffect(() => {
+    const back = () => { if (document.visibilityState === 'visible' && Date.now() - lastLoad.current > 15_000) refresh(); };
+    const timer = window.setInterval(() => { if (document.visibilityState === 'visible') refresh(); }, 60_000);
+    document.addEventListener('visibilitychange', back);
+    window.addEventListener('focus', back);
+    window.addEventListener('online', refresh);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', back);
+      window.removeEventListener('focus', back);
+      window.removeEventListener('online', refresh);
+    };
+  }, [refresh]);
 
   async function save<T extends Table>(table: T, input: Partial<Rows[T]>, extra: Partial<Rows[T]>, added: string, saved: string) {
     const { id, ...rest } = input as Partial<Rows[T]> & { id?: string };

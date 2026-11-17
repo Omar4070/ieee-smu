@@ -65,6 +65,12 @@ is at <https://omar4070.github.io/ieee-smu/board/>. The steps below are for sett
 7. **Add the board.** **Team → Add member** for each person, with the email they will use. The app
    shows their invite code and a message to send them privately.
 
+### Everyone sees the same board
+
+The app reloads the board by itself when someone comes back to it (phone unlocked, tab reopened,
+connection back) and every minute while it is open, so other people's changes show up without a
+refresh.
+
 ### On everyone's phone
 
 The app installs like a phone app, with its own icon, full screen and no browser bar. Each person
@@ -137,7 +143,9 @@ BOARD_OUT_DIR=../dist/board npm run build       # into the website's build, as t
 ```
 
 With the website built and served (`npm run build && npx astro preview --port 4322` in the root,
-after building the board into `dist/board`):
+after building the board into `dist/board`). The tests run on the demo, so when `board/.env` holds
+the live values, build with them blanked:
+`VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= BOARD_OUT_DIR=../dist/board npx vite build`
 
 ```bash
 playwright-cli open http://127.0.0.1:4322/board/
