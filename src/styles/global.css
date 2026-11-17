@@ -289,8 +289,11 @@
    hover zooms written with `transform` still work. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .photo-reveal {
-      animation: photo-unveil linear both;
+    .photo-reveal { animation: photo-unveil linear both; }
+    /* Scroll timelines always go in a separate, more specific rule: in one rule the
+       CSS minifier folds them into the `animation` shorthand, which Chrome rejects,
+       so the effect silently vanishes from the production build (dev is unaffected). */
+    html .photo-reveal {
       animation-timeline: view();
       animation-range: entry 0% cover 38%;
     }
@@ -306,19 +309,6 @@
     scale: 1;
   }
 }
-
-/* Smooth cross-fade between pages (browsers that support cross-document view
-   transitions); the header stays still while the page changes beneath it. */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition {
-    navigation: auto;
-  }
-  .site-header { view-transition-name: site-header; }
-  ::view-transition-old(root) { animation: vt-out 220ms ease both; }
-  ::view-transition-new(root) { animation: vt-in 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-}
-@keyframes vt-out { to { opacity: 0; } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(12px); } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -5,35 +5,46 @@
  */
 import { url } from '../lib/utils';
 import Arrow from './Arrow.astro';
+import MagnetField from './MagnetField.astro';
+import VariableProximity from './VariableProximity.astro';
 
 interface Props {
   title?: string;
   text?: string;
   href?: string;
   action?: string;
+  /** The home page's wire ends at this button, so there it must not lean towards the pointer. */
+  wired?: boolean;
 }
 const {
   title = 'Join the current',
   text = 'Student membership adds the magazines, awards and worldwide network of three IEEE societies to everything we run here.',
   href = '/join/',
   action = 'How to join',
+  wired = false,
 } = Astro.props;
 ---
 <section class="cta field-ink" aria-labelledby="cta-title">
+  <MagnetField />
   <div class="wrap cta-inner">
-    <h2 id="cta-title" class="cta-title" data-reveal>{title}</h2>
+    <h2 id="cta-title" class="cta-title" data-reveal data-proximity>{title}</h2>
     <div class="cta-foot">
       <p class="cta-text" data-reveal style="--i: 1">{text}</p>
-      <a href={url(href)} class="btn cta-btn" data-reveal style="--i: 2">
+      <a href={url(href)} class="btn cta-btn" data-reveal data-magnet={wired ? undefined : ''} style="--i: 2">
         {action} <Arrow size={20} />
       </a>
     </div>
   </div>
 </section>
+<VariableProximity />
 
 <style>
+  /* pan-y: a finger dragging sideways moves the magnet, while dragging up and down still scrolls the page. */
+  .cta { position: relative; overflow: hidden; touch-action: pan-y; }
   /* Two columns on the grid: the headline on the left, the sentence and the button closing it on the right. */
   .cta-inner {
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 40px 24px;

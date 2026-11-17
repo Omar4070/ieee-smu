@@ -1,0 +1,106 @@
+---
+/**
+ * Text motion, adapted from two React Bits components (https://reactbits.dev,
+ * © David Haz, MIT + Commons Clause: see LICENSES/react-bits.md), rebuilt without
+ * React so the site loads no extra library for them:
+ *
+ * - SplitText (effect "rise", split by words, masked): every h1/h2 with
+ *   data-reveal whose content is plain text rises word by word from behind its
+ *   own line. This script only splits; BaseLayout's reveal script plays it, so it
+ *   must run first (BaseLayout renders this component before the page).
+ * - ScrollReveal (effect "fade" with blur, scrubbed): a paragraph marked
+ *   data-scroll-reveal starts dim and sharpens word by word as it travels up the
+ *   screen. Pure scroll-driven CSS once split; other browsers show it still.
+ *
+ * Words keep real spaces between them, so lines break as before and screen
+ * readers read whole words. Nothing is split under reduced motion or without JS.
+ */
+---
+<script>
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    const plain = (el: Element) =>
+      [...el.childNodes].every((n) => n.nodeType === Node.TEXT_NODE) && !!el.textContent?.trim();
+
+    const split = (el: HTMLElement, word: (text: string, i: number, count: number) => HTMLElement) => {
+      const words = (el.textContent ?? '').trim().split(/\s+/);
+      el.replaceChildren(
+        ...words.flatMap((w, i) => {
+          const node = word(w, i, words.length);
+          return i ? [document.createTextNode(' '), node] : [node];
+        }),
+      );
+    };
+
+    document.querySelectorAll<HTMLElement>('h1[data-reveal], h2[data-reveal]').forEach((el) => {
+      if (!plain(el)) return;
+      split(el, (text, i) => {
+        const mask = document.createElement('span');
+        const inner = document.createElement('span');
+        mask.className = 'split-word';
+        inner.className = 'split-inner';
+        inner.style.setProperty('--w', String(i));
+        inner.textContent = text;
+        mask.append(inner);
+        return mask;
+      });
+      el.classList.add('split');
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-scroll-reveal]').forEach((el) => {
+      if (!plain(el)) return;
+      split(el, (text, i, count) => {
+        const word = document.createElement('span');
+        word.className = 'sr-word';
+        word.style.setProperty('--p', (i / Math.max(1, count - 1)).toFixed(3));
+        word.textContent = text;
+        return word;
+      });
+      el.classList.add('is-split');
+    });
+  }
+</script>
+
+<style is:global>
+  .split-word,
+  .split-inner,
+  .sr-word { display: inline-block; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* SplitText: the heading itself stays put, its words do the entrance. */
+    html.js .split[data-reveal] { opacity: 1; transform: none; transition: none; }
+    /* Each word is its own mask. Padding with an equal negative margin keeps
+       ascenders, descenders and overhangs inside it without moving any line. */
+    .split-word {
+      overflow: clip;
+      padding: 0.16em 0.08em;
+      margin: -0.16em -0.08em;
+    }
+    html.js .split[data-reveal=''] .split-inner { transform: translateY(calc(100% + 0.3em)); }
+    html.js .split:not([data-reveal='']) .split-inner {
+      animation: split-rise 900ms cubic-bezier(0.2, 0.75, 0.15, 1) backwards;
+      animation-delay: calc(var(--i, 0) * 80ms + var(--w, 0) * 45ms);
+    }
+    /* Arriving through the wave page change, the page title waits for the colours to clear. */
+    html.wave-in .page-header .split-inner {
+      animation-delay: calc(320ms + var(--w, 0) * 45ms);
+    }
+    @keyframes split-rise {
+      from { transform: translateY(calc(100% + 0.3em)); }
+    }
+
+    /* ScrollReveal: the last word is sharp by the time the paragraph is a third of the way up. */
+    @supports (animation-timeline: view()) {
+      [data-scroll-reveal].is-split { view-timeline: --statement block; }
+      .sr-word { animation: sr-sharpen linear both; }
+      /* A separate rule, so the CSS minifier cannot fold the timeline into the
+         shorthand (Chrome rejects a named timeline there). */
+      .is-split .sr-word {
+        animation-timeline: --statement;
+        animation-range: cover calc(4% + var(--p) * 30%) cover calc(16% + var(--p) * 30%);
+      }
+      @keyframes sr-sharpen {
+        from { opacity: 0.16; filter: blur(4px); }
+      }
+    }
+  }
+</style>

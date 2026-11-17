@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
+import PowerStory from '../components/home/PowerStory.astro';
+import Wire from '../components/home/Wire.astro';
 import Societies from '../components/home/Societies.astro';
 import EventDeck from '../components/home/EventDeck.astro';
 import Stats from '../components/home/Stats.astro';
@@ -17,7 +19,7 @@ import { url } from '../lib/utils';
     <div class="wrap grid gap-10 md:grid-cols-12 md:gap-6">
       <div class="md:col-span-8">
         <h2 id="about-title" class="sr-only">About the chapter</h2>
-        <p class="t-statement max-w-[42ch]" data-reveal>
+        <p class="t-statement max-w-[42ch]" data-scroll-reveal>
           Since {site.founded}, students at {site.university} have built converters, toured plants and competed
           together.
         </p>
@@ -32,9 +34,14 @@ import { url } from '../lib/utils';
     </div>
   </section>
 
-  <Societies />
-  <Filmstrip />
-  <EventDeck />
-  <Stats />
-  <CtaInverted />
+  <PowerStory />
+  <!-- No z-index here: the wire must stay behind the sections, not form its own layer. -->
+  <div class="wire-host relative">
+    <Wire />
+    <Societies />
+    <Filmstrip />
+    <EventDeck />
+    <Stats />
+  </div>
+  <CtaInverted wired />
 </BaseLayout>

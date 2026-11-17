@@ -1,0 +1,129 @@
+---
+/**
+ * Wave page change: the three society colours rise with a flowing wave as their
+ * edge, the next page loads behind them, and they lift away in reverse order.
+ * Moved only with CSS transforms, so it stays smooth while a page loads. Arrival
+ * needs no script at all (the head script in BaseLayout adds html.wave-in), so
+ * nothing can stay stuck over a page. Skipped with reduced motion, for new tabs,
+ * files, other sites and links within the same page. Back and forward stay instant.
+ */
+
+// One crest shape, two identical cycles, so sliding it by half loops without a seam.
+const crest = 'M0 50Q100 -30 200 50T400 50T600 50T800 50';
+const sheets = ['ias', 'ies', 'pes'];
+---
+<div class="wave-change" aria-hidden="true">
+  {
+    sheets.map((s, i) => (
+      <div class={`wc-sheet wc-${s}`} style={`--n: ${i}`}>
+        <svg class="wc-crest wc-crest-top" viewBox="0 0 800 100" preserveAspectRatio="none" focusable="false">
+          <path d={`${crest}V100H0Z`} />
+        </svg>
+        <svg class="wc-crest wc-crest-bottom" viewBox="0 0 800 100" preserveAspectRatio="none" focusable="false">
+          <path d={`${crest}V0H0Z`} />
+        </svg>
+      </div>
+    ))
+  }
+</div>
+
+<style is:global>
+  .wave-change { display: none; }
+  html.wave-in .wave-change,
+  html.wave-out .wave-change {
+    --crest: clamp(40px, 8vh, 80px);
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 310; /* above the click rings */
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .wc-sheet { position: absolute; inset: 0; will-change: transform; }
+  .wc-ias { background: var(--ias); color: var(--ias); }
+  .wc-ies { background: var(--ies); color: var(--ies); }
+  .wc-pes { background: var(--pes); color: var(--pes); }
+  .wc-crest {
+    position: absolute;
+    left: 0;
+    display: block;
+    width: 200%;
+    height: var(--crest);
+    fill: currentColor;
+    animation: wc-flow 1.4s linear infinite;
+  }
+  /* A hair of overlap, so no line of the page shows between a crest and its sheet. */
+  .wc-crest-top { bottom: calc(100% - 1px); }
+  .wc-crest-bottom { top: calc(100% - 1px); }
+  @keyframes wc-flow { to { transform: translateX(-50%); } }
+
+  /* Leaving: green leads, blue arrives last and on top. */
+  html.wave-out .wc-sheet {
+    animation: wc-rise 400ms cubic-bezier(0.7, 0, 0.25, 1) both;
+    animation-delay: calc(var(--n) * 50ms);
+  }
+  @keyframes wc-rise { from { transform: translateY(calc(100% + var(--crest))); } }
+
+  /* Arriving: blue is on top, so it leaves first; green reveals the page. */
+  html.wave-in .wc-sheet {
+    animation: wc-lift 500ms cubic-bezier(0.7, 0, 0.25, 1) both;
+    animation-delay: calc((2 - var(--n)) * 70ms + 60ms);
+  }
+  @keyframes wc-lift { to { transform: translateY(calc(-100% - var(--crest))); } }
+  html.wave-in .wave-change { animation: wc-done 1ms linear 800ms forwards; }
+  @keyframes wc-done { to { visibility: hidden; } }
+</style>
+
+<script>
+  const root = document.documentElement;
+
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    const COVERED = 500;
+    let leaving = false;
+
+    // The links this animation applies to; everything else keeps the browser's normal behaviour.
+    const pageLink = (target: EventTarget | null) => {
+      const link = (target as Element | null)?.closest?.<HTMLAnchorElement>('a[href]');
+      if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return null;
+      const next = new URL(link.href, location.href);
+      if (next.origin !== location.origin || next.pathname === location.pathname) return null;
+      // A path ending in a file name is a photo or a calendar file, not a page.
+      if (/\.[a-z0-9]+$/i.test(next.pathname) && !next.pathname.endsWith('.html')) return null;
+      return next;
+    };
+
+    document.addEventListener('click', (e) => {
+      if (leaving || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const next = pageLink(e.target);
+      if (!next) return;
+      e.preventDefault();
+      leaving = true;
+      try {
+        sessionStorage.setItem('wave', '1');
+      } catch {}
+      root.classList.add('wave-out');
+      setTimeout(() => location.assign(next.href), COVERED);
+    });
+
+    // Ask for the next page as soon as the pointer reaches its link, so the wave lifts sooner.
+    const fetched = new Set<string>();
+    const prefetch = (e: Event) => {
+      const next = pageLink(e.target);
+      if (!next || fetched.has(next.pathname)) return;
+      fetched.add(next.pathname);
+      const hint = document.createElement('link');
+      hint.rel = 'prefetch';
+      hint.href = next.href;
+      document.head.append(hint);
+    };
+    document.addEventListener('pointerover', prefetch, { passive: true });
+    document.addEventListener('touchstart', prefetch, { passive: true });
+
+    // Coming back with the browser's Back button can restore this very page, covered as it was left.
+    addEventListener('pageshow', (e) => {
+      if (!e.persisted) return;
+      leaving = false;
+      root.classList.remove('wave-out', 'wave-in');
+    });
+  }
+</script>

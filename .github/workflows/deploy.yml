@@ -32,6 +32,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            board/package-lock.json
 
       - name: Configure GitHub Pages
         id: pages
@@ -47,6 +50,28 @@ jobs:
           # (or your custom domain and "/"), provided by GitHub Pages.
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      # The board app (board/) is published with the site, at /board/. With the two repository
+      # variables below set (Settings → Secrets and variables → Actions → Variables) it connects
+      # to Supabase; without them it is published as a demo on sample data.
+      - name: Build the board app into the site
+        working-directory: board
+        run: npm ci && npm run build
+        env:
+          BOARD_OUT_DIR: ../dist/board
+          VITE_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+
+      # Free Supabase projects pause after a week without activity (school holidays). One small
+      # request a night should keep the board's database awake. Skipped until it is configured.
+      - name: Keep the board's database awake
+        if: ${{ vars.SUPABASE_URL != '' }}
+        run: >-
+          curl -s -o /dev/null -w "Supabase answered %{http_code}"
+          "$SUPABASE_URL/rest/v1/events?select=id&limit=1" -H "apikey: $SUPABASE_ANON_KEY" || true
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
 
       - name: Check internal links
         run: npm run check:links

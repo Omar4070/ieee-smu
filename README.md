@@ -27,23 +27,32 @@ editing by hand.
 9. [Quality checks](#9-quality-checks)
 10. [Design rules](#10-design-rules)
 11. [Troubleshooting](#11-troubleshooting)
+12. [The board app](#12-the-board-app)
 
 ---
 
 ## The dashboard: edit without code
 
 The site has a dashboard ([Sveltia CMS](https://github.com/sveltia/sveltia-cms), free, nothing to
-install on a server) at **`/admin/`**, for example `https://<your-site>/admin/`. It has four sections:
+install on a server) at **`/admin/`**, for example `https://<your-site>/admin/`. The menu on the
+left has the content first, then one page per group of chapter facts:
 
 | Section | What you can do |
 |---|---|
-| **Events** | Add, edit or delete events: title, dates, type, societies, place, summary, cover photo, gallery, registration link and the article |
-| **News** | Add, edit or delete news items |
-| **Team** | Edit the committee (name, role, photo, LinkedIn; drag members to reorder), or add a new committee year |
-| **Chapter settings** | Chapter name, university, email, social links, founding year, home page numbers, map, address, Formspree ID and the history milestones on the About page |
+| **Events** | Add, edit or delete events: name, dates, time, place, kind, societies, short description, cover photo, registration link, full description and the photos from the event. Newest first, with photo and date; filter by kind or group by year |
+| **News** | Add, edit or delete news items; filter by category |
+| **Team** | One entry per mandate: role, name, photo and LinkedIn of each person; drag people to reorder. For a new mandate, open last year’s entry, choose **Duplicate** in its menu (⋮) and change the names |
+| **Chapter details** | Chapter name, short name, tagline, university, student branch, IEEE section and region, city, country, founding year |
+| **Contact details** | Chapter email, social media links, postal address and the place the Contact page map shows |
+| **Home page numbers** | Members and events last year |
+| **Our history** | The milestones on the About page |
+| **Website setup** | Rarely needed: the description for search engines, the time zone and the contact form ID |
 
-Fields marked `*` are required; the hints under each field say what to enter. Photos you upload go
-into the right folder (`src/assets/events`, `news` or `team`) automatically.
+Fields marked `*` are required; the hint under each field says what to enter, and the dashboard
+refuses to save a field it cannot accept (for example a link without `https://`). Press **Save** or
+`Ctrl + S`. Photos you upload go into the right folder (`src/assets/events`, `news` or `team`)
+automatically. The buttons follow your browser’s language; change it under your profile icon
+(top right) → **Settings**.
 
 **Two ways to sign in**
 
@@ -96,14 +105,19 @@ src/
     news/          one .md file per news item    ← and these
     team/          one .json file per committee year
   config/
-    settings.json  chapter name, email, social links, numbers, Formspree ID, history (dashboard: Chapter settings)
-    site.ts        reads settings.json; logo paths and the menu
+    chapter.json   chapter name, university, IEEE section and region, founding year (dashboard: Chapter details)
+    contact.json   email, social links, address, map (dashboard: Contact details)
+    numbers.json   the home page numbers (dashboard: Home page numbers)
+    history.json   the About page milestones (dashboard: Our history)
+    website.json   search description, time zone, Formspree ID (dashboard: Website setup)
+    site.ts        reads the five files above; logo paths and the menu
     societies.ts   texts about IES, IAS and PES, their logos
   assets/          photos (put new ones in assets/events, assets/news, assets/team)
   pages/           one file per page (About, Join, Contact…)
   components/      building blocks shared by pages (header, footer…)
   styles/global.css  colours, type sizes, buttons
 public/            files copied as-is (favicon, logos in public/logos/, the dashboard in public/admin/)
+board/             the board's own app (events, tasks, meetings, attendance, PVs), published at /board/
 DESIGN.md          the design system: colours, type, spacing, rules
 ```
 
@@ -213,12 +227,13 @@ To start a new year, copy last year's file, rename it, and edit it:
 
 | What | Where |
 |---|---|
-| University, city, email, social links, founding year, member numbers | Dashboard → Chapter settings (file `src/config/settings.json`) |
-| Map location and postal address (Contact page) | Dashboard → Chapter settings (`mapQuery`, `address`) |
-| Contact form ID | Dashboard → Chapter settings (`formspreeId`), see below |
+| Chapter name, university, city, founding year | Dashboard → Chapter details (file `src/config/chapter.json`) |
+| Email, social links, postal address, map location (Contact page) | Dashboard → Contact details (`src/config/contact.json`) |
+| Home page numbers | Dashboard → Home page numbers (`src/config/numbers.json`) |
+| Contact form ID | Dashboard → Website setup (`src/config/website.json`), see below |
 | Chapter logo | `public/logos/chapter-logo.png` (colour) and `chapter-logo-white.png` (for black backgrounds); originals in `assets/brand/` |
 | Society logos and texts | `src/config/societies.ts`, logo files in `public/logos/` |
-| About page history milestones | Dashboard → Chapter settings → History |
+| About page history milestones | Dashboard → Our history (`src/config/history.json`) |
 | About page texts (mission, vision) | `src/pages/about.astro` |
 | Join page texts | `src/pages/join.astro` |
 | Colours, fonts, spacing | `src/styles/global.css` (read `DESIGN.md` first) |
@@ -228,7 +243,7 @@ To start a new year, copy last year's file, rename it, and edit it:
 
 1. Sign up with the chapter email and create a new form.
 2. Copy its ID: the part after `https://formspree.io/f/`, for example `xyzabcd`.
-3. Paste it into **Formspree form ID** in the dashboard (Chapter settings), or set `"formspreeId": "xyzabcd"` in `src/config/settings.json`.
+3. Paste it into **Contact form ID** in the dashboard (Website setup), or set `"formspreeId": "xyzabcd"` in `src/config/website.json`.
 
 Until then, the form tells visitors to email you instead.
 
@@ -317,3 +332,11 @@ The look is described in `DESIGN.md`. The short version:
 
 Built with Astro, Tailwind CSS and Montserrat (SIL Open Font License). Photographs from Wikimedia
 Commons are credited on the Image credits page. IEEE and the society names are trademarks of IEEE.
+
+## 12. The board app
+
+Next to the website, the board has its own small app at `<site>/board/` to run the team: everyone's
+tasks with deadlines, the incoming events with their ambassador and whether they are announced,
+meeting attendance with each meeting's PV, and the list of board members. Board members sign in with
+the invite code an admin gives them. It runs as a demo on sample data until it is connected to its
+free database; setup and day-to-day use are in [`board/README.md`](board/README.md).

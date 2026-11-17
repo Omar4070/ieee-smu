@@ -86,7 +86,7 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 
   <svg class="wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
     <g class="flow">
-      {phases.map((p, i) => <path class={`phase phase-${p.key}`} d={p.d} pathLength="1" style={`--p: ${i}`} />)}
+      {phases.map((p) => <path class={`phase phase-${p.key}`} d={p.d} />)}
     </g>
   </svg>
 
@@ -112,7 +112,7 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
       <div class="front-body">
         <p class="front-statement">One chapter, three IEEE societies, every engineering student welcome.</p>
         <div class="front-action">
-          <a href={url('/join/')} class="btn">
+          <a href={url('/join/')} class="btn" data-magnet>
             Join the chapter <Arrow size={20} />
           </a>
           <p class="front-note">Open to every IEEE student member at {site.university}.</p>
@@ -140,7 +140,8 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
   .hero-logo {
     display: block;
     animation: logo-in 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    width: min(1100px, 88vw);
+    /* Limited by the window height too, so a laptop's first screen still holds the sentence and the whole wave. */
+    width: min(1100px, 88vw, 118svh);
     height: auto;
     margin-inline: auto;
   }
@@ -223,16 +224,13 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
 
   @media (prefers-reduced-motion: no-preference) {
     .flow { animation: flow 7s linear infinite; }
-    .phase {
-      /* The dash exists only while drawing in (fill-mode backwards): with a stretched viewBox and
-         non-scaling strokes the dash length is slightly off, which would leave a gap afterwards. */
-      animation: phase-draw 1600ms cubic-bezier(0.6, 0, 0.2, 1) backwards;
-      animation-delay: calc(300ms + var(--p) * 220ms);
-    }
+    /* All three lines arrive together with one clip sweep, never a stroke dash: on a stretched viewBox
+       with non-scaling strokes a dash is measured wrongly, so lines stop short and then snap into place. */
+    .wave { animation: wave-sweep 800ms cubic-bezier(0.6, 0, 0.2, 1) 150ms backwards; }
   }
-  @keyframes phase-draw {
-    from { stroke-dasharray: 1; stroke-dashoffset: 1; }
-    to { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  @keyframes wave-sweep {
+    from { clip-path: inset(-100% 100% -100% 0); }
+    to { clip-path: inset(-100% 0 -100% 0); }
   }
   @keyframes flow {
     from { transform: translateX(-400px); }
@@ -373,7 +371,7 @@ const folders: { key: string; tab: string; logo?: string; href: string; title: s
       padding-top: 48px;
     }
     .hero-logo {
-      width: 100%;
+      width: min(100%, 118svh);
     }
     .hero-sub {
       font-size: 17px;

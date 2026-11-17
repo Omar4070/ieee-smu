@@ -38,7 +38,7 @@ const path = Astro.url.pathname;
           <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z" />
         </svg>
       </button>
-      <a href={url('/join/')} class="btn header-join hidden min-h-11! px-5! py-2! min-[900px]:inline-flex" aria-current={isCurrent('/join/', path) ? 'page' : undefined}>
+      <a href={url('/join/')} class="btn header-join hidden min-h-11! px-5! py-2! min-[900px]:inline-flex" data-magnet aria-current={isCurrent('/join/', path) ? 'page' : undefined}>
         Join
       </a>
       <button
@@ -66,7 +66,7 @@ const path = Astro.url.pathname;
     <span class="meter-line meter-pes"></span>
   </div>
 
-  <div id="mobile-menu" class="mobile-menu field-blue" hidden>
+  <div id="mobile-menu" class="mobile-menu field-blue" hidden data-lenis-prevent>
     <nav aria-label="Main" class="wrap pt-6 pb-10">
       <ul role="list" class="flex flex-col">
         {
@@ -115,7 +115,9 @@ const path = Astro.url.pathname;
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
       .meter { display: flex; }
-      .meter-line { animation: meter-fill linear both; animation-timeline: scroll(root); }
+      .meter-line { animation: meter-fill linear both; }
+      /* Separate rule, so the minifier cannot fold the timeline into the shorthand (see global.css). */
+      .meter .meter-line { animation-timeline: scroll(root); }
       /* Three phases: the same reading, each line easing differently so they ripple. */
       .meter-ies { animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1); }
       .meter-pes { animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.6); }

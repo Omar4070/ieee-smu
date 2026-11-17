@@ -1,0 +1,284 @@
+---
+/**
+ * Scroll is the control knob. One held screen shows what each society does to
+ * the same current: a drive brings a motor up to speed, an inverter chops the
+ * wave into pulses, and the supply splits into three phases. Each colour field
+ * rises over the last with a flowing sine as its edge, and the readout shows the
+ * real value of the wave on screen. The next section's heading, "Three phases,
+ * one current", is the punchline.
+ *
+ * Without script, with reduced motion or on very short screens this is simply
+ * three stacked colour bands showing the finished waves; GSAP only adds .is-live.
+ */
+import SocietyLogo from '../SocietyLogo.astro';
+import { societyById, type SocietyId } from '../../config/societies';
+import { motorWave, phaseWave, pulseWave, referenceWave } from '../../lib/waveforms';
+
+const STILL_W = 1200;
+const STILL_H = 200;
+const beats: { id: SocietyId; text: string; value: string; unit: string; label: string; lines: { key: string; d: string }[] }[] = [
+  {
+    id: 'IAS',
+    text: 'A drive eases a motor up to speed: voltage and frequency climb together until the machine reaches full speed.',
+    value: '3,000',
+    unit: 'rpm',
+    label: 'Motor speed',
+    lines: [{ key: 'motor', d: motorWave(STILL_W, STILL_H, 1, 0) }],
+  },
+  {
+    id: 'IES',
+    text: 'Power switches chop the current into pulses. Averaged out, they shape whatever wave the machine needs.',
+    value: '1,050',
+    unit: 'Hz',
+    label: 'Switching frequency',
+    lines: [
+      { key: 'pulses', d: pulseWave(STILL_W, STILL_H, 21, 0) },
+      { key: 'reference', d: referenceWave(STILL_W, STILL_H, 0) },
+    ],
+  },
+  {
+    id: 'PES',
+    text: 'Three lines, a third of a cycle apart: the steady supply that travels from the power plant to the factory floor.',
+    value: '120',
+    unit: '°',
+    label: 'Between phases',
+    lines: [
+      { key: 'lead', d: phaseWave(STILL_W, STILL_H, (Math.PI * 2) / 3, 0) },
+      { key: 'lag', d: phaseWave(STILL_W, STILL_H, -(Math.PI * 2) / 3, 0) },
+      { key: 'base', d: phaseWave(STILL_W, STILL_H, 0, 0) },
+    ],
+  },
+];
+---
+<section class="story" aria-label="What each society does to the current">
+  <div class="stage">
+    {
+      beats.map((b) => {
+        const s = societyById[b.id];
+        return (
+          <article class={`beat field field-${s.field}`}>
+            <div class="wrap beat-copy">
+              <div class="beat-main">
+                <SocietyLogo society={b.id} height={52} variant="field" class="beat-logo" />
+                <h2 class="t-display-lg beat-title">{s.role}</h2>
+                <p class="beat-text">{b.text}</p>
+              </div>
+              <p class="readout">
+                <span class="t-display-lg readout-value tabular-nums">
+                  <span data-readout>{b.value}</span>
+                  {b.unit !== '°' && ' '}
+                  {b.unit}
+                </span>
+                <span class="readout-label">{b.label}</span>
+              </p>
+            </div>
+            <svg class="beat-wave" viewBox={`0 0 ${STILL_W} ${STILL_H}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              {b.lines.map((l) => <path class={`line line-${l.key}`} d={l.d} data-line={l.key} />)}
+            </svg>
+          </article>
+        );
+      })
+    }
+  </div>
+</section>
+
+<style>
+  .story { margin-top: var(--section); }
+
+  /* The still version: three bands, one after the other. */
+  .beat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, 5svh, 56px);
+    padding-top: clamp(40px, 7svh, 72px);
+    overflow: hidden;
+  }
+  .beat-copy {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 24px;
+    align-items: end;
+  }
+  .beat-main { grid-column: 1 / span 8; }
+  .beat-title { max-width: 20ch; margin-top: clamp(16px, 3svh, 28px); }
+  .beat-text { max-width: 52ch; margin-top: clamp(12px, 2svh, 20px); font-size: 18px; }
+  .readout { grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 6px; }
+  .readout-value { white-space: nowrap; }
+  .readout-label { font-size: 15px; }
+  .beat-wave {
+    display: block;
+    flex: none;
+    width: 100%;
+    height: clamp(140px, 34svh, 300px);
+  }
+  .line {
+    fill: none;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .line-motor, .line-base, .line-reference { stroke: #fff; }
+  .line-pulses { stroke: #000; stroke-width: 2.5; stroke-linecap: butt; stroke-linejoin: miter; }
+  .line-lead { stroke: #2fae55; }
+  .line-lag { stroke: #ff7a2f; }
+
+  /* The live version: one held screen, the bands stacked on top of each other. */
+  .story.is-live { height: 380svh; }
+  .is-live .stage {
+    position: sticky;
+    top: var(--header-h);
+    height: calc(100svh - var(--header-h));
+    overflow: clip;
+  }
+  .is-live .beat { position: absolute; inset: 0; will-change: clip-path; }
+  .is-live .beat-wave { position: absolute; left: 0; bottom: clamp(8px, 2svh, 24px); }
+
+  @media (max-width: 767px) {
+    .beat-copy { display: block; }
+    .beat-text { font-size: 17px; }
+    .readout { margin-top: 16px; flex-direction: row; align-items: baseline; gap: 12px; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { motorWave, phaseWave, pulseWave, referenceWave } from '../../lib/waveforms';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const story = document.querySelector<HTMLElement>('.story');
+  const stage = story?.querySelector<HTMLElement>('.stage');
+
+  if (story && stage) {
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference) and (min-height: 520px)', () => {
+      const beats = [...story.querySelectorAll<HTMLElement>('.beat')];
+      const copy = beats.map((b) => b.querySelector<HTMLElement>('.beat-copy')!);
+      const svgs = beats.map((b) => b.querySelector<SVGSVGElement>('.beat-wave')!);
+      const readouts = beats.map((b) => b.querySelector<HTMLElement>('[data-readout]')!);
+      const line = (i: number, key: string) => svgs[i].querySelector<SVGPathElement>(`[data-line="${key}"]`)!;
+      const motor = line(0, 'motor');
+      const pulses = line(1, 'pulses');
+      const reference = line(1, 'reference');
+      const [lead, lag, base] = [line(2, 'lead'), line(2, 'lag'), line(2, 'base')];
+      const still = { viewBox: svgs[0].getAttribute('viewBox')!, paths: [motor, pulses, reference, lead, lag, base].map((p) => [p, p.getAttribute('d')!] as const) };
+      const finals = readouts.map((r) => r.textContent!);
+
+      story.classList.add('is-live');
+
+      let width = 0;
+      let height = 0;
+      const measure = () => {
+        width = svgs[0].clientWidth;
+        height = svgs[0].clientHeight;
+        svgs.forEach((svg) => svg.setAttribute('viewBox', `0 0 ${width} ${height}`));
+      };
+      measure();
+      const resize = new ResizeObserver(measure);
+      resize.observe(stage);
+
+      // Scroll drives these values through one linear timeline; the frame loop below draws them.
+      const state = { speed: 0, ratio: 3, split: 0, wipeA: 0, wipeB: 0 };
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: { trigger: story, start: 'top 30%', end: 'bottom bottom', scrub: 0.3 },
+      });
+      // Words leave before the field's edge reaches them and arrive once it has passed, so it never cuts text.
+      const leave = { autoAlpha: 0, duration: 0.16, immediateRender: false };
+      tl.to(state, { speed: 1, duration: 1.35 }, 0)
+        .to(state, { wipeA: 1, duration: 0.5 }, 1.45)
+        .fromTo(copy[0], { autoAlpha: 1 }, leave, 1.47)
+        .fromTo(copy[1], { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 1.92)
+        .to(state, { ratio: 21, duration: 0.45 }, 2.1)
+        .to(state, { wipeB: 1, duration: 0.5 }, 2.6)
+        .fromTo(copy[1], { autoAlpha: 1 }, leave, 2.62)
+        .fromTo(copy[2], { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 3.07)
+        .to(state, { split: 1, duration: 0.45 }, 3.25)
+        .to({}, { duration: 0.1 }, 3.7);
+
+      // The field's edge is a flowing sine: everything above it still shows the previous beat.
+      const edge = (progress: number, time: number) => {
+        const swing = Math.min(height, width) * 0.07;
+        const fullHeight = stage.clientHeight;
+        const y = (fullHeight + swing) * (1 - progress) - swing * progress;
+        const stops = [];
+        for (let i = 0; i <= 48; i += 1) {
+          const x = (width * i) / 48;
+          stops.push(`${x.toFixed(0)}px ${(y + swing * Math.sin((x / width) * Math.PI * 2 * 1.5 - time * 1.6)).toFixed(1)}px`);
+        }
+        return `polygon(${stops.join(',')},${width}px ${fullHeight}px,0px ${fullHeight}px)`;
+      };
+      const setLayer = (beat: HTMLElement, progress: number, time: number) => {
+        beat.style.visibility = progress > 0 ? 'visible' : 'hidden';
+        beat.style.clipPath = progress > 0 && progress < 1 ? edge(progress, time) : 'none';
+      };
+      const setReadout = (i: number, text: string) => {
+        if (readouts[i].textContent !== text) readouts[i].textContent = text;
+      };
+
+      let visible = false;
+      let motorPhase = 0;
+      let shift = 0;
+      let phase = 0;
+      const draw = (time: number, deltaTime: number) => {
+        if (!visible) return;
+        const dt = Math.min(deltaTime, 50) / 1000;
+        const { speed, ratio, split, wipeA, wipeB } = state;
+        motorPhase += Math.PI * 2 * (0.15 + 1.1 * speed) * dt;
+        shift += width * 0.02 * dt;
+        phase += Math.PI * 2 * 0.3 * dt;
+
+        setLayer(beats[1], wipeA, time);
+        setLayer(beats[2], wipeB, time);
+        // A fully covered beat is hidden, so its text never lies under the one in front.
+        beats[0].style.visibility = wipeA < 1 ? 'visible' : 'hidden';
+        if (wipeB >= 1) beats[1].style.visibility = 'hidden';
+
+        if (wipeA < 1) {
+          motor.setAttribute('d', motorWave(width, height, speed, motorPhase));
+          setReadout(0, (Math.round((speed * 3000) / 10) * 10).toLocaleString('en-US'));
+        }
+        if (wipeA > 0 && wipeB < 1) {
+          pulses.setAttribute('d', pulseWave(width, height, ratio, shift));
+          reference.setAttribute('d', referenceWave(width, height, shift));
+          setReadout(1, (Math.round((ratio * 50) / 10) * 10).toLocaleString('en-US'));
+        }
+        if (wipeB > 0) {
+          const offset = (split * Math.PI * 2) / 3;
+          lead.setAttribute('d', phaseWave(width, height, offset, phase));
+          lag.setAttribute('d', phaseWave(width, height, -offset, phase));
+          base.setAttribute('d', phaseWave(width, height, 0, phase));
+          setReadout(2, String(Math.round(split * 120)));
+        }
+      };
+      // Draws only while the story is on screen.
+      const watcher = ScrollTrigger.create({
+        trigger: story,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => {
+          visible = self.isActive;
+        },
+      });
+      visible = watcher.isActive;
+      gsap.ticker.add(draw);
+
+      return () => {
+        gsap.ticker.remove(draw);
+        resize.disconnect();
+        story.classList.remove('is-live');
+        beats.forEach((b) => {
+          b.style.clipPath = '';
+          b.style.visibility = '';
+        });
+        svgs.forEach((svg) => svg.setAttribute('viewBox', still.viewBox));
+        still.paths.forEach(([p, d]) => p.setAttribute('d', d));
+        readouts.forEach((r, i) => {
+          r.textContent = finals[i];
+        });
+      };
+    });
+  }
+</script>

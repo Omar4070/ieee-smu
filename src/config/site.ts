@@ -1,15 +1,26 @@
 /**
- * Chapter-wide settings. The values live in settings.json so they can be
- * edited from the dashboard (/admin/ → "Chapter settings"); placeholders
- * still to replace: email, Facebook and LinkedIn links, founded year, stats,
- * Formspree ID and the history milestones.
+ * Chapter-wide settings. The values live in small JSON files so each one is a
+ * page of its own in the dashboard (/admin/):
+ *   chapter.json  Chapter details        contact.json  Contact and social media
+ *   numbers.json  Home page numbers      history.json  Our history (About page)
+ *   website.json  Website setup (search description, time zone, contact form)
+ * Placeholders still to replace: founded year, numbers, Formspree ID and the
+ * history milestones.
  */
-import settings from './settings.json';
+import chapter from './chapter.json';
+import contact from './contact.json';
+import numbers from './numbers.json';
+import history from './history.json';
+import website from './website.json';
 
 export const site = {
-  ...settings,
-  // Optional in the dashboard, so the key may be missing from settings.json.
-  mapEmbedUrl: (settings as { mapEmbedUrl?: string }).mapEmbedUrl ?? '',
+  ...chapter,
+  ...contact,
+  ...website,
+  history: history.history,
+  stats: numbers,
+  // Optional in the dashboard, so the key may be missing from contact.json.
+  mapEmbedUrl: (contact as { mapEmbedUrl?: string }).mapEmbedUrl ?? '',
 
   /** Full chapter logo (society logos above the three-colour wave), in /public/logos. */
   logoColour: '/logos/chapter-logo.webp', // for light backgrounds (PNG kept for the icon script)

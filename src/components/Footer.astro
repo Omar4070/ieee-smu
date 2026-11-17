@@ -40,7 +40,7 @@ const social = [
 
     <div class="tile field-surface contact">
       <p class="t-small text-ink-muted">Write to us</p>
-      <a href={`mailto:${site.email}`} class="t-title footer-link mt-1 break-all">{site.email}</a>
+      <a href={`mailto:${site.email}`} class="t-title footer-link mt-1 wrap-anywhere">{site.email}</a>
       <ul role="list" class="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-6">
         {social.map((s) => (
           <li><a href={s.href} class="footer-link" rel="me noopener">{s.label}</a></li>
@@ -80,9 +80,9 @@ const social = [
     min-height: 220px;
   }
   .statement { grid-column: span 4; justify-content: space-between; }
-  .navtile { grid-column: span 3; }
+  .navtile { grid-column: span 2; }
   .place { grid-column: span 2; }
-  .contact { grid-column: span 3; }
+  .contact { grid-column: span 4; }
   .wordmark-tile {
     grid-column: span 8;
     min-height: 320px;

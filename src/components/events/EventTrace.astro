@@ -1,0 +1,245 @@
+---
+/**
+ * Event trace: the chapter's events as one oscilloscope trace, a pulse per event
+ * in its first society's colour, in date order. Read from the events collection,
+ * so it updates itself. A cursor sweeps along it and shows each event; pointing,
+ * dragging or tabbing moves the cursor, and each stretch of trace is a link to
+ * that event. Without script the whole trace is lit and the next event is shown.
+ */
+import SocietyLogo from '../SocietyLogo.astro';
+import { formatRange, getEvents, url } from '../../lib/utils';
+
+const MAX_EVENTS = 12;
+const { all, upcoming } = await getEvents();
+const events = [...all].sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf()).slice(-MAX_EVENTS);
+const count = events.length;
+
+// Drawn at build time on a 1000-wide plot; the SVG stretches, the line keeps its width.
+const W = 1000;
+const MID = 100;
+const AMPLITUDE = 88;
+const RING = Math.min(W / Math.max(count, 1), 170);
+// Bigger occasions give a bigger pulse.
+const weight: Record<string, number> = { Competition: 1, Conference: 1, 'Industrial visit': 0.9, Workshop: 0.75, Talk: 0.6, Social: 0.5 };
+const startOf = (i: number) => ((i + 0.08) / count) * W;
+
+// A pulse is a sharp edge followed by a ringing that dies away, like a step response on a scope.
+const level = (x: number) => {
+  let y = 0;
+  events.forEach((e, i) => {
+    const d = (x - startOf(i)) / RING;
+    if (d >= 0 && d < 1) y += (weight[e.data.type] ?? 0.7) * 1.45 * Math.exp(-4.2 * d) * Math.sin(Math.PI * 7 * d);
+  });
+  return y;
+};
+const trace = (from: number, to: number) => {
+  let d = '';
+  for (let x = from; x <= to; x += 2) d += `${d ? 'L' : 'M'}${x.toFixed(0)} ${(MID - AMPLITUDE * level(x)).toFixed(1)}`;
+  return d;
+};
+const segments = events.map((e, i) => ({
+  key: e.data.societies[0].toLowerCase(),
+  d: trace(Math.round(startOf(i)), Math.round(i + 1 < count ? startOf(i + 1) : W)),
+}));
+const percent = (x: number) => Number(((x / W) * 100).toFixed(2));
+const starts = events.map((_, i) => percent(startOf(i)));
+
+// Shown first: the next event, or else the latest one.
+const nextIndex = events.findIndex((e) => e.id === upcoming[0]?.id);
+const first = nextIndex >= 0 ? nextIndex : count - 1;
+---
+{
+  count > 0 && (
+    <section class="trace-section" aria-labelledby="trace-title">
+      <div class="wrap">
+        <h2 id="trace-title" class="t-headline" data-reveal>Our events on one trace</h2>
+        <div class="trace field" style="--x: 100%; --i: 1" data-starts={JSON.stringify(starts)} data-first={first} data-ring={percent(RING)} data-reveal>
+          <div class="trace-reads" aria-hidden="true">
+            {
+              events.map((e, i) => (
+                <div class:list={['read', { 'is-on': i === first }]}>
+                  <p class="t-statement read-title">{e.data.title}</p>
+                  <p class="read-meta">
+                    {formatRange(e.data.date, e.data.endDate)}, {e.data.type.toLowerCase()}
+                  </p>
+                  <p class="read-logos">
+                    {e.data.societies.map((s) => (
+                      <SocietyLogo society={s} height={30} variant="white" decorative />
+                    ))}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+          <div class="trace-plot">
+            <svg class="trace-svg trace-dim" viewBox={`0 0 ${W} 200`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d={trace(0, W)} />
+            </svg>
+            <svg class="trace-svg trace-bright" viewBox={`0 0 ${W} 200`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path class="seg-lead" d={trace(0, Math.round(startOf(0)))} />
+              {segments.map((s) => <path class={`seg-${s.key}`} d={s.d} />)}
+            </svg>
+            <span class="trace-cursor" aria-hidden="true"></span>
+            <ol class="trace-links" role="list">
+              {
+                events.map((e, i) => {
+                  const left = i === 0 ? 0 : starts[i];
+                  const right = i + 1 < count ? starts[i + 1] : 100;
+                  return (
+                    <li style={`left: ${left}%; width: ${(right - left).toFixed(2)}%`}>
+                      <a href={url(`/events/${e.id}/`)} data-index={i}>
+                        <span class="sr-only">
+                          {e.data.title}, {formatRange(e.data.date, e.data.endDate)}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })
+              }
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .trace-section { padding-top: var(--section); }
+  /* The scope is dark in both themes; in dark mode it steps up from the canvas instead of matching it. */
+  .trace {
+    margin-top: clamp(24px, 3vw, 40px);
+    padding: clamp(20px, 2.6vw, 32px) 0 clamp(16px, 2vw, 24px);
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: #0f1c2e;
+    color: #fff;
+  }
+  :global([data-theme='dark']) .trace { background: var(--surface-1); }
+
+  /* Every event's text shares one grid cell, so the box is always as tall as the longest and never jumps. */
+  .trace-reads { display: grid; padding-inline: clamp(20px, 2.6vw, 32px); }
+  .read { grid-area: 1 / 1; visibility: hidden; }
+  .read.is-on { visibility: visible; }
+  .read-meta { margin-top: 4px; font-size: 15px; color: #c6d2de; }
+  .read-logos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; min-height: 30px; }
+
+  .trace-plot {
+    position: relative;
+    height: clamp(130px, 24svh, 240px);
+    margin-top: clamp(8px, 1.4vw, 16px);
+    touch-action: pan-y;
+  }
+  .trace-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+  .trace-svg path { fill: none; stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .trace-dim path { stroke: #fff; stroke-opacity: 0.22; }
+  .seg-lead { stroke: #fff; }
+  .seg-ias { stroke: #2fae55; }
+  .seg-ies { stroke: #ff7a2f; }
+  .seg-pes { stroke: #5b8fd6; }
+  .seg-joint { stroke: #fff; }
+  .trace-bright { clip-path: inset(0 calc(100% - var(--x)) 0 0); }
+
+  .trace-cursor { display: none; }
+  .trace.is-live .trace-cursor {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--x);
+    width: 2px;
+    margin-left: -1px;
+    background: #fff;
+    pointer-events: none;
+  }
+  /* The handle says "this can be dragged" without needing a sentence. */
+  .trace.is-live .trace-cursor::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .trace-links { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+  .trace-links li { position: absolute; top: 0; bottom: 0; }
+  .trace-links a { display: block; width: 100%; height: 100%; cursor: pointer; }
+  .trace-links a:focus-visible { outline: 3px solid #fff; outline-offset: -3px; border-radius: var(--radius-sm); }
+</style>
+
+<script>
+  const trace = document.querySelector<HTMLElement>('.trace');
+  const plot = trace?.querySelector<HTMLElement>('.trace-plot');
+
+  if (trace && plot) {
+    const starts: number[] = JSON.parse(trace.dataset.starts!);
+    const ring = Number(trace.dataset.ring);
+    const reads = [...trace.querySelectorAll<HTMLElement>('.read')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SWEEP_MS = Math.max(9000, starts.length * 3200);
+    const HOLD_MS = 1800;
+
+    let shown = Number(trace.dataset.first);
+    let x = 0;
+    let lastInput = -Infinity;
+    let focused = false;
+    let running = false;
+    let previous = 0;
+
+    const moveTo = (value: number) => {
+      x = Math.max(0, Math.min(100, value));
+      trace.style.setProperty('--x', `${x}%`);
+      let now = 0;
+      starts.forEach((s, i) => {
+        if (x >= s) now = i;
+      });
+      if (now !== shown) {
+        reads[shown].classList.remove('is-on');
+        reads[now].classList.add('is-on');
+        shown = now;
+      }
+    };
+
+    trace.classList.add('is-live');
+    // Rest just past the pulse of the event shown first, so its colour has already been written.
+    moveTo(starts[shown] + ring * 0.8);
+
+    plot.addEventListener('pointermove', (e) => {
+      const box = plot.getBoundingClientRect();
+      moveTo(((e.clientX - box.left) / box.width) * 100);
+      lastInput = performance.now();
+    });
+    plot.addEventListener('focusin', (e) => {
+      const link = (e.target as Element).closest<HTMLElement>('a[data-index]');
+      if (!link) return;
+      focused = true;
+      moveTo(starts[Number(link.dataset.index)] + ring * 0.8);
+    });
+    plot.addEventListener('focusout', () => {
+      focused = false;
+      lastInput = performance.now();
+    });
+
+    if (!reduce) {
+      const frame = (t: number) => {
+        if (!running) return;
+        const dt = Math.min(t - previous, 50);
+        previous = t;
+        if (!focused && t - lastInput > HOLD_MS) moveTo(x >= 100 ? 0 : x + (dt / SWEEP_MS) * 100);
+        requestAnimationFrame(frame);
+      };
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && !running) {
+          running = true;
+          previous = performance.now();
+          requestAnimationFrame(frame);
+        } else if (!entry.isIntersecting) {
+          running = false;
+        }
+      }).observe(trace);
+    }
+  }
+</script>

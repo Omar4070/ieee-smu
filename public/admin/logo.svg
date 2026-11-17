@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 60 60">
+  <!-- Dashboard logo: the favicon's three phases on a rounded navy tile (the site's dark-mode "black"). -->
+  <rect width="60" height="60" rx="14" fill="#1c3557"/>
+  <g transform="translate(6 18)"><path d="M0 4C5 4 5 20 8 20C11 20 11 4 16 4" stroke="#2fae55" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M16 4C21 4 21 20 24 20C27 20 27 4 32 4" stroke="#ff7a2f" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M32 4C37 4 37 20 40 20C43 20 43 4 48 4" stroke="#5b8fd6" stroke-width="4" stroke-linecap="round" fill="none"/></g>
+</svg>

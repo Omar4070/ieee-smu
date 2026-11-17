@@ -1,20 +1,21 @@
 ---
 /**
- * "Power-on" opening on the home page, once per visit (about 1.7s): a dark navy screen, the three phase
- * waves race across and the chapter logo powers up, then the screen splits
- * into three colour bands (IAS green, IES orange, PES blue) that slide away
- * like breakers opening. Timed entirely in CSS; the head script in
- * BaseLayout adds html.intro only on the first page of a session and never
- * under reduced motion. Any click, key, wheel or touch skips it, and it never
- * blocks clicks (pointer-events: none).
+ * "Power-on" opening on the home page, once per visit (about 1.6s). A calm navy
+ * screen: the chapter logo appears and, below it, the three phases sweep across
+ * the full width. Then the screen lifts, followed closely by a green, an orange
+ * and a blue sheet, all moving the same way, and the page is there. Timed
+ * entirely in CSS; the head script in BaseLayout adds html.intro only on the
+ * first visit of a session and never under reduced motion. Any click, key, wheel
+ * or touch skips it, and it never blocks clicks (pointer-events: none).
  */
 import { site } from '../config/site';
 import { url } from '../lib/utils';
 
+// The hero's own waveform; one extra wavelength so it can flow while it sweeps in.
 const phase = (deg: number) => {
   const pts: string[] = [];
-  for (let x = 0; x <= 1200; x += 6) {
-    const y = 100 - 70 * Math.sin((2 * Math.PI * x) / 300 - (deg * Math.PI) / 180);
+  for (let x = 0; x <= 1600; x += 6) {
+    const y = 60 - 46 * Math.sin((2 * Math.PI * x) / 400 - (deg * Math.PI) / 180);
     pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
   }
   return pts.join('');
@@ -26,16 +27,16 @@ const waves = [
 ];
 ---
 <div class="power-on" aria-hidden="true">
-  <div class="po-bands">
-    <span class="po-band po-ias"></span>
-    <span class="po-band po-ies"></span>
-    <span class="po-band po-pes"></span>
-  </div>
-  <div class="po-stage">
-    <svg class="po-waves" viewBox="0 0 1200 200" preserveAspectRatio="none" focusable="false">
-      {waves.map((w, i) => <path class={`po-wave po-wave-${w.key}`} d={w.d} pathLength="1" style={`--n: ${i}`} />)}
+  <span class="po-sheet po-pes" style="--n: 3"></span>
+  <span class="po-sheet po-ies" style="--n: 2"></span>
+  <span class="po-sheet po-ias" style="--n: 1"></span>
+  <div class="po-sheet po-stage" style="--n: 0">
+    <img class="po-logo" src={url(site.logoWhite)} alt="" width="1248" height="495" decoding="sync" />
+    <svg class="po-waves" viewBox="0 0 1200 120" preserveAspectRatio="none" focusable="false">
+      <g class="po-flow">
+        {waves.map((w) => <path class={`po-wave po-wave-${w.key}`} d={w.d} />)}
+      </g>
     </svg>
-    <img class="po-logo" src={url(site.logoWhite)} alt="" width="1248" height="495" />
   </div>
 </div>
 
@@ -46,84 +47,69 @@ const waves = [
     position: fixed;
     inset: 0;
     z-index: 200;
+    overflow: hidden;
     pointer-events: none;
   }
   html.intro-skip .power-on { animation: po-skip 220ms ease forwards; }
   @keyframes po-skip { to { opacity: 0; } }
 
-  /* Three breaker bands under the stage; they slide away last. */
-  .po-bands { position: absolute; inset: 0; display: grid; grid-template-rows: repeat(3, 1fr); }
-  .po-band { animation: po-band-out 520ms cubic-bezier(0.7, 0, 0.2, 1) 1100ms forwards; }
+  /* The stage and the three colour sheets are stacked; they lift one after the other, same direction. */
+  .po-sheet {
+    position: absolute;
+    inset: 0;
+    animation: po-lift 560ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    animation-delay: calc(850ms + var(--n) * 60ms);
+    will-change: transform;
+  }
+  @keyframes po-lift { to { transform: translateY(-101%); } }
   .po-ias { background: var(--ias); }
-  .po-ies { background: var(--ies); animation-name: po-band-out-right; animation-delay: 1150ms; }
-  .po-pes { background: var(--pes); animation-delay: 1200ms; }
-  @keyframes po-band-out { to { transform: translateX(-101%); } }
-  @keyframes po-band-out-right { to { transform: translateX(101%); } }
+  .po-ies { background: var(--ies); }
+  .po-pes { background: var(--pes); }
 
-  /* The dark stage: waves race across, the logo powers up, a flash, then it fades to show the bands. */
   .po-stage {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(24px, 5svh, 48px);
     background: #0b1a2e;
-    animation: po-stage-out 300ms ease 900ms forwards;
   }
-  .po-stage::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: #fff;
-    opacity: 0;
-    animation: po-flash 300ms ease 720ms forwards;
+  .po-logo {
+    width: min(520px, 76vw);
+    height: auto;
+    animation: po-logo 420ms cubic-bezier(0.2, 0.7, 0.2, 1) 60ms backwards;
   }
-  @keyframes po-stage-out { to { opacity: 0; } }
-  @keyframes po-flash { 35% { opacity: 0.55; } 100% { opacity: 0; } }
+  @keyframes po-logo { from { opacity: 0; transform: translateY(10px); } }
 
+  /* The lines sit below the logo, edge to edge. They arrive with one clip sweep rather than a stroke
+     dash: on a stretched viewBox a dash is measured wrongly and the lines stop short of the edge. */
   .po-waves {
-    position: absolute;
-    left: 0;
-    top: 50%;
+    flex: none;
     width: 100%;
-    height: 34vh;
-    translate: 0 -50%;
-    overflow: visible;
+    height: clamp(72px, 13svh, 120px);
+    animation: po-sweep 650ms cubic-bezier(0.6, 0, 0.2, 1) 100ms backwards;
+  }
+  @keyframes po-sweep { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  .po-flow { animation: po-flow 1600ms linear both; }
+  @keyframes po-flow {
+    from { transform: translateX(-400px); }
+    to { transform: translateX(0); }
   }
   .po-wave {
     fill: none;
     stroke-width: 4;
-    stroke-linecap: round;
     vector-effect: non-scaling-stroke;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    animation: po-draw 600ms cubic-bezier(0.6, 0, 0.2, 1) forwards;
-    animation-delay: calc(var(--n) * 90ms);
   }
-  .po-wave-ias { stroke: #3ccf6b; }
-  .po-wave-ies { stroke: #ff8a3d; }
-  .po-wave-pes { stroke: #6fb4ff; }
-  @keyframes po-draw { to { stroke-dashoffset: 0; } }
-
-  .po-logo {
-    position: relative;
-    width: min(560px, 78vw);
-    height: auto;
-    opacity: 0;
-    transform: scale(0.9);
-    animation: po-logo 560ms cubic-bezier(0.2, 0.7, 0.2, 1) 300ms forwards;
-  }
-  @keyframes po-logo {
-    /* The "powering up" glow exists only during the 3-second opening overlay, never at rest. */
-    60% { opacity: 1; filter: drop-shadow(0 0 32px rgb(255 255 255 / 0.55)); } /* taste-skill-ignore */
-    100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 12px rgb(255 255 255 / 0.25)); } /* taste-skill-ignore */
-  }
+  .po-wave-ias { stroke: #2fae55; }
+  .po-wave-ies { stroke: #ff7a2f; }
+  .po-wave-pes { stroke: #5b8fd6; }
 </style>
 
 <script>
   const root = document.documentElement;
   if (root.classList.contains('intro')) {
     const end = () => root.classList.remove('intro', 'intro-skip');
-    const timer = setTimeout(end, 1750);
+    const timer = setTimeout(end, 1640);
     const skip = () => {
       clearTimeout(timer);
       root.classList.add('intro-skip');

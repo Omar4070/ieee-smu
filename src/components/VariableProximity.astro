@@ -1,0 +1,132 @@
+---
+/**
+ * VariableProximity, adapted from React Bits (https://reactbits.dev, © David Haz,
+ * MIT + Commons Clause: see LICENSES/react-bits.md), rebuilt without React. In a
+ * heading marked data-proximity, the letters near the mouse pointer swell from the
+ * heading's own weight towards bold, using Montserrat's variable weight axis.
+ *
+ * It builds on the words TextMotion has already split (so the heading still rises
+ * word by word), freezes the line breaks measured at rest so growing letters never
+ * re-wrap the heading, and gives screen readers the words once instead of letter
+ * by letter. Mouse only, never under reduced motion; otherwise the heading is plain.
+ */
+---
+<script>
+  const RADIUS = 170; // px from a letter's centre where it starts to swell
+  const BOLD = 700;
+  const EDGE = Math.exp(-2);
+
+  const proximity = (title: HTMLElement) => {
+    const words = [...title.querySelectorAll<HTMLElement>('.split-word')];
+    if (!words.length) return;
+    const rest = parseFloat(getComputedStyle(title).fontWeight) || 300;
+
+    // Letters inside the split words; the readable copy for screen readers beside them.
+    const letters: HTMLElement[] = [];
+    const label = document.createElement('span');
+    label.className = 'sr-only';
+    label.textContent = (title.textContent ?? '').replace(/\s+/g, ' ').trim();
+    title.querySelectorAll<HTMLElement>('.split-inner').forEach((inner) => {
+      inner.replaceChildren(
+        ...[...(inner.textContent ?? '')].map((c) => {
+          const letter = document.createElement('span');
+          letter.textContent = c;
+          letters.push(letter);
+          return letter;
+        }),
+      );
+    });
+    const visual = document.createElement('span');
+    visual.setAttribute('aria-hidden', 'true');
+    visual.append(...title.childNodes);
+    title.append(label, visual);
+
+    // Letter centres at rest, in page coordinates. Across from the letter itself,
+    // down from its word's mask, which never moves (the word inside may still be rising).
+    let centres: { x: number; y: number }[] = [];
+    const layout = () => {
+      title.querySelectorAll('br').forEach((br) => br.remove());
+      title.style.whiteSpace = '';
+      letters.forEach((l) => (l.style.fontWeight = ''));
+      let top: number | null = null;
+      words.forEach((w) => {
+        if (top !== null && w.offsetTop > top + 2) w.before(document.createElement('br'));
+        top = w.offsetTop;
+      });
+      title.style.whiteSpace = 'nowrap';
+      centres = letters.map((l) => {
+        const r = l.getBoundingClientRect();
+        const m = l.closest('.split-word')!.getBoundingClientRect();
+        return { x: r.left + r.width / 2 + scrollX, y: m.top + m.height / 2 + scrollY };
+      });
+      levels.fill(0);
+    };
+
+    const levels = letters.map(() => 0);
+    let pointer: { x: number; y: number } | null = null;
+    let visible = false;
+    let raf = 0;
+    let last = 0;
+
+    const tick = (now: number) => {
+      raf = 0;
+      const dt = last ? Math.min(now - last, 64) : 16;
+      last = now;
+      const ease = 1 - Math.exp(-dt / 90);
+      const px = pointer ? pointer.x + scrollX : 0;
+      const py = pointer ? pointer.y + scrollY : 0;
+      let settling = false;
+      letters.forEach((letter, i) => {
+        let target = 0;
+        if (pointer && visible) {
+          const d = Math.hypot(px - centres[i].x, py - centres[i].y);
+          if (d < RADIUS) target = (Math.exp(-2 * (d / RADIUS) ** 2) - EDGE) / (1 - EDGE);
+        }
+        let next = levels[i] + (target - levels[i]) * ease;
+        if (Math.abs(target - next) < 0.002) next = target;
+        else settling = true;
+        if (next === levels[i]) return;
+        levels[i] = next;
+        letter.style.fontWeight = next ? String(Math.round(rest + (BOLD - rest) * next)) : '';
+      });
+      if (settling) raf = requestAnimationFrame(tick);
+      else last = 0;
+    };
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    layout();
+    document.fonts?.ready.then(layout);
+    let width = title.parentElement!.clientWidth;
+    new ResizeObserver(() => {
+      const next = title.parentElement!.clientWidth;
+      if (Math.abs(next - width) < 1) return;
+      width = next;
+      layout();
+    }).observe(title.parentElement!);
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      wake();
+    }).observe(title);
+
+    addEventListener(
+      'pointermove',
+      (e) => {
+        if (e.pointerType !== 'mouse') return;
+        pointer = { x: e.clientX, y: e.clientY };
+        if (visible) wake();
+      },
+      { passive: true },
+    );
+    addEventListener('scroll', () => visible && pointer && wake(), { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => {
+      pointer = null;
+      wake();
+    });
+  };
+
+  if (matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-proximity]').forEach(proximity);
+  }
+</script>

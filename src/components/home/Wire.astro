@@ -1,0 +1,264 @@
+---
+/**
+ * The wire: one line leaves the bottom of the power story, draws itself down the
+ * home page as you scroll, lights a node at each section it passes, and ends by
+ * switching on the Join button. It lies behind the page (z-index -1, like the
+ * background waves): it runs in the margins, crosses only in the gaps between
+ * sections, and passes behind opaque bands, so it can never cover text or photos.
+ * On narrow screens it is one straight line down the side. Decoration only:
+ * nothing is drawn with reduced motion or without script.
+ */
+---
+<svg class="wire" aria-hidden="true" focusable="false">
+  <path class="wire-dead" />
+  <path class="wire-live" />
+  <g class="wire-nodes"></g>
+  <circle class="wire-spark" r="5" />
+</svg>
+
+<style>
+  .wire {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .wire.is-live { display: block; }
+  .wire path { fill: none; stroke-width: 3; }
+  .wire-dead { stroke: color-mix(in srgb, var(--ink) 14%, transparent); }
+  .wire-live { stroke: var(--link); }
+  .wire-spark { fill: var(--link); }
+
+  /* Before the wire arrives the Join button is off, yet still readable and still works. */
+  :global(.cta.wire-wait .cta-btn) {
+    background: color-mix(in srgb, currentColor 20%, transparent);
+    color: inherit;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const host = document.querySelector<HTMLElement>('.wire-host');
+  const svg = host?.querySelector<SVGSVGElement>('.wire');
+  const cta = document.querySelector<HTMLElement>('.cta');
+  const button = cta?.querySelector<HTMLElement>('.cta-btn');
+
+  if (host && svg && cta && button) {
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      const NS = 'http://www.w3.org/2000/svg';
+      const dead = svg.querySelector<SVGPathElement>('.wire-dead')!;
+      const live = svg.querySelector<SVGPathElement>('.wire-live')!;
+      const spark = svg.querySelector<SVGCircleElement>('.wire-spark')!;
+      const nodesGroup = svg.querySelector<SVGGElement>('.wire-nodes')!;
+      const ruler = document.createElementNS(NS, 'path');
+      const measure = (d: string) => {
+        ruler.setAttribute('d', d);
+        return ruler.getTotalLength();
+      };
+
+      // The last stretch runs inside the closing band, above its background and below its text.
+      const end = document.createElementNS(NS, 'svg');
+      end.setAttribute('aria-hidden', 'true');
+      end.style.cssText = 'position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none';
+      const makeEnd = (opacity: string) => {
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', 'currentColor');
+        p.setAttribute('stroke-width', '3');
+        p.setAttribute('stroke-opacity', opacity);
+        end.append(p);
+        return p;
+      };
+      const endDead = makeEnd('0.2');
+      const endLive = makeEnd('1');
+      const endSpark = document.createElementNS(NS, 'circle');
+      endSpark.setAttribute('r', '5');
+      endSpark.setAttribute('fill', 'currentColor');
+      end.append(endSpark);
+      cta.append(end);
+      cta.classList.add('wire-wait');
+      svg.classList.add('is-live');
+
+      type Node = { el: SVGCircleElement; at: number; colour: string };
+      let nodes: Node[] = [];
+      let hostLength = 0;
+      let endLength = 0;
+      let table: { scroll: number; length: number }[] = [];
+      let length = 0;
+
+      const dashes = (path: SVGPathElement, total: number, drawn: number) => {
+        path.setAttribute('stroke-dasharray', `${Math.max(0, drawn)} ${total + 1}`);
+      };
+
+      const render = () => {
+        const inHost = Math.min(length, hostLength);
+        const inEnd = Math.max(0, length - hostLength);
+        dashes(live, hostLength, inHost);
+        dashes(endLive, endLength, inEnd);
+        const onEnd = inEnd > 0;
+        spark.style.display = onEnd || length <= 0 ? 'none' : '';
+        endSpark.style.display = onEnd ? '' : 'none';
+        if (onEnd) {
+          const p = endLive.getPointAtLength(inEnd);
+          endSpark.setAttribute('cx', String(p.x));
+          endSpark.setAttribute('cy', String(p.y));
+        } else {
+          const p = live.getPointAtLength(inHost);
+          spark.setAttribute('cx', String(p.x));
+          spark.setAttribute('cy', String(p.y));
+        }
+        nodes.forEach((n) => {
+          n.el.style.fill = length >= n.at ? n.colour : 'color-mix(in srgb, var(--ink) 24%, var(--canvas))';
+        });
+        cta.classList.toggle('wire-wait', length < hostLength + endLength - 1);
+      };
+
+      const build = () => {
+        const hostBox = host.getBoundingClientRect();
+        const hostTop = hostBox.top + scrollY;
+        const width = host.clientWidth;
+        const height = host.clientHeight;
+        const within = (el: Element) => {
+          const r = el.getBoundingClientRect();
+          return { top: r.top + scrollY - hostTop, bottom: r.bottom + scrollY - hostTop };
+        };
+
+        // The margin: just outside the page's text edge, however wide the screen.
+        const wrap = host.querySelector('.wrap')!;
+        const edge = wrap.getBoundingClientRect().left + parseFloat(getComputedStyle(wrap).paddingLeft);
+        const left = edge - Math.min(16, edge / 2);
+        const right = width - left;
+        const wide = innerWidth >= 900;
+        const RADIUS = 24;
+
+        // The sections the wire crosses beneath, in their bottom padding.
+        const sections = ['#societies', '[aria-labelledby="upcoming-title"]', '[aria-labelledby="stats-title"]']
+          .map((s) => host.querySelector(s))
+          .filter((s): s is Element => !!s);
+        const crossings = wide ? sections.map((s) => within(s).bottom - parseFloat(getComputedStyle(s).paddingBottom) / 2) : [];
+
+        // On a wide screen it must finish on the right, where the band's button can be reached.
+        let side = wide && crossings.length % 2 === 0 ? right : left;
+        let d = `M${side} 0`;
+        const spans: { x: number; from: number; to: number; length: number }[] = [];
+        const anchor = innerHeight * 0.68;
+        const scrollFor = (y: number) => hostTop + y - anchor;
+        table = [{ scroll: scrollFor(0), length: 0 }];
+        let y = 0;
+
+        crossings.forEach((cross) => {
+          const other = side === left ? right : left;
+          const dir = other > side ? 1 : -1;
+          spans.push({ x: side, from: y, to: cross - RADIUS, length: measure(d) });
+          d += `V${cross - RADIUS}`;
+          table.push({ scroll: scrollFor(cross - RADIUS), length: measure(d) });
+          d += `Q${side} ${cross} ${side + dir * RADIUS} ${cross}H${other - dir * RADIUS}Q${other} ${cross} ${other} ${cross + RADIUS}`;
+          // The head stays near the same height while it runs across, so the crossing gets its own stretch of scroll.
+          const after = table[table.length - 1].scroll + Math.min(320, innerHeight * 0.36);
+          table.push({ scroll: after, length: measure(d) });
+          side = other;
+          y = cross + RADIUS;
+        });
+        spans.push({ x: side, from: y, to: height, length: measure(d) });
+        d += `V${height}`;
+        hostLength = measure(d);
+        table.push({ scroll: Math.max(scrollFor(height), table[table.length - 1].scroll + 1), length: hostLength });
+
+        // A node where each section's heading meets the wire.
+        nodesGroup.replaceChildren();
+        const colours = ['var(--ias)', 'var(--ies)', 'var(--pes)'];
+        nodes = sections.flatMap((s, i) => {
+          const heading = s.querySelector('h2');
+          if (!heading) return [];
+          const box = within(heading);
+          const middle = (box.top + box.bottom) / 2;
+          const span = spans.find((p) => middle >= p.from && middle <= p.to);
+          if (!span) return [];
+          const el = document.createElementNS(NS, 'circle');
+          el.setAttribute('cx', String(span.x));
+          el.setAttribute('cy', String(middle));
+          el.setAttribute('r', '7');
+          nodesGroup.append(el);
+          return [{ el, at: span.length + (middle - span.from), colour: colours[i % colours.length] }];
+        });
+
+        // The last stretch, inside the band, into the side of the button.
+        const ctaBox = cta.getBoundingClientRect();
+        const buttonBox = button.getBoundingClientRect();
+        const ctaTop = ctaBox.top + scrollY;
+        // Offsets, as the button may still be mid-entrance when this runs.
+        let buttonTop = 0;
+        for (let n: HTMLElement | null = button; n && n !== cta; n = n.offsetParent as HTMLElement | null) buttonTop += n.offsetTop;
+        const buttonMiddle = buttonTop + button.offsetHeight / 2;
+        const target = side === right ? buttonBox.right - ctaBox.left : buttonBox.left - ctaBox.left;
+        const gap = Math.abs(target - side);
+        const turn = Math.min(RADIUS, gap);
+        const dir = target > side ? 1 : -1;
+        const endD = `M${side} 0V${buttonMiddle - turn}Q${side} ${buttonMiddle} ${side + dir * turn} ${buttonMiddle}H${target}`;
+        endDead.setAttribute('d', endD);
+        endLive.setAttribute('d', endD);
+        endLength = measure(endD);
+
+        const maxScroll = document.documentElement.scrollHeight - innerHeight;
+        const previous = table[table.length - 1].scroll;
+        const reachButton = ctaTop + buttonMiddle - anchor;
+        table.push({ scroll: Math.max(previous + 1, Math.min(reachButton, maxScroll - 4)), length: hostLength + endLength });
+
+        dead.setAttribute('d', d);
+        live.setAttribute('d', d);
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        render();
+      };
+
+      const lengthAt = (scroll: number) => {
+        if (scroll <= table[0].scroll) return 0;
+        for (let i = 1; i < table.length; i += 1) {
+          if (scroll <= table[i].scroll) {
+            const a = table[i - 1];
+            const b = table[i];
+            return a.length + ((scroll - a.scroll) / (b.scroll - a.scroll)) * (b.length - a.length);
+          }
+        }
+        return table[table.length - 1].length;
+      };
+
+      const tick = () => {
+        const target = lengthAt(scrollY);
+        if (Math.abs(target - length) < 0.4) return;
+        length += (target - length) * 0.2;
+        render();
+      };
+
+      build();
+      length = lengthAt(scrollY);
+      render();
+      gsap.ticker.add(tick);
+
+      // Everything is measured from the page, so measure again whenever the page changes height.
+      let pending = 0;
+      const again = () => {
+        cancelAnimationFrame(pending);
+        pending = requestAnimationFrame(build);
+      };
+      const resize = new ResizeObserver(again);
+      resize.observe(document.body);
+      addEventListener('load', again, { once: true });
+      document.fonts?.ready.then(again);
+
+      return () => {
+        gsap.ticker.remove(tick);
+        resize.disconnect();
+        cancelAnimationFrame(pending);
+        svg.classList.remove('is-live');
+        cta.classList.remove('wire-wait');
+        end.remove();
+        nodesGroup.replaceChildren();
+      };
+    });
+  }
+</script>

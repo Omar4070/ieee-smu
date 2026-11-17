@@ -210,9 +210,20 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 
 ## Motion
 - Section parts enter once as they scroll into view: heading, then text, then picture, staggered 60–90ms, rising 24px with opacity. Content is visible without JavaScript.
+- **Smooth scrolling** (Lenis, every page): wheel and trackpad scrolling glide to a stop instead of jumping. Touch screens keep their own scrolling; none under reduced motion.
+- **Rising headings** (from React Bits SplitText): page titles and section headings rise word by word from behind their own line, 45ms apart, instead of fading in as one block.
+- **Sharpening statements** (from React Bits ScrollReveal): the large statements on the home and About pages start dim and slightly blurred and sharpen word by word as they move up the screen; fully sharp by the time they are a third of the way up.
+- **Magnetic buttons** (from React Bits Magnet): the main buttons (header Join, hero, closing band, Join IEEE) lean up to 10px towards a nearby mouse pointer and spring back. Not on the home closing band, where the wire ends at the button.
+- **Swelling title** (from React Bits VariableProximity): in "Join the current", the letters near the mouse thicken from light to bold on Montserrat's weight axis, then thin out again; the lines never re-wrap.
 - Live thing: **the three-phase waveform** in the home hero. Three sines 120° apart flow continuously (CSS translate of a pre-computed path); pointing at or focusing a society's folder thickens its phase and fades the other two. Still under reduced motion.
 - Second signature move: **index with preview.** On the Events archive, pointing at a row shows its photo in a fixed frame and dims the other rows. On touch screens the photo is inline.
-- **Power-on opening** (once per visit, skippable): dark navy stage, the three phase waves race across, the logo powers up with a glow and a white flash, then three colour bands slide away like opening breakers.
+- **Wave page change** (every page): moving to another page, the three colours rise with a flowing wave as their edge, then lift away in reverse on the new page.
+- **Magnet field** (the closing band): needles follow the pointer like iron filings around a magnet, leaving the text clear.
+- **Event trace** (Events page): the year of events as one oscilloscope trace, one pulse per event in its society colour; move along it to see each event.
+- **The wire** (home page): one line leaves the power story, runs behind the page in the margins, lights a node at each section and switches on the Join button.
+- **Breakers closing** (Team page, GSAP, once on scroll): the board starts dead with dimmed portraits; the Chair and Vice-Chair light up, current runs down the trunk and along the busbar, then each breaker snaps shut, from the trunk outward, and lights its officer. Names stay readable throughout.
+- **Power story** (home, GSAP, scroll-driven, one held screen): one wave changes shape per society, in logo order: a motor ramping to 3,000 rpm, PWM pulses up to 1,050 Hz, one line splitting into three phases 120° apart. Each colour field rises with a flowing sine as its edge.
+- **Power-on opening** (home page, once per visit, about 1.6s, skippable): calm navy stage with the logo alone, the three phases sweep edge to edge below it, then the stage and a green, an orange and a blue sheet lift one after the other in the same direction. No glow, no flash, nothing crossing the logo.
 - **Resonance:** with a mouse, the hero waves swell and crackle around the pointer in proportion to its speed, then settle.
 - **Click surge:** three rings in the society colours expand from every click (visual only).
 - **Rolling word:** "Join us for workshops / industrial visits / competitions / talks" rolls like an analog counter, underlined in the society colours.
@@ -223,7 +234,7 @@ Neighbouring sections never share a layout. Separate sections by a change of fie
 - **Living background** (`BackgroundWaves.astro`, in the base layout): four faint bands of the three-phase wave, spread evenly over the viewport, flow behind every page in alternating directions. Canvas sections are transparent and grey sections (`.field-surface`) are a 5% ink tint, so the waves show through both; colour fields, photos, tiles and the home hero stay solid. Opacity 18% light, 20% dark; still under reduced motion. There are no static wave lines anywhere.
 - **Filmstrip** (`Filmstrip.astro`): two rows of photographs on black slide in opposite directions with the scroll.
 - **Count-up:** the home page figures count up from zero when they appear.
-- **Page transitions:** cross-document view transitions cross-fade pages; the header stays still.
+- **Page transitions:** the wave page change (three colours rise and lift away); with reduced motion pages change instantly.
 - Scroll-driven effects degrade gracefully: browsers without scroll timelines show everything in place (the filmstrip drifts slowly on a timer instead). Everything respects `prefers-reduced-motion: reduce` (motion removed, content kept).
 
 ## Do's and Don'ts

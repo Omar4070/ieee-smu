@@ -19,7 +19,7 @@ const pictures = {
   IAS: { src: motor, alt: 'A cutaway electric motor showing its rotor and stator windings' },
 };
 
-// Milestones are edited in the dashboard (Chapter settings → History), stored in src/config/settings.json.
+// Milestones are edited in the dashboard (Our history), stored in src/config/history.json.
 const history = site.history;
 ---
 <BaseLayout
@@ -61,13 +61,13 @@ const history = site.history;
     <div class="wrap section grid gap-16 md:grid-cols-2 md:gap-6">
       <div>
         <h2 id="mission-title" class="t-headline" data-reveal>Our mission</h2>
-        <p class="t-statement mt-8 max-w-[26ch]" data-reveal style="--i: 1">
+        <p class="t-statement mt-8 max-w-[26ch]" data-scroll-reveal>
           Give every engineering student hands-on contact with power, electronics and industry.
         </p>
       </div>
       <div>
         <h2 class="t-headline" data-reveal style="--i: 2">Our vision</h2>
-        <p class="t-statement mt-8 max-w-[26ch]" data-reveal style="--i: 3">
+        <p class="t-statement mt-8 max-w-[26ch]" data-scroll-reveal>
           Graduates who have built, measured and seen the systems they will one day design.
         </p>
       </div>
@@ -136,8 +136,7 @@ const history = site.history;
           electronics and industry.
         </p>
         <p class="mt-4">
-          {/* TODO: name your IEEE Section and Region, e.g. "IEEE France Section, Region 8". */}
-          We work alongside the other chapters of the branch and report to our IEEE Section and Region.
+          We work alongside the other chapters of the branch, within the {site.ieeeSection} and {site.ieeeRegion}.
         </p>
         <a href="https://www.ieee.org/about/" class="link mt-6 inline-flex items-center gap-2" rel="noopener">
           About IEEE <Arrow size={18} direction="up-right" />

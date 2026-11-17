@@ -1,0 +1,125 @@
+---
+/**
+ * Magnet, adapted from React Bits (https://reactbits.dev, © David Haz, MIT +
+ * Commons Clause: see LICENSES/react-bits.md), rebuilt without React. A button
+ * marked data-magnet leans towards a mouse pointer that comes near it and settles
+ * back on a spring; only the nearest one moves at a time. It moves with the CSS
+ * `translate` property, so the buttons' own transforms (press, entrance) still
+ * work. Mouse only, never under reduced motion.
+ */
+---
+<script>
+  if (matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+    const PADDING = 80; // the pull starts this far (px) from the button's edge
+    const STRENGTH = 4; // the button follows a quarter of the pointer's offset…
+    const MAX = 10; // …but never more than this (px)
+    const STIFFNESS = 170; // React Bits' default spring
+    const DAMPING = 16;
+
+    type Magnet = { el: HTMLElement; x: number; y: number; vx: number; vy: number };
+    const magnets: Magnet[] = [...document.querySelectorAll<HTMLElement>('[data-magnet]')].map((el) => ({
+      el,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+    }));
+    let pointer: { x: number; y: number } | null = null;
+    let owner: Magnet | null = null;
+    let raf = 0;
+    let last = 0;
+
+    const smoothstep = (a: number, b: number, v: number) => {
+      const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    };
+
+    // The pointer measured from the button's resting place (its current lean taken out).
+    const reach = (m: Magnet) => {
+      const r = m.el.getBoundingClientRect();
+      if (!pointer || !r.width) return null;
+      const dx = pointer.x - (r.left - m.x + r.width / 2);
+      const dy = pointer.y - (r.top - m.y + r.height / 2);
+      const outside = Math.hypot(Math.max(0, Math.abs(dx) - r.width / 2), Math.max(0, Math.abs(dy) - r.height / 2));
+      return outside > PADDING ? null : { dx, dy, outside };
+    };
+
+    const frame = (now: number) => {
+      raf = 0;
+      const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
+      last = now;
+      let moving = false;
+      for (const m of magnets) {
+        let tx = 0;
+        let ty = 0;
+        const near = m === owner ? reach(m) : null;
+        if (near) {
+          const pull = 1 - smoothstep(PADDING / 2, PADDING, near.outside);
+          tx = (near.dx / STRENGTH) * pull;
+          ty = (near.dy / STRENGTH) * pull;
+          const length = Math.hypot(tx, ty);
+          if (length > MAX) {
+            tx *= MAX / length;
+            ty *= MAX / length;
+          }
+        }
+        const steps = Math.ceil(dt * 120);
+        for (let i = 0; i < steps; i++) {
+          const h = dt / steps;
+          m.vx += (STIFFNESS * (tx - m.x) - DAMPING * m.vx) * h;
+          m.vy += (STIFFNESS * (ty - m.y) - DAMPING * m.vy) * h;
+          m.x += m.vx * h;
+          m.y += m.vy * h;
+        }
+        if (Math.hypot(tx - m.x, ty - m.y) < 0.05 && Math.hypot(m.vx, m.vy) < 0.05) {
+          m.x = tx;
+          m.y = ty;
+          m.vx = m.vy = 0;
+        } else {
+          moving = true;
+        }
+        m.el.style.translate = m.x || m.y ? `${m.x.toFixed(2)}px ${m.y.toFixed(2)}px` : '';
+      }
+      if (moving) raf = requestAnimationFrame(frame);
+      else last = 0;
+    };
+
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+
+    // The nearest button within reach takes the pointer.
+    const arbitrate = () => {
+      let best: Magnet | null = null;
+      let nearest = Infinity;
+      for (const m of magnets) {
+        const near = reach(m);
+        if (near && near.outside < nearest) {
+          best = m;
+          nearest = near.outside;
+        }
+      }
+      if (best || owner) wake();
+      owner = best;
+    };
+
+    if (magnets.length) {
+      addEventListener(
+        'pointermove',
+        (e) => {
+          if (e.pointerType !== 'mouse') return;
+          pointer = { x: e.clientX, y: e.clientY };
+          arbitrate();
+        },
+        { passive: true },
+      );
+      addEventListener('scroll', () => pointer && arbitrate(), { passive: true });
+      const leave = () => {
+        pointer = null;
+        arbitrate();
+      };
+      document.documentElement.addEventListener('pointerleave', leave);
+      addEventListener('blur', leave);
+    }
+  }
+</script>

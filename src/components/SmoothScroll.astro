@@ -1,0 +1,19 @@
+---
+/**
+ * Smooth scrolling with Lenis (https://github.com/darkroomengineering/lenis).
+ * Lenis only eases wheel and trackpad input: the page still scrolls natively, so
+ * sticky sections, anchors, find-in-page, the keyboard and the scroll-driven CSS
+ * all keep working. Touch screens keep their own scrolling and nothing changes
+ * under reduced motion. `autoToggle` pauses it while <html> cannot scroll (the
+ * mobile menu sets overflow: hidden), `stopInertiaOnNavigate` stops the glide
+ * when a link to another page is clicked (the wave page change starts at once).
+ */
+import 'lenis/dist/lenis.css';
+---
+<script>
+  import Lenis from 'lenis';
+
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    new Lenis({ autoRaf: true, autoToggle: true, stopInertiaOnNavigate: true, lerp: 0.1 });
+  }
+</script>

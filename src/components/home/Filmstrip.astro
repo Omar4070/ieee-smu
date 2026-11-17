@@ -105,8 +105,9 @@ const rowB = [
   /* Scroll-linked drift: the rows slide in opposite directions as the section passes. */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .track {
-        animation: drift-left linear both;
+      .track { animation: drift-left linear both; }
+      /* Separate rule, so the minifier cannot fold the timeline into the shorthand (see global.css). */
+      .row .track {
         animation-timeline: view();
         animation-range: entry 0% exit 100%;
       }

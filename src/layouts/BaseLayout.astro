@@ -4,6 +4,10 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BackgroundWaves from '../components/BackgroundWaves.astro';
 import PowerOn from '../components/PowerOn.astro';
+import WaveChange from '../components/WaveChange.astro';
+import SmoothScroll from '../components/SmoothScroll.astro';
+import TextMotion from '../components/TextMotion.astro';
+import Magnet from '../components/Magnet.astro';
 import { site } from '../config/site';
 import { url } from '../lib/utils';
 import montserratLatin from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
@@ -48,6 +52,7 @@ const isHome = Astro.url.pathname.replace(/index\.html$/, '') === url('/');
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preload" href={montserratLatin} as="font" type="font/woff2" crossorigin />
+    {isHome && <link rel="preload" href={url(site.logoWhite)} as="image" />}
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
@@ -68,8 +73,14 @@ const isHome = Astro.url.pathname.replace(/index\.html$/, '') === url('/');
           theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         d.dataset.theme = theme;
+        // Arriving through the wave page change: the colours already cover this page and lift away.
         // Power-on opening: home page, first page of a visit only, never with reduced motion.
         try {
+          if (sessionStorage.getItem('wave')) {
+            sessionStorage.removeItem('wave');
+            sessionStorage.setItem('powered', '1');
+            d.classList.add('wave-in');
+          }
           if (d.hasAttribute('data-home') && !sessionStorage.getItem('powered') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
             d.classList.add('intro');
             sessionStorage.setItem('powered', '1');
@@ -81,9 +92,16 @@ const isHome = Astro.url.pathname.replace(/index\.html$/, '') === url('/');
   <body class="flex min-h-svh flex-col">
     <a href="#main" class="skip-link">Skip to content</a>
     {isHome && <PowerOn />}
+    <WaveChange />
+    <SmoothScroll />
+    <!-- Splits the headings before the page's own scripts and the reveal script below run. -->
+    <TextMotion />
+    <Magnet />
     <BackgroundWaves />
     <Header />
-    <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
+    <!-- overflow-x: clip: photos settling from a zoom (photo-reveal) may not widen the page.
+         Clip, not hidden, so sticky sections still stick and no scroll box is created. -->
+    <main id="main" tabindex="-1" class="flex-1 overflow-x-clip focus:outline-none">
       <slot />
     </main>
     <Footer />

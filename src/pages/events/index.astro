@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import Arrow from '../../components/Arrow.astro';
 import SocietyLogo from '../../components/SocietyLogo.astro';
+import EventTrace from '../../components/events/EventTrace.astro';
 import { fieldFor, formatRange, getEvents, isoDate, url } from '../../lib/utils';
 import lightning from '../../assets/found/mood-lightning.jpg';
 
@@ -27,6 +28,8 @@ for (const e of past) {
     image={lightning}
     imageAlt="A lightning bolt striking from a blue storm cloud"
   />
+
+  <EventTrace />
 
   <section class="section" aria-labelledby="upcoming-title">
     <div class="wrap">

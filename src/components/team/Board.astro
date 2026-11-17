@@ -6,6 +6,13 @@
  * officer hangs from the bus on a feeder. Pointing at a card speeds up the
  * current on its feeder. Seats without a photo yet show a "standby" panel
  * with the chapter wave running across it.
+ *
+ * Breakers closing: the board starts dead and powers up once as it scrolls into
+ * view. The leads light up, current runs down the trunk and along the bus, then
+ * each feeder's breaker snaps shut, from the trunk outward, and lights its
+ * officer. Only the portraits dim: names stay readable throughout. Without
+ * script, with reduced motion, or if the script is late, this is simply the live
+ * board. When the sequence ends the markup is back to that same live board.
  */
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
@@ -45,8 +52,8 @@ const officerCards = members.filter((m) => m.size === 'officer');
   {/* Source: Chair and Vice-Chair */}
   <ul class="leads" role="list">
     {
-      leadCards.map((m, i) => (
-        <li class="card lead" data-reveal style={`--i: ${i}`}>
+      leadCards.map((m) => (
+        <li class="card lead">
           <figure>
             <div class:list={['portrait', m.panel]} data-tilt>
               {m.photo ? (
@@ -80,29 +87,42 @@ const officerCards = members.filter((m) => m.size === 'officer');
   </ul>
 
   {/* Trunk from the source down to the busbar */}
-  <svg class="trunk" viewBox="0 0 8 64" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path class="cur cur-ias" d="M4 0V64" />
-    <path class="cur cur-ies" d="M4 0V64" />
-    <path class="cur cur-pes" d="M4 0V64" />
-  </svg>
+  <div class="trunk-wrap">
+    <span class="dead" aria-hidden="true"></span>
+    <svg class="trunk" viewBox="0 0 8 64" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="cur cur-ias" d="M4 0V64" />
+      <path class="cur cur-ies" d="M4 0V64" />
+      <path class="cur cur-pes" d="M4 0V64" />
+    </svg>
+  </div>
 
   {/* Busbar with live current */}
-  <svg class="bus" viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path class="cur bus-ias" d="M0 4H1000" />
-    <path class="cur bus-ies" d="M0 4H1000" />
-    <path class="cur bus-pes" d="M0 4H1000" />
-  </svg>
+  <div class="bus-wrap">
+    <span class="dead" aria-hidden="true"></span>
+    <svg class="bus" viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="cur bus-ias" d="M0 4H1000" />
+      <path class="cur bus-ies" d="M0 4H1000" />
+      <path class="cur bus-pes" d="M0 4H1000" />
+    </svg>
+  </div>
 
   {/* Feeders and officers */}
   <ul class="officers" role="list">
     {
-      officerCards.map((m, i) => (
-        <li class="card officer" data-reveal style={`--i: ${i % 5}`}>
-          <svg class="feeder" viewBox="0 0 8 56" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <path class="cur cur-ias" d="M4 0V56" />
-            <path class="cur cur-ies" d="M4 0V56" />
-            <path class="cur cur-pes" d="M4 0V56" />
-          </svg>
+      officerCards.map((m) => (
+        <li class="card officer">
+          <div class="feeder-wrap">
+            {/* The open breaker: two dead stubs and a blade hinged at the lower one. */}
+            <svg class="breaker" viewBox="0 0 40 48" aria-hidden="true" focusable="false">
+              <path class="stub" d="M20 0V14M20 34V48" />
+              <line class="blade" x1="20" y1="14" x2="20" y2="34" />
+            </svg>
+            <svg class="feeder" viewBox="0 0 8 56" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path class="cur cur-ias" d="M4 0V56" />
+              <path class="cur cur-ies" d="M4 0V56" />
+              <path class="cur cur-pes" d="M4 0V56" />
+            </svg>
+          </div>
           <figure>
             <div class:list={['portrait', m.panel]} data-tilt>
               {m.photo ? (
@@ -135,6 +155,17 @@ const officerCards = members.filter((m) => m.size === 'officer');
     }
   </ul>
 </div>
+<script is:inline>
+  // Dead before the first paint, so a board already on screen never flashes lit and then goes dark.
+  // If the animation script has not taken over in time, the board simply stays live.
+  (function (board) {
+    if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+    board.classList.add('is-off');
+    setTimeout(function () {
+      if (!board.classList.contains('is-wired')) board.classList.remove('is-off');
+    }, 4000);
+  })(document.currentScript.previousElementSibling);
+</script>
 
 <style>
   .board { margin-top: clamp(48px, 6vw, 80px); }
@@ -208,9 +239,35 @@ const officerCards = members.filter((m) => m.size === 'officer');
   .standby-label { position: relative; font-size: 15px; font-weight: 500; }
 
   /* ----- Single-line diagram: trunk, busbar, feeders ----- */
-  .trunk { display: block; width: 8px; height: 56px; margin: 20px auto 0; }
-  .bus { display: block; width: 100%; height: 8px; }
-  .feeder { display: block; width: 8px; height: 48px; margin: 0 auto 12px; }
+  .trunk-wrap { position: relative; width: 8px; height: 56px; margin: 20px auto 0; }
+  .bus-wrap { position: relative; height: 8px; }
+  .feeder-wrap { position: relative; width: 40px; height: 48px; margin: 0 auto 12px; }
+  .trunk, .bus { display: block; width: 100%; height: 100%; }
+  .feeder { position: absolute; top: 0; left: 16px; display: block; width: 8px; height: 100%; }
+  .breaker, .dead { display: none; }
+
+  /* ----- Breakers closing: the dead board, before the script powers it up ----- */
+  .is-off .portrait { filter: grayscale(1) brightness(0.38); }
+  .is-off .trunk { clip-path: inset(0 0 100% 0); }
+  .is-off .bus { clip-path: inset(0 50% 0 50%); }
+  .is-off .feeder { clip-path: inset(0 0 100% 0); }
+  .is-off .dead { display: block; position: absolute; background: var(--ink-muted); opacity: 0.35; }
+  .is-off .trunk-wrap .dead { inset: 0 1px; }
+  .is-off .bus-wrap .dead { inset: 1px 0; }
+  .is-off .breaker { display: block; position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.35; }
+  .stub, .blade {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 6;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .blade {
+    --open: -38deg;
+    transform: rotate(var(--open));
+    transform-box: view-box;
+    transform-origin: 20px 34px;
+  }
 
   .cur {
     fill: none;
@@ -254,8 +311,120 @@ const officerCards = members.filter((m) => m.size === 'officer');
   }
   @media (max-width: 639px) {
     .officers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .feeder { height: 32px; margin-bottom: 8px; }
-    .trunk { height: 36px; }
+    .feeder-wrap { height: 32px; margin-bottom: 8px; }
+    .trunk-wrap { height: 36px; }
     .role { font-size: 15px; }
   }
 </style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const board = document.querySelector<HTMLElement>('.board.is-off');
+
+  if (board) {
+    board.classList.add('is-wired');
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      const leads = [...board.querySelectorAll<HTMLElement>('.lead .portrait')];
+      const trunk = board.querySelector('.trunk')!;
+      const bus = board.querySelector('.bus')!;
+      const officers = [...board.querySelectorAll<HTMLElement>('.officer')];
+      const portraits = [...leads, ...officers.map((c) => c.querySelector('.portrait')!)];
+      const wires = [trunk, bus, ...officers.map((c) => c.querySelector('.feeder')!)];
+
+      const OFF = 'grayscale(1) brightness(0.38)';
+      const ON = 'grayscale(0) brightness(1)'; // taste-skill-ignore: a colour filter, not an entrance from scale(0)
+      // One quick flicker as the power arrives, then steady.
+      const lightUp = (portrait: Element) =>
+        gsap.timeline().fromTo(
+          portrait,
+          { filter: OFF },
+          {
+            keyframes: [
+              { filter: 'grayscale(0.5) brightness(0.95)', duration: 0.07 },
+              { filter: 'grayscale(0.8) brightness(0.5)', duration: 0.07 },
+              { filter: ON, duration: 0.32 },
+            ],
+            ease: 'none',
+          },
+        );
+
+      const powerLeads = () => {
+        const tl = gsap.timeline();
+        leads.forEach((p, i) => tl.add(lightUp(p), i * 0.16));
+        tl.fromTo(trunk, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.32, ease: 'none' }, '>-0.1');
+        return tl;
+      };
+
+      // Breakers close in the order current reaches them: nearest the trunk first, then outward.
+      const powerRow = (cards: HTMLElement[], withBus: boolean) => {
+        const middle = board.getBoundingClientRect().left + board.clientWidth / 2;
+        const distance = (c: HTMLElement) => {
+          const r = c.getBoundingClientRect();
+          return Math.abs(r.left + r.width / 2 - middle);
+        };
+        const tl = gsap.timeline();
+        const start = withBus ? 0.34 : 0;
+        if (withBus) tl.fromTo(bus, { clipPath: 'inset(0 50% 0 50%)' }, { clipPath: 'inset(0 0% 0 0%)', duration: 0.46, ease: 'none' }, 0);
+        [...cards]
+          .sort((a, b) => distance(a) - distance(b))
+          .forEach((card, i) => {
+            const at = start + i * 0.22;
+            tl.to(card.querySelector('.blade'), { '--open': '0deg', duration: 0.16, ease: 'power3.in' }, at)
+              .fromTo(card.querySelector('.feeder'), { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.1, ease: 'none' }, at + 0.16)
+              .add(lightUp(card.querySelector('.portrait')!), at + 0.22);
+          });
+        return tl;
+      };
+
+      // Rows are read from the layout: one row of five on a wide screen, several on a phone.
+      const rows: HTMLElement[][] = [];
+      officers.forEach((card) => {
+        const row = rows.find((r) => r[0].offsetTop === card.offsetTop);
+        if (row) row.push(card);
+        else rows.push([card]);
+      });
+
+      const finish = () => {
+        board.classList.remove('is-off');
+        gsap.set(portraits, { clearProps: 'filter' });
+        gsap.set(wires, { clearProps: 'clipPath' });
+      };
+
+      // Each stage waits for two things: most of it is on screen, and the stage before has finished.
+      const stages = [
+        { trigger: board.querySelector('.leads')!, play: powerLeads },
+        ...rows.map((row, i) => ({ trigger: row[0], play: () => powerRow(row, i === 0) })),
+      ];
+      const reached = new Set<number>();
+      let next = 0;
+      let busy = false;
+      const advance = () => {
+        if (busy || !reached.has(next)) return;
+        busy = true;
+        stages[next].play().eventCallback('onComplete', () => {
+          busy = false;
+          next += 1;
+          if (next === stages.length) finish();
+          else advance();
+        });
+      };
+      stages.forEach((stage, i) => {
+        ScrollTrigger.create({
+          trigger: stage.trigger,
+          start: '60% bottom',
+          once: true,
+          onEnter: () => {
+            reached.add(i);
+            advance();
+          },
+        });
+      });
+
+      return () => board.classList.remove('is-off');
+    });
+  }
+</script>

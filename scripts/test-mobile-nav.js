@@ -17,6 +17,8 @@ async (page) => {
     const menu = page.locator('#mobile-menu');
     const open = (await toggle.getAttribute('aria-expanded')) === 'true' && (await menu.isVisible());
     await menu.getByRole('link', { name: links[i], exact: true }).click();
+    // The wave page change navigates about half a second after the click.
+    await page.waitForURL((u) => u.pathname === paths[i], { timeout: 5000 }).catch(() => {});
     await page.waitForLoadState('domcontentloaded');
     const path = new URL(page.url()).pathname;
     const current = await page.locator('#mobile-menu [aria-current="page"]').evaluateAll((els) => els.map((e) => e.textContent.trim()));

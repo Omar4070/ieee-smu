@@ -1,0 +1,157 @@
+---
+/**
+ * Magnet field: rows of small needles turn to follow the pointer like iron
+ * filings around a magnet, using the real field of a magnetic dipole. Sits behind
+ * the closing band's text and leaves clear space around it. With no pointer the
+ * magnet drifts by itself. With reduced motion it is one still picture; without
+ * script the band is simply plain.
+ */
+---
+<canvas class="magnet" aria-hidden="true"></canvas>
+
+<style>
+  .magnet {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const canvas = document.querySelector<HTMLCanvasElement>('.magnet');
+  const band = canvas?.parentElement;
+  const ctx = canvas?.getContext('2d');
+
+  if (canvas && band && ctx) {
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const texts = [...band.querySelectorAll<HTMLElement>('h2, p, a')];
+    let width = 0;
+    let height = 0;
+    let step = 25;
+    let cols = 0;
+    let rows = 0;
+    let angles = new Float32Array(0);
+    let holes: { l: number; r: number; t: number; b: number }[] = [];
+    let running = false;
+    let lastPointer = -Infinity;
+    const magnet = { x: 0, y: 0 };
+    const target = { x: 0, y: 0 };
+
+    // Offsets rather than client rects: text may still be mid-entrance when measured.
+    const place = (el: HTMLElement) => {
+      let x = 0;
+      let y = 0;
+      for (let n: HTMLElement | null = el; n && n !== band; n = n.offsetParent as HTMLElement | null) {
+        x += n.offsetLeft;
+        y += n.offsetTop;
+      }
+      const clear = 16;
+      return { l: x - clear, r: x + el.offsetWidth + clear, t: y - clear, b: y + el.offsetHeight + clear };
+    };
+
+    const measure = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      width = band.clientWidth;
+      height = band.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      step = width < 640 ? 19 : 25;
+      cols = Math.ceil(width / step);
+      rows = Math.ceil(height / step);
+      angles = new Float32Array(cols * rows);
+      holes = texts.map(place);
+      if (!magnet.x) {
+        magnet.x = target.x = width * 0.72;
+        magnet.y = target.y = height * 0.35;
+      }
+    };
+
+    const draw = (ease: number) => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = getComputedStyle(band).color;
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 2;
+      const reach = Math.max(width * 0.14, 90);
+      // Needles are grouped by brightness, so each frame needs only four canvas paths.
+      const groups: number[][] = [[], [], [], []];
+      for (let j = 0; j < rows; j += 1) {
+        for (let i = 0; i < cols; i += 1) {
+          const x = (i + 0.5) * step;
+          const y = (j + 0.5) * step;
+          if (holes.some((h) => x > h.l && x < h.r && y > h.t && y < h.b)) continue;
+          const dx = x - magnet.x;
+          const dy = y - magnet.y;
+          const r = Math.hypot(dx, dy) || 1;
+          const rx = dx / r;
+          const ry = dy / r;
+          // A dipole pointing up: B = 3(m.r)r - m, with m = (0, -1).
+          const along = -ry;
+          const angle = Math.atan2(3 * along * ry + 1, 3 * along * rx);
+          const k = i + j * cols;
+          // A needle has no front or back, so it takes the shorter way round.
+          let turn = (angle - angles[k]) % Math.PI;
+          if (turn > Math.PI / 2) turn -= Math.PI;
+          else if (turn < -Math.PI / 2) turn += Math.PI;
+          angles[k] += turn * ease;
+          const strength = Math.min(1, reach / r);
+          groups[Math.min(3, Math.floor(strength * 4))].push(x, y, angles[k], 4 + 4 * strength);
+        }
+      }
+      groups.forEach((g, n) => {
+        ctx.globalAlpha = 0.16 + n * 0.16;
+        ctx.beginPath();
+        for (let q = 0; q < g.length; q += 4) {
+          const cos = Math.cos(g[q + 2]) * g[q + 3];
+          const sin = Math.sin(g[q + 2]) * g[q + 3];
+          ctx.moveTo(g[q] - cos, g[q + 1] - sin);
+          ctx.lineTo(g[q] + cos, g[q + 1] + sin);
+        }
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+    };
+
+    const frame = (t: number) => {
+      if (!running) return;
+      if (t - lastPointer > 1800) {
+        target.x = width * (0.6 + 0.32 * Math.sin(t / 2600));
+        target.y = height * (0.5 + 0.38 * Math.sin(t / 1700));
+      }
+      magnet.x += (target.x - magnet.x) * 0.09;
+      magnet.y += (target.y - magnet.y) * 0.09;
+      draw(0.16);
+      requestAnimationFrame(frame);
+    };
+
+    measure();
+    new ResizeObserver(() => {
+      measure();
+      if (still) draw(1);
+    }).observe(band);
+
+    if (still) {
+      draw(1);
+      // The still picture follows a change of theme.
+      new MutationObserver(() => draw(1)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    } else {
+      band.addEventListener('pointermove', (e) => {
+        const box = band.getBoundingClientRect();
+        target.x = e.clientX - box.left;
+        target.y = e.clientY - box.top;
+        lastPointer = performance.now();
+      });
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && !running) {
+          running = true;
+          requestAnimationFrame(frame);
+        } else if (!entry.isIntersecting) {
+          running = false;
+        }
+      }).observe(band);
+    }
+  }
+</script>
